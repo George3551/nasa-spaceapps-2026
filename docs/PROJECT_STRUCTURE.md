@@ -1,5 +1,12 @@
 # Complete tracked project structure
 
+The tree below describes foundation v0.1. Core v2 adds HealthMonitor, Assessments,
+Encounters, Research, engine, clinical, assessmentMetrics, sources and health.test
+in src/health; MissionView in src/mission; engine, engine.test and SimulationControls
+in src/simulation; shared/validation; app/state/persistence and persistence.test.
+It also adds docs/CONTRACTS_V2.md, CORE_V2.md and V2_VALIDATION.md. Existing shell,
+state, views and tests are extended in place. The small contract PR is separate.
+
 Build output, installed dependencies, temporary scaffold and browser captures
 are ignored and excluded from this source tree.
 

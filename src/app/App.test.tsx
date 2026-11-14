@@ -1,66 +1,65 @@
-import { render, screen } from '@testing-library/react'
+import { render, screen, within } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
-import { describe, expect, it } from 'vitest'
+import { beforeEach, describe, expect, it } from 'vitest'
 import { App } from './App'
 import { AppProvider } from './state/AppProvider'
-import { MeasurementCard } from './components/MeasurementCard'
-import { createIntegrationFixture } from './integration/fixtures'
-import type { HealthViewProps, MissionViewProps } from './integration/interfaces'
+import { STORAGE_KEY } from './state/persistence'
 
-describe('application foundation', () => {
-  it('renders a canonical measurement with units, provenance and timestamp', () => {
-    render(<AppProvider><App /></AppProvider>)
-    expect(screen.getByRole('navigation', { name: 'Main navigation' })).toBeInTheDocument()
-    expect(screen.getByText('64')).toBeInTheDocument()
-    expect(screen.getByText('bpm')).toBeInTheDocument()
-    expect(screen.getByText('Synthetic data')).toBeInTheDocument()
-    expect(screen.getByText('AEGIS integration fixture v1')).toBeInTheDocument()
-    expect(screen.getByText('Display sample only · no health assessment')).toBeInTheDocument()
-    expect(screen.getAllByText('2026-11-14 08:00:00 UTC')).toHaveLength(2)
-  })
-
-  it('navigates all shell sections and can reload the integration fixture', async () => {
-    const user = userEvent.setup()
-    render(<AppProvider><App /></AppProvider>)
-    await user.click(screen.getByRole('button', { name: /Check My Health/ }))
+beforeEach(() => localStorage.clear())
+const mount = () => render(<AppProvider><App /></AppProvider>)
+describe('astronaut-first integrated application', () => {
+  it('opens own health directly and hides crew selection and mission controls', () => {
+    mount()
     expect(screen.getByRole('heading', { level: 1, name: 'My Health' })).toBeInTheDocument()
-    expect(screen.getByText(/Baseline not established/)).toBeInTheDocument()
-    await user.click(screen.getByRole('button', { name: 'Spacecraft' }))
-    expect(screen.getByText('Spacecraft digital twin is not connected')).toBeInTheDocument()
-    await user.click(screen.getByRole('button', { name: 'Events & Alerts' }))
-    expect(screen.getByText(/No alert records/)).toBeInTheDocument()
+    expect(screen.queryByLabelText('Crew member')).not.toBeInTheDocument()
+    expect(screen.queryByRole('button', { name: 'Spacecraft' })).not.toBeInTheDocument()
+    expect(screen.queryByText('Alex Rivera')).not.toBeInTheDocument()
+    expect(screen.getAllByText('No data')).toHaveLength(3)
+  })
+  it('saves an observed manual measurement and restores it after remount', async () => {
+    const user = userEvent.setup(), result = mount()
+    await user.type(screen.getByLabelText('Value (h)'), '7.5')
+    await user.click(screen.getByRole('button', { name: 'Save observation' }))
+    expect(screen.getByRole('status')).toHaveTextContent('Observation saved')
+    const saved = JSON.parse(localStorage.getItem(STORAGE_KEY)!)
+    expect(saved.state.personal.measurements[0]).toMatchObject({ value: 7.5, origin: 'observed' })
+    expect(saved.state.mission.measurements.every((r: { origin: string }) => r.origin === 'synthetic')).toBe(true)
+    result.unmount(); mount()
+    expect(screen.getAllByText('7.5').length).toBeGreaterThan(0)
+  })
+  it('runs a sleep scenario through detection and opens the affected profile from the ship', async () => {
+    const user = userEvent.setup(); mount()
+    await user.selectOptions(screen.getByLabelText('Demo user context'), 'mission')
     await user.click(screen.getByRole('button', { name: 'Mission Simulation' }))
-    expect(screen.getByText('Mission simulator is not connected')).toBeInTheDocument()
-    await user.click(screen.getByRole('button', { name: 'Reload integration sample' }))
-    expect(screen.getByRole('heading', { level: 1, name: 'A clear view of crew health.' })).toBeInTheDocument()
-  })
-
-  it('renders missing and invalid observations as unavailable, never zero or healthy', () => {
-    const measurement = createIntegrationFixture().measurements[0]!
-    const { rerender } = render(<MeasurementCard measurement={{ ...measurement, value: null, quality: 'missing' }} />)
-    expect(screen.getByText('No data')).toBeInTheDocument()
-    expect(screen.queryByText('0')).not.toBeInTheDocument()
-    rerender(<MeasurementCard measurement={{ ...measurement, value: 64, quality: 'invalid' }} />)
-    expect(screen.getByText('No data')).toBeInTheDocument()
-    expect(screen.queryByText('64')).not.toBeInTheDocument()
-  })
-
-  it('connects independent UI adapters to the same store', async () => {
-    const user = userEvent.setup()
-    function SpacecraftAdapter({ onSelectAstronaut }: MissionViewProps) {
-      return <button onClick={() => onSelectAstronaut('crew-01')}>Select crew from ship</button>
-    }
-    function HealthAdapter({ mission, onMeasurementAdded }: HealthViewProps) {
-      const record = mission.measurements[0]!
-      return <><p>Adapter value: {record.value}</p><button onClick={() => onMeasurementAdded({ ...record, value: 65 })}>Update synthetic sample</button></>
-    }
-    render(<AppProvider><App modules={{ spacecraft: SpacecraftAdapter, health: HealthAdapter }} /></AppProvider>)
+    await user.selectOptions(screen.getByLabelText('Scenario'), 'sleep-disruption')
+    const confirm = window.confirm; window.confirm = () => true
+    await user.click(screen.getByRole('button', { name: 'Load scenario' })); window.confirm = confirm
+    await user.click(screen.getByRole('button', { name: 'Advance 3 virtual minutes' }))
+    await user.click(screen.getByRole('button', { name: 'Events & Alerts' }))
+    expect(screen.getAllByText('Recovery indicators changed').length).toBeGreaterThan(0)
+    await user.click(screen.getByRole('button', { name: 'Acknowledge' }))
+    expect(screen.getByRole('button', { name: 'Acknowledged' })).toBeDisabled()
     await user.click(screen.getByRole('button', { name: 'Spacecraft' }))
-    await user.click(screen.getByRole('button', { name: 'Select crew from ship' }))
-    expect(screen.getByText('Adapter value: 64')).toBeInTheDocument()
-    await user.click(screen.getByRole('button', { name: 'Update synthetic sample' }))
-    expect(screen.getByText('Adapter value: 65')).toBeInTheDocument()
-    await user.click(screen.getByRole('button', { name: 'Mission Dashboard' }))
-    expect(screen.getByText('65')).toBeInTheDocument()
+    await user.click(screen.getByRole('button', { name: /Mira Chen ·/ }))
+    expect(screen.getByRole('heading', { level: 1, name: 'Crew Health' })).toBeInTheDocument()
+    expect(screen.getByText('Simulation preview. These are not real health assessments.')).toBeInTheDocument()
+  })
+  it('keeps real assessments out of simulation previews', async () => {
+    const user = userEvent.setup(); mount()
+    await user.click(screen.getByRole('button', { name: 'Daily Assessments' }))
+    expect(screen.getByRole('button', { name: 'Start typing test' })).toBeInTheDocument()
+    await user.selectOptions(screen.getByLabelText('Data workspace'), 'synthetic')
+    expect(screen.queryByRole('button', { name: 'Start typing test' })).not.toBeInTheDocument()
+  })
+  it('retains invalid storage and shows recovery instead of overwriting it', () => {
+    localStorage.setItem(STORAGE_KEY, 'incompatible')
+    mount()
+    expect(screen.getByRole('alert')).toHaveTextContent('retained unchanged')
+    expect(localStorage.getItem(STORAGE_KEY)).toBe('incompatible')
+  })
+  it('shows the science registry through existing navigation', async () => {
+    const user = userEvent.setup(); mount()
+    await user.click(screen.getByRole('button', { name: 'Research & Sources' }))
+    expect(within(screen.getByRole('main')).getByText(/No research dataset has been imported/)).toBeInTheDocument()
   })
 })

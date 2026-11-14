@@ -1,5 +1,11 @@
 # AEGIS — Astronaut Health Monitoring & Mission Digital Twin
 
+**Current implementation: Core v2.** Start in Astronaut Mode → My Health.
+The existing shell now includes health entry, assessments, clinical follow-up,
+deterministic scenarios, a spacecraft cutaway and validated local persistence.
+Read [docs/CORE_V2.md](docs/CORE_V2.md) for behavior, limits and the full demo.
+The planning-kit and v0.1 descriptions below are retained as historical context.
+
 **NASA Space Apps Challenge 2026 | Team starter (planning and interface contracts)**
 
 AEGIS is a proposed **astronaut-facing**, offline-capable health monitoring and decision-support prototype. It integrates time-stamped physiological observations, self-reports, spacecraft environment measurements, and optional camera-based exercise analysis. An interactive spacecraft cutaway is the demonstration interface, not the source of medical measurements.
@@ -29,7 +35,7 @@ Only the **integrator** initializes the application scaffold and chooses depende
 
 Project must identify all simulated values as *synthetic* and display relevant NASA sources. Make the first committed milestone an application that loads and can render one `HealthMeasurement` from `contracts/types.ts`.
 
-## Implementation update — integration foundation
+## Historical milestone — integration foundation v0.1
 
 The original planning kit above is preserved. A working React/TypeScript/Vite
 shell is now included, with Tailwind v4, centralized Context/reducer state,
