@@ -13,6 +13,8 @@ bone-density, movement and future visual-fatigue keys. Exhaustive switches on
 these unions need updating. No existing fields are removed or reinterpreted.
 
 Assessment metrics use explicit units (ms, %, conventional five-character WPM).
+Each numeric ProcedureAttempt also carries the reference unit (mL/demo units),
+so the stored value can be interpreted independently of the current UI.
 Each record carries source, origin, quality, timestamp and references. Synthetic
 and observed workspaces remain separate. Type definitions do not imply validation.
 

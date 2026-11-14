@@ -218,6 +218,7 @@ export interface ReactionMetrics {
 
 export interface ProcedureAttempt {
   field: string;
+  unit: string;
   expected: number;
   entered: number;
   matched: boolean;
