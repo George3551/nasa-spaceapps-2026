@@ -4,6 +4,7 @@ import { Panel } from '../app/components/Panel'
 import { useAppState } from '../app/state/context'
 import { selectWorkspace } from '../app/state/reducer'
 import { assessProcedure, classifyResponse, scoreReaction, scoreTyping, TYPING_DURATION_MS, TYPING_TEXT } from './assessmentMetrics'
+import { AssessmentHistory } from './AssessmentHistory'
 
 function metadata(astronautId: string, sourceRefIds: string[] = []): RecordMetadata {
   return { id: crypto.randomUUID(), astronautId, timestamp: new Date().toISOString(), source: 'assessment', origin: 'observed', quality: 'valid', unit: 'assessment', sourceRefIds, demonstrationOnly: true }
@@ -127,14 +128,10 @@ export function Assessments() {
   const mean = (values: number[]) => values.length ? (values.reduce((a, b) => a + b, 0) / values.length).toFixed(1) : 'Not established'
   return <><div className="page-intro"><div><p className="eyebrow">Daily assessments</p><h1>Human performance</h1><p className="muted">{workspace.crew.find(c => c.id === id)?.displayName} · {state.scope} records · timing tests do not diagnose a condition.</p></div></div>
     {state.scope === 'observed' ? <div className="stack" key={id}><div className="content-grid"><TypingAssessment astronautId={id} onSave={save} /><ReactionAssessment astronautId={id} onSave={save} /></div><ProcedureAssessment astronautId={id} onSave={save} /></div> : <p className="sample-note">Synthetic assessment results are read-only. Select Observed records to run a real interaction; it will be stored separately.</p>}
-    <Panel title="Assessment history" eyebrow="Individual comparison · first three same-origin sessions">
+    <Panel title="Individual performance baselines" eyebrow="Individual comparison · first three same-origin sessions">
       <p className="muted">Typing baseline: {mean(typingBaseline)} WPM · Reaction baseline: {mean(reactionBaseline)} ms. Baselines describe this task and device, not clinical norms.</p>
       {!records.length && <p className="empty-copy">No assessments recorded.</p>}
-      <div className="history-list">{records.slice().reverse().slice(0, 40).map(a => <article className="event-item" key={a.id}><h3>{a.kind} · {a.origin}</h3><p className="mono">{a.timestamp} · {a.quality}</p>
-        {a.kind === 'typing' && <p>{a.result.wpm.toFixed(1)} WPM · {a.result.accuracy.toFixed(1)}% accuracy · {a.result.errors} errors · {a.result.corrections} corrections · {a.result.interKeyMs.length} inter-key intervals · {a.result.durationMs / 1000} s</p>}
-        {a.kind === 'reaction' && <p>Mean {a.result.meanMs?.toFixed(0) ?? 'No data'} ms · Median {a.result.medianMs?.toFixed(0) ?? 'No data'} ms · {a.result.missed} missed · {a.result.premature} premature · {a.result.trials.length} trials</p>}
-        {a.kind === 'procedure' && <p>{a.result.attempts.filter(x => !x.matched).length} mismatches · {a.result.attempts.length} attempts · {a.result.attempts.map(x => `${x.field}: ${x.elapsedMs.toFixed(0)} ms`).join('; ')}</p>}
-      </article>)}</div>
     </Panel>
+    <AssessmentHistory records={records} />
   </>
 }

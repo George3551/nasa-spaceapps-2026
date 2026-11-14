@@ -1,9 +1,12 @@
 # AEGIS — Astronaut Health Monitoring & Mission Digital Twin
 
-**Current implementation: Core v2.** Start in Astronaut Mode → My Health.
+**Current implementation on develop: Core v3.** Start in Astronaut Mode → My Health.
 The existing shell now includes health entry, assessments, clinical follow-up,
 deterministic scenarios, a spacecraft cutaway and validated local persistence.
-Read [docs/CORE_V2.md](docs/CORE_V2.md) for behavior, limits and the full demo.
+V3 adds voluntary local face/pose assessments, integrated assessment/activity
+history and a record-driven interactive anatomical SVG. See
+[docs/CORE_V3.md](docs/CORE_V3.md) for the demo, algorithms and camera limitations,
+and [docs/CORE_V2.md](docs/CORE_V2.md) for the preserved core workflows.
 The planning-kit and v0.1 descriptions below are retained as historical context.
 
 **NASA Space Apps Challenge 2026 | Team starter (planning and interface contracts)**

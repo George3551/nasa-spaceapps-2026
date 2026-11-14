@@ -5,6 +5,7 @@ import { MeasurementCard } from '../app/components/MeasurementCard'
 import { useAppState } from '../app/state/context'
 import { selectWorkspace } from '../app/state/reducer'
 import { measurementRules, validateMeasurement } from '../shared/validation'
+import { AssessmentHistory } from './AssessmentHistory'
 
 export function ObservationForm({ astronautId }: { astronautId: string }) {
   const { state, dispatch } = useAppState()
@@ -66,6 +67,8 @@ export function HealthMonitor() {
       <Trend records={records.filter(r => r.metric === metric).slice(-12)} />
       <div className="table-wrap"><table><caption>Latest observations for {metric.replaceAll('_', ' ')}</caption><thead><tr><th>Time (UTC)</th><th>Value</th><th>Origin / source / quality</th></tr></thead><tbody>{records.filter(r => r.metric === metric).slice(-12).reverse().map(r => <tr key={r.id}><td>{r.timestamp}</td><td>{r.value ?? 'No data'} {r.unit}</td><td>{r.origin} / {r.source} / {r.quality}{r.note && <p>{r.note}</p>}</td></tr>)}</tbody></table></div>
     </Panel>{crew && <ObservationForm astronautId={crew.id} key={`${crew.id}-${state.scope}`} />}</div>
+    <AssessmentHistory records={(workspace.assessments ?? []).filter(a => a.astronautId === crew?.id)} />
+    <Panel title="Activity history" eyebrow="Recorded exercises · source and quality"><div className="history-list">{workspace.activities.filter(a => a.astronautId === crew?.id).slice(-12).reverse().map(a => <p className="event-item" key={a.id}>{a.startedAt} · {a.kind} · {a.source} · {a.origin} · {a.quality}{a.details?.repetitions !== undefined && ` · ${a.details.repetitions ?? 'Unavailable'} repetitions`}</p>)}{!workspace.activities.some(a => a.astronautId === crew?.id) && <p className="empty-copy">No recorded exercise sessions.</p>}</div></Panel>
     <Panel title="Medical history" eyebrow="Recorded examinations and context">
       <p className="muted">Bone density is shown only when an examination is recorded. Exercise activity alone does not measure bone loss. Model-based estimates require a separately validated model; none is active.</p>
       {records.filter(r => r.metric === 'bone_mineral_density' || r.note).slice(-12).map(r => <p className="event-item" key={r.id}>{r.timestamp} · {r.metric.replaceAll('_', ' ')} · {r.value ?? 'No data'} {r.unit} · {r.origin} · {r.note}</p>)}

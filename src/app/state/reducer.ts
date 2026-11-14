@@ -3,8 +3,9 @@ import { initialState, runScenario, step } from '../../simulation/engine'
 import { synchronizeClinical } from '../../health/engine'
 import { addFollowUp, transitionEncounter } from '../../health/clinical'
 import { actionSchema, assessmentSchema, validateMeasurement } from '../../shared/validation'
+import { physicalActivity } from '../../vision/records'
 
-export type Section = 'dashboard' | 'health' | 'spacecraft' | 'simulation' | 'events' | 'assessments' | 'research'
+export type Section = 'dashboard' | 'health' | 'spacecraft' | 'simulation' | 'events' | 'assessments' | 'research' | 'visual' | 'physical' | 'anatomy'
 export type UserMode = 'astronaut' | 'medical' | 'mission'
 export type DataScope = 'observed' | 'synthetic'
 export interface AppState {
@@ -40,14 +41,14 @@ export type AppAction =
   | { type: 'fixture/reset' }
 
 export function createAppState(): AppState {
-  return { mission: initialState(), personal: { measurements: [], assessments: [], alerts: [], encounters: [] }, section: 'health', mode: 'astronaut', scope: 'observed', sessionAstronautId: 'crew-01', selectedAstronautId: 'crew-01', selectedCompartmentId: null, notice: null }
+  return { mission: initialState(), personal: { measurements: [], assessments: [], alerts: [], encounters: [], activities: [] }, section: 'health', mode: 'astronaut', scope: 'observed', sessionAstronautId: 'crew-01', selectedAstronautId: 'crew-01', selectedCompartmentId: null, notice: null }
 }
 export function canAccessSubject(state: AppState, id: string) {
   return state.mode === 'astronaut' ? id === state.sessionAstronautId : state.mode === 'medical' || state.scope === 'synthetic'
 }
 // UI isolation only; real authentication and authorization require a trusted boundary.
 export function selectWorkspace(state: AppState): MissionState {
-  const base = state.scope === 'synthetic' ? state.mission : { ...state.mission, ...state.personal, environment: [], activities: [], events: [], crew: state.mission.crew.map(c => {
+  const base = state.scope === 'synthetic' ? state.mission : { ...state.mission, ...state.personal, environment: [], activities: state.personal.activities ?? [], events: [], crew: state.mission.crew.map(c => {
     const baselines: Partial<Record<MetricKey, number>> = {}
     const records = state.personal.measurements.filter(r => r.astronautId === c.id && r.value !== null && r.quality === 'valid').sort((a, b) => a.timestamp.localeCompare(b.timestamp))
     for (const metric of new Set(records.map(r => r.metric))) {
@@ -73,6 +74,7 @@ export function appReducer(state: AppState, action: AppAction): AppState {
     switch (action.type) {
       case 'navigate':
         if ((action.section === 'spacecraft' || action.section === 'simulation') && state.mode !== 'mission') return state
+        if ((action.section === 'visual' || action.section === 'physical') && state.mode === 'mission') return state
         return { ...state, section: action.section }
       case 'mode/set': return { ...state, mode: action.mode, scope: action.mode === 'mission' ? 'synthetic' : 'observed', selectedAstronautId: state.sessionAstronautId, section: action.mode === 'mission' ? 'dashboard' : 'health', notice: null }
       case 'scope/set': return { ...state, scope: state.mode === 'mission' ? 'synthetic' : action.scope, notice: null }
@@ -110,7 +112,10 @@ export function appReducer(state: AppState, action: AppAction): AppState {
         const record = assessmentSchema.parse(action.record) as AssessmentResult
         if (state.scope !== 'observed' || record.origin !== 'observed' || !canAccessSubject(state, record.astronautId)) throw new Error('Live assessments are saved only in the observed workspace.')
         const data = state.personal
-        return reevaluate({ ...state, personal: { ...data, assessments: [...data.assessments.filter(a => a.id !== record.id), record] }, notice: 'Assessment saved locally. No diagnosis is inferred.' })
+        let activities = data.activities ?? []
+        if (record.kind === 'physical') activities = [...activities.filter(a => a.id !== `activity-${record.id}`), physicalActivity(record)]
+        if ((record.kind === 'visual' || record.kind === 'physical') && record.quality !== (record.result.sufficient ? 'estimated' : 'missing')) throw new Error('Camera quality must match available observations.')
+        return reevaluate({ ...state, personal: { ...data, activities, assessments: [...data.assessments.filter(a => a.id !== record.id), record] }, notice: 'Assessment saved locally. No diagnosis is inferred.' })
       }
       case 'alerts/replace': {
         const data = clinicalData(state), read = new Set(data.alerts.filter(a => a.status === 'acknowledged').map(a => a.id))

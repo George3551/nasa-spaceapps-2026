@@ -98,6 +98,16 @@ a { color: inherit; text-decoration: none; }
 @media (max-width: 720px) { .app-shell { grid-template-columns: 1fr; } .sidebar { padding: 18px 16px 12px; border-right: 0; border-bottom: 1px solid #2b3841; } .sidebar nav { flex-direction: row; flex-wrap: wrap; gap: 4px; margin-top: 20px; } .nav-item { padding: 10px; font-size: .75rem; min-height: 44px; } .nav-item .mono, .sidebar-caption, .sidebar-bottom { display: none; } .brand { padding: 0; } .main-content { padding: 26px 16px; } .topbar { padding: 16px; } .summary-grid { grid-template-columns: 1fr; gap: 10px; } .summary { display: grid; grid-template-columns: 1fr auto; align-items: center; gap: 8px; } .summary strong { grid-column: 2; grid-row: 1 / 3; margin: 0; font-size: 1.5rem; } .summary strong.text-label { font-size: .9rem; } .summary p:last-child { grid-column: 1; } .footer { padding: 18px 16px; } .metadata > div { grid-template-columns: 80px minmax(0,1fr); } }
 
 /* Core v2 extends the original shell and design tokens. */
+.camera-preview { position: relative; aspect-ratio: 4 / 3; margin-top: 20px; background: #111c24; border: 1px solid #43535d; border-radius: 8px; overflow: hidden; }
+.camera-preview video,.camera-preview canvas { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: contain; transform: scaleX(-1); }
+.camera-off { position: absolute; inset: 0; display: grid; place-content: center; background: #111c24; color: #a7b5bf; }
+.anatomy-layout { display: grid; grid-template-columns: minmax(260px, .75fr) minmax(0, 1.4fr); gap: 22px; align-items: start; }
+.system-buttons { display: flex; gap: 8px; flex-wrap: wrap; margin-top: 18px; }
+.system-buttons [aria-pressed=true] { border-color: #b4ded3; background: #263e3d; }
+.anatomy-svg { display: block; width: 100%; max-height: 530px; margin-top: 20px; }
+.system-active { color: #b4ded3; opacity: 1; }
+.system-muted { color: #66828b; opacity: .18; }
+@media(max-width:1080px) { .anatomy-layout { grid-template-columns: 1fr; } }
 .context-warning,.notice,.storage-warning { padding: 12px 24px; background: #26343e; color: #c6d4da; font-size: .78rem; line-height: 1.6; }
 .notice { display: flex; justify-content: space-between; gap: 12px; flex-wrap: wrap; background: #263e3d; }
 .notice .text-button { margin: 0; padding: 0; }

@@ -55,5 +55,5 @@ export function synchronizeClinical(state: MissionState): ClinicalWorkspace {
       quality: 'estimated', unit: 'encounter', sourceRefIds: alert.sourceRefIds ?? [], demonstrationOnly: true,
     })
   }
-  return { measurements: state.measurements, assessments: state.assessments ?? [], alerts: [...alerts.values()], encounters }
+  return { measurements: state.measurements, assessments: state.assessments ?? [], alerts: [...alerts.values()], encounters, activities: state.activities }
 }
