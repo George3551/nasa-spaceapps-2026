@@ -10,7 +10,7 @@ export type ScenarioId = 'normal-day' | 'sleep-disruption' | 'co2-excursion' | '
 
 /** Separates provenance, which is not the same thing as acquisition method. */
 export type DataOrigin = 'synthetic' | 'observed' | 'research_dataset';
-export type AcquisitionMethod = 'simulator' | 'manual' | 'wearable' | 'environment_sensor' | 'camera_pose' | 'dataset_import';
+export type AcquisitionMethod = 'simulator' | 'manual' | 'wearable' | 'environment_sensor' | 'camera_pose' | 'dataset_import' | 'assessment';
 export type ObservationQuality = 'valid' | 'estimated' | 'missing' | 'invalid';
 
 export type MetricKey =
@@ -27,6 +27,11 @@ export type MetricKey =
   | 'cabin_temperature'         // °C
   | 'cabin_pressure'            // kPa
   | 'radiation_dose'            // unit specified in record; no unsupported predictions
+  | 'reported_mood'
+  | 'symptom_severity'
+  | 'bone_mineral_density'
+  | 'movement_range'
+  | 'visual_fatigue'
   | 'other';
 
 export interface SourceReference {
@@ -53,6 +58,8 @@ export interface HealthMeasurement {
   sourceRefId?: string;
   /** Explicitly identifies arbitrary demonstration thresholds/fixtures. */
   demonstrationOnly?: boolean;
+  /** Additional context, never a diagnosis. Symptom name or examination site. */
+  note?: string;
 }
 
 export interface EnvironmentalMeasurement {
@@ -144,6 +151,11 @@ export interface MissionState {
   activities: ActivityRecord[];
   alerts: HealthAlert[];
   events: MissionEvent[];
+  /** v2 additions are optional for compatibility with v1 consumers. */
+  assessments?: AssessmentResult[];
+  encounters?: MedicalEncounter[];
+  sources?: SourceReference[];
+  resources?: MedicalResource[];
 }
 
 export interface SimulationPort {
@@ -162,4 +174,108 @@ export interface VisionPort {
   stop(): void;
   /** Output observations; must not record video by default. */
   onActivityRecord(callback: (activity: ActivityRecord) => void): () => void;
+}
+
+/** v2 provenance shared by assessment, encounter and follow-up records. */
+export interface RecordMetadata {
+  id: string;
+  astronautId: AstronautId;
+  timestamp: ISODateTime;
+  source: AcquisitionMethod;
+  origin: DataOrigin;
+  quality: ObservationQuality;
+  unit: string;
+  sourceRefIds: string[];
+  demonstrationOnly: boolean;
+}
+
+export interface TypingMetrics {
+  durationMs: number;
+  typedCharacters: number;
+  correctCharacters: number;
+  errors: number;
+  corrections: number;
+  interKeyMs: number[];
+  wpm: number;
+  accuracy: number;
+}
+
+export interface ReactionTrial {
+  waitMs: number;
+  responseMs: number | null;
+  outcome: 'response' | 'missed' | 'premature';
+}
+
+export interface ReactionMetrics {
+  durationMs: number;
+  mode: 'demo' | 'extended';
+  trials: ReactionTrial[];
+  meanMs: number | null;
+  medianMs: number | null;
+  missed: number;
+  premature: number;
+}
+
+export interface ProcedureAttempt {
+  field: string;
+  expected: number;
+  entered: number;
+  matched: boolean;
+  elapsedMs: number;
+}
+
+export type AssessmentResult = RecordMetadata & (
+  | { kind: 'typing'; result: TypingMetrics }
+  | { kind: 'reaction'; result: ReactionMetrics }
+  | { kind: 'procedure'; result: { attempts: ProcedureAttempt[]; completed: boolean } }
+);
+
+export interface ClinicalAction extends RecordMetadata {
+  kind: 'review' | 'follow_up';
+  note: string;
+  observationIds: string[];
+  completed: boolean;
+}
+
+export interface MedicalEncounter extends RecordMetadata {
+  alertId: string;
+  title: string;
+  status: 'open' | 'under_review' | 'resolved';
+  actions: ClinicalAction[];
+  resolvedAt?: ISODateTime;
+}
+
+export interface MedicalResource {
+  id: string;
+  label: string;
+  quantity: number | null;
+  unit: string;
+  origin: DataOrigin;
+  quality: ObservationQuality;
+  timestamp: ISODateTime;
+  source: AcquisitionMethod;
+  sourceRefIds: string[];
+}
+
+export interface ClinicalWorkspace {
+  measurements: HealthMeasurement[];
+  assessments: AssessmentResult[];
+  alerts: HealthAlert[];
+  encounters: MedicalEncounter[];
+}
+
+export interface MissionSnapshot extends MissionState {
+  assessments: AssessmentResult[];
+  encounters: MedicalEncounter[];
+  sources: SourceReference[];
+  resources: MedicalResource[];
+}
+
+export interface ResearchSource extends SourceReference {
+  establishes: string;
+  feature: string;
+  limitation: string;
+  access: 'full_text' | 'abstract' | 'metadata' | 'unavailable';
+  providesData: boolean;
+  checkedAt: string;
 }
