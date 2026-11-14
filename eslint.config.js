@@ -4,7 +4,7 @@ import reactHooks from 'eslint-plugin-react-hooks'
 import tseslint from 'typescript-eslint'
 
 export default tseslint.config(
-  { ignores: ['dist', 'coverage', '.aegis-scaffold', '.npm-cache', 'public/models/vision/wasm'] },
+  { ignores: ['dist', 'coverage', '.aegis-scaffold', '.npm-cache', '.wrangler', 'public/models/vision/wasm'] },
   js.configs.recommended,
   ...tseslint.configs.recommended,
   {
@@ -14,4 +14,5 @@ export default tseslint.config(
     rules: reactHooks.configs.recommended.rules,
   },
   { files: ['*.{js,ts}'], languageOptions: { globals: globals.node } },
+  { files: ['scripts/*.mjs'], languageOptions: { globals: globals.node } },
 )

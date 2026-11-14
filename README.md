@@ -9,6 +9,11 @@ history and a record-driven interactive anatomical SVG. See
 and [docs/CORE_V2.md](docs/CORE_V2.md) for the preserved core workflows.
 The planning-kit and v0.1 descriptions below are retained as historical context.
 
+**Release preparation:** see [the release checklist](docs/RELEASE_CHECKLIST.md),
+[Cloudflare Pages deployment](docs/DEPLOYMENT.md) and
+[the reproducible live demo](docs/LIVE_DEMO.md). Preparation is local; no public
+production deployment or physical-webcam validation is implied.
+
 **NASA Space Apps Challenge 2026 | Team starter (planning and interface contracts)**
 
 AEGIS is a proposed **astronaut-facing**, offline-capable health monitoring and decision-support prototype. It integrates time-stamped physiological observations, self-reports, spacecraft environment measurements, and optional camera-based exercise analysis. An interactive spacecraft cutaway is the demonstration interface, not the source of medical measurements.
