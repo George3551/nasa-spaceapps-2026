@@ -10,7 +10,7 @@ export function MeasurementCard({ measurement, source }: { measurement: HealthMe
       <span className="badge">{measurement.origin === 'synthetic' ? 'Synthetic data' : measurement.origin.replaceAll('_', ' ')}</span>
     </div>
     <p className="measurement-value">{available ? measurement.value : 'No data'} {available && <span>{measurement.unit}</span>}</p>
-    <p className="muted">{available ? 'Display sample only · no health assessment' : 'Insufficient evidence · no health assessment'}</p>
+    <p className="muted">{available ? measurement.origin === 'synthetic' ? 'Synthetic scenario observation' : 'Recorded observation · interpretation requires review' : 'Insufficient evidence · no health assessment'}</p>
     <dl className="metadata">
       <div><dt>Recorded</dt><dd><time dateTime={measurement.timestamp}>{formatTimestamp(measurement.timestamp)}</time></dd></div>
       <div><dt>Acquisition</dt><dd>{measurement.source}</dd></div>

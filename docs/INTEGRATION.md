@@ -1,5 +1,9 @@
 # AEGIS — integration foundation
 
+**Historical foundation document.** Core v2 now implements the modules below
+with a single developer and preserves this shell architecture. See CORE_V2.md
+for current orchestration, role contexts, provenance separation and persistence.
+
 Статус: оболочка и проверка контрактов; медицинский движок, симулятор,
 корабль, камера и анатомия пока не реализованы. Исходные `contracts/types.ts`
 сохранены без изменений. Это документ для четырёх разработчиков и интегратора.

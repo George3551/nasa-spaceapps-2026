@@ -1,5 +1,10 @@
 # Work allocation — five parallel streams
 
+**Organizational update (Core v2):** the user assigned all software implementation
+to one developer. The other team members research, review and prepare materials.
+The workstreams below are historical module boundaries, not active ownership
+restrictions for that developer. See CORE_V2.md for the implemented integration.
+
 ## Member 1: integrator / technical lead
 
 **Own:** `src/app/`, application scaffold, package/lockfile, integration tests, deployment. **Branch:** `chore/integration`.
