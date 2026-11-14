@@ -10,7 +10,7 @@ export type ScenarioId = 'normal-day' | 'sleep-disruption' | 'co2-excursion' | '
 
 /** Separates provenance, which is not the same thing as acquisition method. */
 export type DataOrigin = 'synthetic' | 'observed' | 'research_dataset';
-export type AcquisitionMethod = 'simulator' | 'manual' | 'wearable' | 'environment_sensor' | 'camera_pose' | 'dataset_import' | 'assessment';
+export type AcquisitionMethod = 'simulator' | 'manual' | 'wearable' | 'environment_sensor' | 'camera_pose' | 'camera_face' | 'dataset_import' | 'assessment';
 export type ObservationQuality = 'valid' | 'estimated' | 'missing' | 'invalid';
 
 export type MetricKey =
@@ -229,6 +229,8 @@ export type AssessmentResult = RecordMetadata & (
   | { kind: 'typing'; result: TypingMetrics }
   | { kind: 'reaction'; result: ReactionMetrics }
   | { kind: 'procedure'; result: { attempts: ProcedureAttempt[]; completed: boolean } }
+  | { kind: 'visual'; experimental: true; association: DemoAssociation; result: VisualAssessmentMetrics }
+  | { kind: 'physical'; experimental: true; association: DemoAssociation; result: PhysicalAssessmentMetrics }
 );
 
 export interface ClinicalAction extends RecordMetadata {
@@ -263,6 +265,7 @@ export interface ClinicalWorkspace {
   assessments: AssessmentResult[];
   alerts: HealthAlert[];
   encounters: MedicalEncounter[];
+  activities?: ActivityRecord[];
 }
 
 export interface MissionSnapshot extends MissionState {
@@ -279,4 +282,41 @@ export interface ResearchSource extends SourceReference {
   access: 'full_text' | 'abstract' | 'metadata' | 'unavailable';
   providesData: boolean;
   checkedAt: string;
+}
+
+export interface DemoAssociation {
+  kind: 'fictional_demo_profile';
+  confirmedAt: ISODateTime;
+}
+export type TrackingIssue = 'no_face' | 'multiple_faces' | 'head_pose' | 'unstable' | 'out_of_frame' | 'low_visibility' | 'no_pose' | 'multiple_poses' | 'camera_interrupted' | 'sampling_gap' | 'calibrating';
+export interface InvalidTrackingInterval { startMs: number; endMs: number; reason: TrackingIssue }
+export interface VisualAssessmentMetrics {
+  durationMs: number;
+  validObservationMs: number;
+  calibrationMs: number;
+  trackingCoverage: number;
+  blinkCount: number | null;
+  blinkRatePerMinute: number | null;
+  blinkDurationsMs: number[];
+  meanBlinkDurationMs: number | null;
+  eyeClosureMs: number | null;
+  prolongedClosureMs: number | null;
+  closureProportion: number | null;
+  perclosInspiredProportion: number | null;
+  calibratedOpenEar: number | null;
+  invalidIntervals: InvalidTrackingInterval[];
+  sufficient: boolean;
+  algorithm: 'ear-hysteresis-v1';
+}
+export interface PhysicalAssessmentMetrics {
+  exercise: 'right_elbow_flexion';
+  durationMs: number;
+  validObservationMs: number;
+  trackingCoverage: number;
+  repetitions: number | null;
+  angleHistory: { atMs: number; angleDeg: number | null }[];
+  rangeDeg: number | null;
+  invalidIntervals: InvalidTrackingInterval[];
+  sufficient: boolean;
+  algorithm: 'elbow-cycle-v1';
 }
