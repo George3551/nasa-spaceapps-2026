@@ -10,3 +10,9 @@ coverage/
 *.tsbuildinfo
 .idea/
 .vscode/
+.aegis-scaffold/
+.npm-cache/
+playwright-report/
+test-results/
+.playwright-cli/
+output/

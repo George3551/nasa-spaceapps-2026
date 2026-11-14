@@ -28,3 +28,30 @@ AEGIS is a proposed **astronaut-facing**, offline-capable health monitoring and 
 Only the **integrator** initializes the application scaffold and chooses dependency versions. Do not have several AI agents independently scaffold separate applications. Bootstrap using `npm create vite@latest . -- --template react-ts` **in a separate temporary directory** and copy the application files into this repository without overwriting documentation or contracts. Then `npm install` and `npm run dev`.
 
 Project must identify all simulated values as *synthetic* and display relevant NASA sources. Make the first committed milestone an application that loads and can render one `HealthMeasurement` from `contracts/types.ts`.
+
+## Implementation update — integration foundation
+
+The original planning kit above is preserved. A working React/TypeScript/Vite
+shell is now included, with Tailwind v4, centralized Context/reducer state,
+five navigation sections and a labelled synthetic observation. Domain engines
+and the spacecraft/camera/anatomy views remain integration placeholders.
+
+Requires Node.js 22.13+ on the 22.x line, 24.x or 26+.
+
+```sh
+npm install
+npm run dev
+```
+
+```sh
+npm run check
+npm run build
+npm run preview
+```
+
+Use `npm ci` for the exact locked dependencies. Refresh resets the in-memory
+integration fixture. The app has no runtime API/CDN dependency; offline PWA
+caching and persistence are not yet implemented.
+
+Read [docs/INTEGRATION.md](docs/INTEGRATION.md) for module interfaces, ownership,
+contract proposals, development commands and the four teammate assignments.
