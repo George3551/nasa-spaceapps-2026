@@ -1,0 +1,165 @@
+/** AEGIS canonical integration contracts v1.0 (hackathon prototype).
+ *  Changes require integrator review. Do not duplicate types per feature module.
+ */
+
+export type ISODateTime = string;
+export type AstronautId = string;
+export type CompartmentId = string;
+export type ObservationId = string;
+export type ScenarioId = 'normal-day' | 'sleep-disruption' | 'co2-excursion' | 'radiation-event';
+
+/** Separates provenance, which is not the same thing as acquisition method. */
+export type DataOrigin = 'synthetic' | 'observed' | 'research_dataset';
+export type AcquisitionMethod = 'simulator' | 'manual' | 'wearable' | 'environment_sensor' | 'camera_pose' | 'dataset_import';
+export type ObservationQuality = 'valid' | 'estimated' | 'missing' | 'invalid';
+
+export type MetricKey =
+  | 'heart_rate'                // bpm
+  | 'resting_heart_rate'        // bpm
+  | 'blood_pressure_systolic'  // mmHg
+  | 'blood_pressure_diastolic' // mmHg
+  | 'sleep_duration'            // h
+  | 'reported_stress'           // scale with defined questionnaire
+  | 'reported_fatigue'          // scale with defined questionnaire
+  | 'exercise_duration'         // min
+  | 'exercise_repetitions'      // count
+  | 'cabin_co2'                 // ppm
+  | 'cabin_temperature'         // °C
+  | 'cabin_pressure'            // kPa
+  | 'radiation_dose'            // unit specified in record; no unsupported predictions
+  | 'other';
+
+export interface SourceReference {
+  id: string;
+  title: string;
+  url?: string;
+  /** Examples: NASA HRP research, NASA OSDR study ID, simulated fixture. */
+  kind: 'research' | 'dataset' | 'synthetic_fixture' | 'user_entry' | 'device';
+  note?: string;
+}
+
+export interface HealthMeasurement {
+  id: ObservationId;
+  astronautId: AstronautId;
+  metric: MetricKey;
+  /** Missing values must be encoded with quality='missing' and value=null, NEVER 0. */
+  value: number | null;
+  unit: string;
+  timestamp: ISODateTime;
+  source: AcquisitionMethod;
+  origin: DataOrigin;
+  quality: ObservationQuality;
+  compartmentId?: CompartmentId;
+  sourceRefId?: string;
+  /** Explicitly identifies arbitrary demonstration thresholds/fixtures. */
+  demonstrationOnly?: boolean;
+}
+
+export interface EnvironmentalMeasurement {
+  id: ObservationId;
+  compartmentId: CompartmentId;
+  metric: 'cabin_co2' | 'cabin_temperature' | 'cabin_pressure' | 'radiation_dose' | 'other';
+  value: number | null;
+  unit: string;
+  timestamp: ISODateTime;
+  source: 'simulator' | 'environment_sensor' | 'dataset_import';
+  origin: DataOrigin;
+  quality: ObservationQuality;
+  sourceRefId?: string;
+  demonstrationOnly?: boolean;
+}
+
+export interface CrewMember {
+  id: AstronautId;
+  displayName: string;
+  role: string;
+  /** A baseline is a descriptive user-specific comparison, NOT a diagnosis. */
+  baselines: Partial<Record<MetricKey, number>>;
+  currentCompartmentId: CompartmentId;
+  syntheticIdentity: boolean;
+}
+
+export interface Compartment {
+  id: CompartmentId;
+  label: string;
+  category: 'living' | 'exercise' | 'medical' | 'work' | 'life_support' | 'shelter';
+}
+
+export interface ActivityRecord {
+  id: string;
+  astronautId: AstronautId;
+  kind: 'exercise' | 'sleep' | 'work' | 'rest' | 'self_report' | 'medical_check';
+  startedAt: ISODateTime;
+  endedAt?: ISODateTime;
+  source: AcquisitionMethod;
+  origin: DataOrigin;
+  quality: ObservationQuality;
+  details?: Record<string, number | string | boolean | null>;
+}
+
+export interface AlertEvidence {
+  observationId: string;
+  explanation: string;
+}
+
+export interface HealthAlert {
+  id: string;
+  astronautId?: AstronautId;
+  compartmentId?: CompartmentId;
+  createdAt: ISODateTime;
+  level: 'information' | 'attention' | 'review';
+  title: string;
+  explanation: string;
+  evidence: AlertEvidence[];
+  safeNextStep: string;
+  status: 'new' | 'acknowledged';
+  ruleId: string;
+  /** For unvalidated demo rules, this MUST be true. */
+  demonstrationOnly: boolean;
+  sourceRefIds?: string[];
+}
+
+export interface MissionEvent {
+  id: string;
+  at: ISODateTime;
+  kind: 'crew_movement' | 'routine' | 'measurement' | 'environment_incident' | 'radiation_incident' | 'health_alert' | 'operator_action';
+  astronautId?: AstronautId;
+  compartmentId?: CompartmentId;
+  summary: string;
+  scenarioId?: ScenarioId;
+  synthetic: boolean;
+}
+
+export interface MissionState {
+  missionTime: ISODateTime;
+  /** Simulation can be paused; speed is the count of virtual seconds per real second. */
+  paused: boolean;
+  speed: number;
+  activeScenario: ScenarioId;
+  seed: number;
+  crew: CrewMember[];
+  compartments: Compartment[];
+  measurements: HealthMeasurement[];
+  environment: EnvironmentalMeasurement[];
+  activities: ActivityRecord[];
+  alerts: HealthAlert[];
+  events: MissionEvent[];
+}
+
+export interface SimulationPort {
+  initialState(seed?: number): MissionState;
+  step(state: MissionState, virtualSeconds: number): MissionState;
+  runScenario(state: MissionState, id: ScenarioId): MissionState;
+  reset(seed?: number): MissionState;
+}
+
+export interface HealthEvaluatorPort {
+  evaluate(state: MissionState): HealthAlert[];
+}
+
+export interface VisionPort {
+  start(): Promise<void>;
+  stop(): void;
+  /** Output observations; must not record video by default. */
+  onActivityRecord(callback: (activity: ActivityRecord) => void): () => void;
+}
