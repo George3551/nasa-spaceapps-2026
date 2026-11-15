@@ -1,0 +1,9 @@
+MediaPipe Tasks Vision runtime 0.10.32 and Face / Pose Landmarker model bundles.
+Copyright Google LLC and MediaPipe contributors. Distributed under Apache-2.0;
+the complete license is in LICENSE. The upstream JavaScript retains its notices.
+Source project: https://github.com/google-ai-edge/mediapipe
+Model and package source URLs, byte lengths and SHA-256 are in manifest.json.
+These are unmodified runtime dependencies, intentionally vendored for local use.
+License clarification from upstream maintainers:
+https://github.com/google-ai-edge/mediapipe-samples/issues/407
+No astronaut images, videos or clinical datasets are included.

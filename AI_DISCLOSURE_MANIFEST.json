@@ -1,0 +1,2190 @@
+{
+  "schemaVersion": 1,
+  "auditDate": "2026-11-15",
+  "reviewedImplementationCommit": "b8e26c9dded392b0fb612f8ec034b7da2201d4e0",
+  "submissionBranch": "develop",
+  "scope": "Metadata addendum only; the published application remains the b8e26c9 release. No behavior or thresholds changed.",
+  "authorshipLimit": "Tools are attributed to documented scopes, not every line. No file is certified entirely human-authored. Team confirmation is needed for exact initial/per-line contributions.",
+  "evidence": {
+    "E-TEAM": "Project owner statement: team originated concept, research, requirements, MediaPipe selection/experimentation and testing; AI tools assisted research and software development.",
+    "E-CODEX": "docs/INTEGRATION.md, docs/CORE_V3.md, docs/CORE_V4_1.md and retained implementation sessions document Codex-assisted foundation, v2/v3/v4.1 and release work. Git history identifies file scope, not line authorship.",
+    "E-CLAUDE-UI": "a9d2517, 3a4e055, d26328f carry Claude co-author trailers; docs/UI_UX_AUDIT.md and team report describe the UI/audit scope.",
+    "E-SESSION": "Retained Codex implementation session generated the v4.1 integration and release stabilization code identified here. Substantial generation does not imply every line originated in one tool."
+  },
+  "files": [
+    {
+      "path": "contracts/types.ts",
+      "component": "Canonical domain contracts",
+      "classification": "ai_assisted_mixed_origin",
+      "tools": [
+        "OpenAI Codex"
+      ],
+      "thirdParty": [],
+      "needsTeamVerification": true,
+      "evidence": [
+        "E-CODEX"
+      ],
+      "sourceHistory": [
+        "fde72f2 fix: stabilize baseline retention, clinical evidence and mission demo",
+        "66275a9 feat(contracts): propose v4.1 sensor and assessment contracts",
+        "8b7c612 feat(contracts): propose experimental vision assessment records",
+        "d08316e fix(contracts): retain units on numeric procedure attempts",
+        "b0b9646 feat(contracts): propose backward-compatible core v2 records",
+        "8a43a2f docs: establish AEGIS spec and collaboration contract"
+      ],
+      "notes": "Mixed-origin starter contract and AI-assisted extensions. Initial line-level authorship is unverified; this update adds comments only.",
+      "headerAdded": true
+    },
+    {
+      "path": "eslint.config.js",
+      "component": "Lint configuration",
+      "classification": "ai_assisted_mixed_origin",
+      "tools": [
+        "OpenAI Codex"
+      ],
+      "thirdParty": [
+        "@eslint/js",
+        "globals",
+        "eslint-plugin-react-hooks",
+        "typescript-eslint"
+      ],
+      "needsTeamVerification": true,
+      "evidence": [
+        "E-CODEX"
+      ],
+      "sourceHistory": [
+        "034fcdb chore: prepare Cloudflare Pages release candidate",
+        "4b66a21 feat: integrate local vision assessments and record-driven anatomy",
+        "1e5f30d feat: establish AEGIS application and integration foundation"
+      ],
+      "notes": "Team-directed AI-assisted implementation; exact line-level human/tool attribution is not established.",
+      "headerAdded": true
+    },
+    {
+      "path": "index.html",
+      "component": "Application entry document",
+      "classification": "ai_assisted_mixed_origin",
+      "tools": [
+        "OpenAI Codex"
+      ],
+      "thirdParty": [],
+      "needsTeamVerification": true,
+      "evidence": [
+        "E-CODEX"
+      ],
+      "sourceHistory": [
+        "4b66a21 feat: integrate local vision assessments and record-driven anatomy",
+        "1e5f30d feat: establish AEGIS application and integration foundation"
+      ],
+      "notes": "Team-directed AI-assisted implementation; exact line-level human/tool attribution is not established.",
+      "headerAdded": true
+    },
+    {
+      "path": "public/favicon.svg",
+      "component": "Application vector icon",
+      "classification": "ai_assisted_mixed_origin",
+      "tools": [
+        "OpenAI Codex"
+      ],
+      "thirdParty": [],
+      "needsTeamVerification": true,
+      "evidence": [
+        "E-CODEX"
+      ],
+      "sourceHistory": [
+        "1e5f30d feat: establish AEGIS application and integration foundation"
+      ],
+      "notes": "Team-directed AI-assisted implementation; exact line-level human/tool attribution is not established.",
+      "headerAdded": true
+    },
+    {
+      "path": "scripts/verify-deployment.mjs",
+      "component": "HTTP, headers, SPA and deployed-asset verification",
+      "classification": "ai_assisted_mixed_origin",
+      "tools": [
+        "OpenAI Codex"
+      ],
+      "thirdParty": [
+        "node:assert/strict",
+        "node:crypto",
+        "node:fs"
+      ],
+      "needsTeamVerification": true,
+      "evidence": [
+        "E-CODEX"
+      ],
+      "sourceHistory": [
+        "034fcdb chore: prepare Cloudflare Pages release candidate"
+      ],
+      "notes": "Team-directed AI-assisted implementation; exact line-level human/tool attribution is not established.",
+      "headerAdded": true
+    },
+    {
+      "path": "scripts/verify-release.mjs",
+      "component": "Static release and asset-integrity verification",
+      "classification": "ai_assisted_mixed_origin",
+      "tools": [
+        "OpenAI Codex"
+      ],
+      "thirdParty": [
+        "node:crypto",
+        "node:fs",
+        "node:path",
+        "node:assert/strict"
+      ],
+      "needsTeamVerification": true,
+      "evidence": [
+        "E-CODEX"
+      ],
+      "sourceHistory": [
+        "034fcdb chore: prepare Cloudflare Pages release candidate"
+      ],
+      "notes": "Team-directed AI-assisted implementation; exact line-level human/tool attribution is not established.",
+      "headerAdded": true
+    },
+    {
+      "path": "src/anatomy/Anatomy.tsx",
+      "component": "Record-driven anatomical systems view",
+      "classification": "ai_assisted_mixed_origin",
+      "tools": [
+        "OpenAI Codex",
+        "Anthropic Claude Code"
+      ],
+      "thirdParty": [
+        "react"
+      ],
+      "needsTeamVerification": true,
+      "evidence": [
+        "E-CODEX",
+        "E-CLAUDE-UI"
+      ],
+      "sourceHistory": [
+        "3a4e055 feat(ui): restructure shell and redesign every application screen",
+        "8831e4a feat: integrate v4.1 sensors and explainable multimodal assessment",
+        "4b66a21 feat: integrate local vision assessments and record-driven anatomy"
+      ],
+      "notes": "Team-directed AI-assisted implementation; exact line-level human/tool attribution is not established. SVG is an illustrative application drawing, not an anatomical scan or engineering model.",
+      "headerAdded": true
+    },
+    {
+      "path": "src/app/App.test.tsx",
+      "component": "Integrated application regression tests",
+      "classification": "ai_assisted_mixed_origin",
+      "tools": [
+        "OpenAI Codex",
+        "Anthropic Claude Code"
+      ],
+      "thirdParty": [
+        "@testing-library/react",
+        "@testing-library/user-event",
+        "vitest"
+      ],
+      "needsTeamVerification": true,
+      "evidence": [
+        "E-CODEX",
+        "E-CLAUDE-UI"
+      ],
+      "sourceHistory": [
+        "3a4e055 feat(ui): restructure shell and redesign every application screen",
+        "4b66a21 feat: integrate local vision assessments and record-driven anatomy",
+        "4b11e8e feat: implement astronaut-first AEGIS core workflows",
+        "1e5f30d feat: establish AEGIS application and integration foundation"
+      ],
+      "notes": "Team-directed AI-assisted implementation; exact line-level human/tool attribution is not established. Automated software checks; no clinical or physical-webcam validation implied.",
+      "headerAdded": true
+    },
+    {
+      "path": "src/app/App.tsx",
+      "component": "Application shell and role-scoped navigation",
+      "classification": "ai_assisted_mixed_origin",
+      "tools": [
+        "OpenAI Codex",
+        "Anthropic Claude Code"
+      ],
+      "thirdParty": [
+        "react"
+      ],
+      "needsTeamVerification": true,
+      "evidence": [
+        "E-CODEX",
+        "E-CLAUDE-UI"
+      ],
+      "sourceHistory": [
+        "b8e26c9 release: preserve reviewed UI and finalize stabilized submission demo",
+        "fde72f2 fix: stabilize baseline retention, clinical evidence and mission demo",
+        "3a4e055 feat(ui): restructure shell and redesign every application screen",
+        "8831e4a feat: integrate v4.1 sensors and explainable multimodal assessment",
+        "4b66a21 feat: integrate local vision assessments and record-driven anatomy",
+        "4b11e8e feat: implement astronaut-first AEGIS core workflows",
+        "1e5f30d feat: establish AEGIS application and integration foundation"
+      ],
+      "notes": "Team-directed AI-assisted implementation; exact line-level human/tool attribution is not established.",
+      "headerAdded": true
+    },
+    {
+      "path": "src/app/Shell.test.tsx",
+      "component": "Navigation and role-interface regression tests",
+      "classification": "ai_assisted_mixed_origin",
+      "tools": [
+        "Anthropic Claude Code"
+      ],
+      "thirdParty": [
+        "@testing-library/react",
+        "@testing-library/user-event",
+        "vitest"
+      ],
+      "needsTeamVerification": true,
+      "evidence": [
+        "E-CLAUDE-UI"
+      ],
+      "sourceHistory": [
+        "3a4e055 feat(ui): restructure shell and redesign every application screen"
+      ],
+      "notes": "Team-directed AI-assisted implementation; exact line-level human/tool attribution is not established. Automated software checks; no clinical or physical-webcam validation implied.",
+      "headerAdded": true
+    },
+    {
+      "path": "src/app/components/Icon.tsx",
+      "component": "Shared inline SVG icons",
+      "classification": "ai_assisted_mixed_origin",
+      "tools": [
+        "Anthropic Claude Code"
+      ],
+      "thirdParty": [],
+      "needsTeamVerification": true,
+      "evidence": [
+        "E-CLAUDE-UI"
+      ],
+      "sourceHistory": [
+        "a9d2517 feat(ui): add design tokens, shared UI components and navigation model"
+      ],
+      "notes": "Team-directed AI-assisted implementation; exact line-level human/tool attribution is not established.",
+      "headerAdded": true
+    },
+    {
+      "path": "src/app/components/MeasurementCard.tsx",
+      "component": "Measurement and missing-data presentation",
+      "classification": "ai_assisted_mixed_origin",
+      "tools": [
+        "OpenAI Codex",
+        "Anthropic Claude Code"
+      ],
+      "thirdParty": [],
+      "needsTeamVerification": true,
+      "evidence": [
+        "E-CODEX",
+        "E-CLAUDE-UI"
+      ],
+      "sourceHistory": [
+        "a9d2517 feat(ui): add design tokens, shared UI components and navigation model",
+        "4b11e8e feat: implement astronaut-first AEGIS core workflows",
+        "1e5f30d feat: establish AEGIS application and integration foundation"
+      ],
+      "notes": "Team-directed AI-assisted implementation; exact line-level human/tool attribution is not established.",
+      "headerAdded": true
+    },
+    {
+      "path": "src/app/components/Panel.tsx",
+      "component": "Shared panel primitives",
+      "classification": "ai_assisted_mixed_origin",
+      "tools": [
+        "OpenAI Codex",
+        "Anthropic Claude Code"
+      ],
+      "thirdParty": [
+        "react"
+      ],
+      "needsTeamVerification": true,
+      "evidence": [
+        "E-CODEX",
+        "E-CLAUDE-UI"
+      ],
+      "sourceHistory": [
+        "a9d2517 feat(ui): add design tokens, shared UI components and navigation model",
+        "1e5f30d feat: establish AEGIS application and integration foundation"
+      ],
+      "notes": "Team-directed AI-assisted implementation; exact line-level human/tool attribution is not established.",
+      "headerAdded": true
+    },
+    {
+      "path": "src/app/components/ReleaseIntro.test.tsx",
+      "component": "Mission-demo navigation regression test",
+      "classification": "substantially_ai_generated_with_possible_mixed_edits",
+      "tools": [
+        "OpenAI Codex"
+      ],
+      "thirdParty": [
+        "@testing-library/react",
+        "@testing-library/user-event",
+        "vitest"
+      ],
+      "needsTeamVerification": true,
+      "evidence": [
+        "E-CODEX",
+        "E-SESSION"
+      ],
+      "sourceHistory": [
+        "b8e26c9 release: preserve reviewed UI and finalize stabilized submission demo",
+        "fde72f2 fix: stabilize baseline retention, clinical evidence and mission demo"
+      ],
+      "notes": "Substantial Codex-generated implementation/test code is supported by the implementation session; later edits may have mixed origins. No every-line attribution claimed. Automated software checks; no clinical or physical-webcam validation implied.",
+      "headerAdded": true
+    },
+    {
+      "path": "src/app/components/ReleaseIntro.tsx",
+      "component": "Guided mission-demo entry",
+      "classification": "substantially_ai_generated_with_possible_mixed_edits",
+      "tools": [
+        "OpenAI Codex"
+      ],
+      "thirdParty": [],
+      "needsTeamVerification": true,
+      "evidence": [
+        "E-CODEX",
+        "E-SESSION"
+      ],
+      "sourceHistory": [
+        "b8e26c9 release: preserve reviewed UI and finalize stabilized submission demo",
+        "fde72f2 fix: stabilize baseline retention, clinical evidence and mission demo"
+      ],
+      "notes": "Substantial Codex-generated implementation/test code is supported by the implementation session; later edits may have mixed origins. No every-line attribution claimed.",
+      "headerAdded": true
+    },
+    {
+      "path": "src/app/components/ui.tsx",
+      "component": "Shared badges, disclosures and UI primitives",
+      "classification": "ai_assisted_mixed_origin",
+      "tools": [
+        "Anthropic Claude Code"
+      ],
+      "thirdParty": [
+        "react"
+      ],
+      "needsTeamVerification": true,
+      "evidence": [
+        "E-CLAUDE-UI"
+      ],
+      "sourceHistory": [
+        "a9d2517 feat(ui): add design tokens, shared UI components and navigation model"
+      ],
+      "notes": "Team-directed AI-assisted implementation; exact line-level human/tool attribution is not established.",
+      "headerAdded": true
+    },
+    {
+      "path": "src/app/format.ts",
+      "component": "Display formatting and provenance labels",
+      "classification": "ai_assisted_mixed_origin",
+      "tools": [
+        "OpenAI Codex",
+        "Anthropic Claude Code"
+      ],
+      "thirdParty": [],
+      "needsTeamVerification": true,
+      "evidence": [
+        "E-CODEX",
+        "E-CLAUDE-UI"
+      ],
+      "sourceHistory": [
+        "a9d2517 feat(ui): add design tokens, shared UI components and navigation model",
+        "4b11e8e feat: implement astronaut-first AEGIS core workflows",
+        "1e5f30d feat: establish AEGIS application and integration foundation"
+      ],
+      "notes": "Team-directed AI-assisted implementation; exact line-level human/tool attribution is not established.",
+      "headerAdded": true
+    },
+    {
+      "path": "src/app/integration/fixtures.ts",
+      "component": "Synthetic integration fixtures",
+      "classification": "ai_assisted_mixed_origin",
+      "tools": [
+        "OpenAI Codex"
+      ],
+      "thirdParty": [],
+      "needsTeamVerification": true,
+      "evidence": [
+        "E-CODEX"
+      ],
+      "sourceHistory": [
+        "1e5f30d feat: establish AEGIS application and integration foundation"
+      ],
+      "notes": "Team-directed AI-assisted implementation; exact line-level human/tool attribution is not established.",
+      "headerAdded": true
+    },
+    {
+      "path": "src/app/integration/interfaces.ts",
+      "component": "UI integration interfaces",
+      "classification": "ai_assisted_mixed_origin",
+      "tools": [
+        "OpenAI Codex"
+      ],
+      "thirdParty": [
+        "react"
+      ],
+      "needsTeamVerification": true,
+      "evidence": [
+        "E-CODEX"
+      ],
+      "sourceHistory": [
+        "1e5f30d feat: establish AEGIS application and integration foundation"
+      ],
+      "notes": "Team-directed AI-assisted implementation; exact line-level human/tool attribution is not established.",
+      "headerAdded": true
+    },
+    {
+      "path": "src/app/navigation.ts",
+      "component": "Role-scoped navigation definitions",
+      "classification": "ai_assisted_mixed_origin",
+      "tools": [
+        "Anthropic Claude Code"
+      ],
+      "thirdParty": [],
+      "needsTeamVerification": true,
+      "evidence": [
+        "E-CLAUDE-UI"
+      ],
+      "sourceHistory": [
+        "a9d2517 feat(ui): add design tokens, shared UI components and navigation model"
+      ],
+      "notes": "Team-directed AI-assisted implementation; exact line-level human/tool attribution is not established.",
+      "headerAdded": true
+    },
+    {
+      "path": "src/app/state/AppProvider.tsx",
+      "component": "Single-store lifecycle and persistence coordination",
+      "classification": "ai_assisted_mixed_origin",
+      "tools": [
+        "OpenAI Codex",
+        "Anthropic Claude Code"
+      ],
+      "thirdParty": [
+        "react"
+      ],
+      "needsTeamVerification": true,
+      "evidence": [
+        "E-CODEX",
+        "E-CLAUDE-UI"
+      ],
+      "sourceHistory": [
+        "3a4e055 feat(ui): restructure shell and redesign every application screen",
+        "4b66a21 feat: integrate local vision assessments and record-driven anatomy",
+        "4b11e8e feat: implement astronaut-first AEGIS core workflows",
+        "1e5f30d feat: establish AEGIS application and integration foundation"
+      ],
+      "notes": "Team-directed AI-assisted implementation; exact line-level human/tool attribution is not established.",
+      "headerAdded": true
+    },
+    {
+      "path": "src/app/state/context.ts",
+      "component": "Shared React state context",
+      "classification": "ai_assisted_mixed_origin",
+      "tools": [
+        "OpenAI Codex"
+      ],
+      "thirdParty": [
+        "react"
+      ],
+      "needsTeamVerification": true,
+      "evidence": [
+        "E-CODEX"
+      ],
+      "sourceHistory": [
+        "1e5f30d feat: establish AEGIS application and integration foundation"
+      ],
+      "notes": "Team-directed AI-assisted implementation; exact line-level human/tool attribution is not established.",
+      "headerAdded": true
+    },
+    {
+      "path": "src/app/state/persistence.test.ts",
+      "component": "Storage and recovery regression tests",
+      "classification": "ai_assisted_mixed_origin",
+      "tools": [
+        "OpenAI Codex"
+      ],
+      "thirdParty": [
+        "vitest"
+      ],
+      "needsTeamVerification": true,
+      "evidence": [
+        "E-CODEX"
+      ],
+      "sourceHistory": [
+        "4b11e8e feat: implement astronaut-first AEGIS core workflows"
+      ],
+      "notes": "Team-directed AI-assisted implementation; exact line-level human/tool attribution is not established. Automated software checks; no clinical or physical-webcam validation implied.",
+      "headerAdded": true
+    },
+    {
+      "path": "src/app/state/persistence.ts",
+      "component": "Validated local storage and migration",
+      "classification": "ai_assisted_mixed_origin",
+      "tools": [
+        "OpenAI Codex"
+      ],
+      "thirdParty": [
+        "zod"
+      ],
+      "needsTeamVerification": true,
+      "evidence": [
+        "E-CODEX"
+      ],
+      "sourceHistory": [
+        "8831e4a feat: integrate v4.1 sensors and explainable multimodal assessment",
+        "4b66a21 feat: integrate local vision assessments and record-driven anatomy",
+        "4b11e8e feat: implement astronaut-first AEGIS core workflows"
+      ],
+      "notes": "Team-directed AI-assisted implementation; exact line-level human/tool attribution is not established.",
+      "headerAdded": true
+    },
+    {
+      "path": "src/app/state/reducer.test.ts",
+      "component": "Store and clinical-workflow regression tests",
+      "classification": "ai_assisted_mixed_origin",
+      "tools": [
+        "OpenAI Codex"
+      ],
+      "thirdParty": [
+        "vitest"
+      ],
+      "needsTeamVerification": true,
+      "evidence": [
+        "E-CODEX"
+      ],
+      "sourceHistory": [
+        "4b11e8e feat: implement astronaut-first AEGIS core workflows",
+        "1e5f30d feat: establish AEGIS application and integration foundation"
+      ],
+      "notes": "Team-directed AI-assisted implementation; exact line-level human/tool attribution is not established. Automated software checks; no clinical or physical-webcam validation implied.",
+      "headerAdded": true
+    },
+    {
+      "path": "src/app/state/reducer.ts",
+      "component": "Canonical record ingestion and role/workspace separation",
+      "classification": "ai_assisted_mixed_origin",
+      "tools": [
+        "OpenAI Codex"
+      ],
+      "thirdParty": [],
+      "needsTeamVerification": true,
+      "evidence": [
+        "E-CODEX"
+      ],
+      "sourceHistory": [
+        "fde72f2 fix: stabilize baseline retention, clinical evidence and mission demo",
+        "8831e4a feat: integrate v4.1 sensors and explainable multimodal assessment",
+        "4b66a21 feat: integrate local vision assessments and record-driven anatomy",
+        "4b11e8e feat: implement astronaut-first AEGIS core workflows",
+        "1e5f30d feat: establish AEGIS application and integration foundation"
+      ],
+      "notes": "Team-directed AI-assisted implementation; exact line-level human/tool attribution is not established.",
+      "headerAdded": true
+    },
+    {
+      "path": "src/app/styles.css",
+      "component": "Shared design tokens and application styles",
+      "classification": "ai_assisted_mixed_origin",
+      "tools": [
+        "OpenAI Codex",
+        "Anthropic Claude Code"
+      ],
+      "thirdParty": [],
+      "needsTeamVerification": true,
+      "evidence": [
+        "E-CODEX",
+        "E-CLAUDE-UI"
+      ],
+      "sourceHistory": [
+        "b8e26c9 release: preserve reviewed UI and finalize stabilized submission demo",
+        "fde72f2 fix: stabilize baseline retention, clinical evidence and mission demo",
+        "a9d2517 feat(ui): add design tokens, shared UI components and navigation model",
+        "8831e4a feat: integrate v4.1 sensors and explainable multimodal assessment",
+        "4b66a21 feat: integrate local vision assessments and record-driven anatomy",
+        "4b11e8e feat: implement astronaut-first AEGIS core workflows",
+        "1e5f30d feat: establish AEGIS application and integration foundation"
+      ],
+      "notes": "Team-directed AI-assisted implementation; exact line-level human/tool attribution is not established.",
+      "headerAdded": true
+    },
+    {
+      "path": "src/app/test/setup.ts",
+      "component": "Test environment setup",
+      "classification": "ai_assisted_mixed_origin",
+      "tools": [
+        "OpenAI Codex"
+      ],
+      "thirdParty": [
+        "@testing-library/react",
+        "vitest"
+      ],
+      "needsTeamVerification": true,
+      "evidence": [
+        "E-CODEX"
+      ],
+      "sourceHistory": [
+        "1e5f30d feat: establish AEGIS application and integration foundation"
+      ],
+      "notes": "Team-directed AI-assisted implementation; exact line-level human/tool attribution is not established.",
+      "headerAdded": true
+    },
+    {
+      "path": "src/app/views/CrewHealth.tsx",
+      "component": "Health module integration view",
+      "classification": "ai_assisted_mixed_origin",
+      "tools": [
+        "OpenAI Codex",
+        "Anthropic Claude Code"
+      ],
+      "thirdParty": [],
+      "needsTeamVerification": true,
+      "evidence": [
+        "E-CODEX",
+        "E-CLAUDE-UI"
+      ],
+      "sourceHistory": [
+        "3a4e055 feat(ui): restructure shell and redesign every application screen",
+        "4b11e8e feat: implement astronaut-first AEGIS core workflows",
+        "1e5f30d feat: establish AEGIS application and integration foundation"
+      ],
+      "notes": "Team-directed AI-assisted implementation; exact line-level human/tool attribution is not established.",
+      "headerAdded": true
+    },
+    {
+      "path": "src/app/views/Dashboard.tsx",
+      "component": "Health and mission overview",
+      "classification": "ai_assisted_mixed_origin",
+      "tools": [
+        "OpenAI Codex",
+        "Anthropic Claude Code"
+      ],
+      "thirdParty": [
+        "react"
+      ],
+      "needsTeamVerification": true,
+      "evidence": [
+        "E-CODEX",
+        "E-CLAUDE-UI"
+      ],
+      "sourceHistory": [
+        "3a4e055 feat(ui): restructure shell and redesign every application screen",
+        "4b11e8e feat: implement astronaut-first AEGIS core workflows",
+        "1e5f30d feat: establish AEGIS application and integration foundation"
+      ],
+      "notes": "Team-directed AI-assisted implementation; exact line-level human/tool attribution is not established.",
+      "headerAdded": true
+    },
+    {
+      "path": "src/app/views/Events.tsx",
+      "component": "Alerts, evidence and event history",
+      "classification": "ai_assisted_mixed_origin",
+      "tools": [
+        "OpenAI Codex",
+        "Anthropic Claude Code"
+      ],
+      "thirdParty": [
+        "react"
+      ],
+      "needsTeamVerification": true,
+      "evidence": [
+        "E-CODEX",
+        "E-CLAUDE-UI"
+      ],
+      "sourceHistory": [
+        "b8e26c9 release: preserve reviewed UI and finalize stabilized submission demo",
+        "fde72f2 fix: stabilize baseline retention, clinical evidence and mission demo",
+        "3a4e055 feat(ui): restructure shell and redesign every application screen",
+        "4b11e8e feat: implement astronaut-first AEGIS core workflows",
+        "1e5f30d feat: establish AEGIS application and integration foundation"
+      ],
+      "notes": "Team-directed AI-assisted implementation; exact line-level human/tool attribution is not established.",
+      "headerAdded": true
+    },
+    {
+      "path": "src/health/AssessmentHistory.tsx",
+      "component": "Saved cognitive and camera-result history",
+      "classification": "ai_assisted_mixed_origin",
+      "tools": [
+        "OpenAI Codex",
+        "Anthropic Claude Code"
+      ],
+      "thirdParty": [],
+      "needsTeamVerification": true,
+      "evidence": [
+        "E-CODEX",
+        "E-CLAUDE-UI"
+      ],
+      "sourceHistory": [
+        "3a4e055 feat(ui): restructure shell and redesign every application screen",
+        "8831e4a feat: integrate v4.1 sensors and explainable multimodal assessment",
+        "2ab370c chore: preserve frozen RC1 handoff and local CV clarifications",
+        "4b66a21 feat: integrate local vision assessments and record-driven anatomy"
+      ],
+      "notes": "Team-directed AI-assisted implementation; exact line-level human/tool attribution is not established.",
+      "headerAdded": true
+    },
+    {
+      "path": "src/health/Assessments.tsx",
+      "component": "Typing, reaction-time and procedure assessments",
+      "classification": "ai_assisted_mixed_origin",
+      "tools": [
+        "OpenAI Codex",
+        "Anthropic Claude Code"
+      ],
+      "thirdParty": [
+        "react"
+      ],
+      "needsTeamVerification": true,
+      "evidence": [
+        "E-CODEX",
+        "E-CLAUDE-UI"
+      ],
+      "sourceHistory": [
+        "3a4e055 feat(ui): restructure shell and redesign every application screen",
+        "8831e4a feat: integrate v4.1 sensors and explainable multimodal assessment",
+        "4b66a21 feat: integrate local vision assessments and record-driven anatomy",
+        "4b11e8e feat: implement astronaut-first AEGIS core workflows"
+      ],
+      "notes": "Team-directed AI-assisted implementation; exact line-level human/tool attribution is not established.",
+      "headerAdded": true
+    },
+    {
+      "path": "src/health/Conditions.tsx",
+      "component": "Declared acquisition conditions",
+      "classification": "substantially_ai_generated_with_possible_mixed_edits",
+      "tools": [
+        "OpenAI Codex"
+      ],
+      "thirdParty": [],
+      "needsTeamVerification": true,
+      "evidence": [
+        "E-CODEX",
+        "E-SESSION"
+      ],
+      "sourceHistory": [
+        "fde72f2 fix: stabilize baseline retention, clinical evidence and mission demo",
+        "8831e4a feat: integrate v4.1 sensors and explainable multimodal assessment"
+      ],
+      "notes": "Substantial Codex-generated implementation/test code is supported by the implementation session; later edits may have mixed origins. No every-line attribution claimed.",
+      "headerAdded": true
+    },
+    {
+      "path": "src/health/Encounters.tsx",
+      "component": "Human-controlled clinical review and follow-up UI",
+      "classification": "ai_assisted_mixed_origin",
+      "tools": [
+        "OpenAI Codex",
+        "Anthropic Claude Code"
+      ],
+      "thirdParty": [
+        "react"
+      ],
+      "needsTeamVerification": true,
+      "evidence": [
+        "E-CODEX",
+        "E-CLAUDE-UI"
+      ],
+      "sourceHistory": [
+        "3a4e055 feat(ui): restructure shell and redesign every application screen",
+        "4b11e8e feat: implement astronaut-first AEGIS core workflows"
+      ],
+      "notes": "Team-directed AI-assisted implementation; exact line-level human/tool attribution is not established.",
+      "headerAdded": true
+    },
+    {
+      "path": "src/health/HealthMonitor.tsx",
+      "component": "Personal observations and health history",
+      "classification": "ai_assisted_mixed_origin",
+      "tools": [
+        "OpenAI Codex",
+        "Anthropic Claude Code"
+      ],
+      "thirdParty": [
+        "react"
+      ],
+      "needsTeamVerification": true,
+      "evidence": [
+        "E-CODEX",
+        "E-CLAUDE-UI"
+      ],
+      "sourceHistory": [
+        "b8e26c9 release: preserve reviewed UI and finalize stabilized submission demo",
+        "fde72f2 fix: stabilize baseline retention, clinical evidence and mission demo",
+        "3a4e055 feat(ui): restructure shell and redesign every application screen",
+        "8831e4a feat: integrate v4.1 sensors and explainable multimodal assessment",
+        "4b66a21 feat: integrate local vision assessments and record-driven anatomy",
+        "4b11e8e feat: implement astronaut-first AEGIS core workflows"
+      ],
+      "notes": "Team-directed AI-assisted implementation; exact line-level human/tool attribution is not established.",
+      "headerAdded": true
+    },
+    {
+      "path": "src/health/HumanPerformance.tsx",
+      "component": "Explainable multimodal assessment view",
+      "classification": "substantially_ai_generated_with_possible_mixed_edits",
+      "tools": [
+        "OpenAI Codex",
+        "Anthropic Claude Code"
+      ],
+      "thirdParty": [],
+      "needsTeamVerification": true,
+      "evidence": [
+        "E-CODEX",
+        "E-CLAUDE-UI",
+        "E-SESSION"
+      ],
+      "sourceHistory": [
+        "3a4e055 feat(ui): restructure shell and redesign every application screen",
+        "8831e4a feat: integrate v4.1 sensors and explainable multimodal assessment"
+      ],
+      "notes": "Substantial Codex-generated implementation/test code is supported by the implementation session; later edits may have mixed origins. No every-line attribution claimed.",
+      "headerAdded": true
+    },
+    {
+      "path": "src/health/Research.tsx",
+      "component": "Research source registry presentation",
+      "classification": "ai_assisted_mixed_origin",
+      "tools": [
+        "OpenAI Codex",
+        "Anthropic Claude Code"
+      ],
+      "thirdParty": [],
+      "needsTeamVerification": true,
+      "evidence": [
+        "E-CODEX",
+        "E-CLAUDE-UI"
+      ],
+      "sourceHistory": [
+        "3a4e055 feat(ui): restructure shell and redesign every application screen",
+        "8831e4a feat: integrate v4.1 sensors and explainable multimodal assessment",
+        "4b11e8e feat: implement astronaut-first AEGIS core workflows"
+      ],
+      "notes": "Team-directed AI-assisted implementation; exact line-level human/tool attribution is not established.",
+      "headerAdded": true
+    },
+    {
+      "path": "src/health/assessmentMetrics.ts",
+      "component": "Deterministic cognitive task scoring",
+      "classification": "ai_assisted_mixed_origin",
+      "tools": [
+        "OpenAI Codex"
+      ],
+      "thirdParty": [],
+      "needsTeamVerification": true,
+      "evidence": [
+        "E-CODEX"
+      ],
+      "sourceHistory": [
+        "4b11e8e feat: implement astronaut-first AEGIS core workflows"
+      ],
+      "notes": "Team-directed AI-assisted implementation; exact line-level human/tool attribution is not established.",
+      "headerAdded": true
+    },
+    {
+      "path": "src/health/clinical.ts",
+      "component": "Human-controlled encounter state transitions",
+      "classification": "ai_assisted_mixed_origin",
+      "tools": [
+        "OpenAI Codex"
+      ],
+      "thirdParty": [],
+      "needsTeamVerification": true,
+      "evidence": [
+        "E-CODEX"
+      ],
+      "sourceHistory": [
+        "4b11e8e feat: implement astronaut-first AEGIS core workflows"
+      ],
+      "notes": "Team-directed AI-assisted implementation; exact line-level human/tool attribution is not established.",
+      "headerAdded": true
+    },
+    {
+      "path": "src/health/engine.ts",
+      "component": "Deterministic demonstration alerts and evidence snapshots",
+      "classification": "ai_assisted_mixed_origin",
+      "tools": [
+        "OpenAI Codex"
+      ],
+      "thirdParty": [],
+      "needsTeamVerification": true,
+      "evidence": [
+        "E-CODEX"
+      ],
+      "sourceHistory": [
+        "fde72f2 fix: stabilize baseline retention, clinical evidence and mission demo",
+        "8831e4a feat: integrate v4.1 sensors and explainable multimodal assessment",
+        "4b66a21 feat: integrate local vision assessments and record-driven anatomy",
+        "4b11e8e feat: implement astronaut-first AEGIS core workflows"
+      ],
+      "notes": "Team-directed AI-assisted implementation; exact line-level human/tool attribution is not established.",
+      "headerAdded": true
+    },
+    {
+      "path": "src/health/health.test.ts",
+      "component": "Cognitive scoring and clinical-workflow tests",
+      "classification": "ai_assisted_mixed_origin",
+      "tools": [
+        "OpenAI Codex"
+      ],
+      "thirdParty": [
+        "vitest"
+      ],
+      "needsTeamVerification": true,
+      "evidence": [
+        "E-CODEX"
+      ],
+      "sourceHistory": [
+        "4b11e8e feat: implement astronaut-first AEGIS core workflows"
+      ],
+      "notes": "Team-directed AI-assisted implementation; exact line-level human/tool attribution is not established. Automated software checks; no clinical or physical-webcam validation implied.",
+      "headerAdded": true
+    },
+    {
+      "path": "src/health/intelligence.test.ts",
+      "component": "Baseline and multimodal regression tests",
+      "classification": "substantially_ai_generated_with_possible_mixed_edits",
+      "tools": [
+        "OpenAI Codex"
+      ],
+      "thirdParty": [
+        "vitest"
+      ],
+      "needsTeamVerification": true,
+      "evidence": [
+        "E-CODEX",
+        "E-SESSION"
+      ],
+      "sourceHistory": [
+        "8831e4a feat: integrate v4.1 sensors and explainable multimodal assessment"
+      ],
+      "notes": "Substantial Codex-generated implementation/test code is supported by the implementation session; later edits may have mixed origins. No every-line attribution claimed. Automated software checks; no clinical or physical-webcam validation implied.",
+      "headerAdded": true
+    },
+    {
+      "path": "src/health/intelligence.ts",
+      "component": "Compatible personal baselines and multimodal demonstration rules",
+      "classification": "substantially_ai_generated_with_possible_mixed_edits",
+      "tools": [
+        "OpenAI Codex"
+      ],
+      "thirdParty": [],
+      "needsTeamVerification": true,
+      "evidence": [
+        "E-CODEX",
+        "E-SESSION"
+      ],
+      "sourceHistory": [
+        "fde72f2 fix: stabilize baseline retention, clinical evidence and mission demo",
+        "8831e4a feat: integrate v4.1 sensors and explainable multimodal assessment"
+      ],
+      "notes": "Substantial Codex-generated implementation/test code is supported by the implementation session; later edits may have mixed origins. No every-line attribution claimed.",
+      "headerAdded": true
+    },
+    {
+      "path": "src/health/sources.ts",
+      "component": "Research references, access limits and fixture provenance",
+      "classification": "ai_assisted_mixed_origin",
+      "tools": [
+        "OpenAI Codex"
+      ],
+      "thirdParty": [],
+      "needsTeamVerification": true,
+      "evidence": [
+        "E-CODEX"
+      ],
+      "sourceHistory": [
+        "8831e4a feat: integrate v4.1 sensors and explainable multimodal assessment",
+        "034fcdb chore: prepare Cloudflare Pages release candidate",
+        "4b66a21 feat: integrate local vision assessments and record-driven anatomy",
+        "4b11e8e feat: implement astronaut-first AEGIS core workflows"
+      ],
+      "notes": "Team-directed AI-assisted implementation; exact line-level human/tool attribution is not established.",
+      "headerAdded": true
+    },
+    {
+      "path": "src/health/stabilization.test.ts",
+      "component": "Release audit-defect regression tests",
+      "classification": "substantially_ai_generated_with_possible_mixed_edits",
+      "tools": [
+        "OpenAI Codex"
+      ],
+      "thirdParty": [
+        "vitest"
+      ],
+      "needsTeamVerification": true,
+      "evidence": [
+        "E-CODEX",
+        "E-SESSION"
+      ],
+      "sourceHistory": [
+        "fde72f2 fix: stabilize baseline retention, clinical evidence and mission demo"
+      ],
+      "notes": "Substantial Codex-generated implementation/test code is supported by the implementation session; later edits may have mixed origins. No every-line attribution claimed. Automated software checks; no clinical or physical-webcam validation implied.",
+      "headerAdded": true
+    },
+    {
+      "path": "src/main.tsx",
+      "component": "React entry point",
+      "classification": "ai_assisted_mixed_origin",
+      "tools": [
+        "OpenAI Codex"
+      ],
+      "thirdParty": [
+        "react",
+        "react-dom/client"
+      ],
+      "needsTeamVerification": true,
+      "evidence": [
+        "E-CODEX"
+      ],
+      "sourceHistory": [
+        "1e5f30d feat: establish AEGIS application and integration foundation"
+      ],
+      "notes": "Team-directed AI-assisted implementation; exact line-level human/tool attribution is not established.",
+      "headerAdded": true
+    },
+    {
+      "path": "src/mission/MissionView.tsx",
+      "component": "Fictional spacecraft SVG and environmental context",
+      "classification": "ai_assisted_mixed_origin",
+      "tools": [
+        "OpenAI Codex",
+        "Anthropic Claude Code"
+      ],
+      "thirdParty": [],
+      "needsTeamVerification": true,
+      "evidence": [
+        "E-CODEX",
+        "E-CLAUDE-UI"
+      ],
+      "sourceHistory": [
+        "3a4e055 feat(ui): restructure shell and redesign every application screen",
+        "4b11e8e feat: implement astronaut-first AEGIS core workflows"
+      ],
+      "notes": "Team-directed AI-assisted implementation; exact line-level human/tool attribution is not established. SVG is an illustrative application drawing, not an anatomical scan or engineering model.",
+      "headerAdded": true
+    },
+    {
+      "path": "src/sensors/SensorIntegration.test.tsx",
+      "component": "Acquisition and persistence UI tests",
+      "classification": "substantially_ai_generated_with_possible_mixed_edits",
+      "tools": [
+        "OpenAI Codex",
+        "Anthropic Claude Code"
+      ],
+      "thirdParty": [
+        "@testing-library/react",
+        "@testing-library/user-event",
+        "vitest"
+      ],
+      "needsTeamVerification": true,
+      "evidence": [
+        "E-CODEX",
+        "E-CLAUDE-UI",
+        "E-SESSION"
+      ],
+      "sourceHistory": [
+        "3a4e055 feat(ui): restructure shell and redesign every application screen",
+        "8831e4a feat: integrate v4.1 sensors and explainable multimodal assessment"
+      ],
+      "notes": "Substantial Codex-generated implementation/test code is supported by the implementation session; later edits may have mixed origins. No every-line attribution claimed. Automated software checks; no clinical or physical-webcam validation implied.",
+      "headerAdded": true
+    },
+    {
+      "path": "src/sensors/SensorIntegration.tsx",
+      "component": "Synthetic acquisition and manual examination UI",
+      "classification": "substantially_ai_generated_with_possible_mixed_edits",
+      "tools": [
+        "OpenAI Codex",
+        "Anthropic Claude Code"
+      ],
+      "thirdParty": [
+        "react"
+      ],
+      "needsTeamVerification": true,
+      "evidence": [
+        "E-CODEX",
+        "E-CLAUDE-UI",
+        "E-SESSION"
+      ],
+      "sourceHistory": [
+        "3a4e055 feat(ui): restructure shell and redesign every application screen",
+        "8831e4a feat: integrate v4.1 sensors and explainable multimodal assessment"
+      ],
+      "notes": "Substantial Codex-generated implementation/test code is supported by the implementation session; later edits may have mixed origins. No every-line attribution claimed.",
+      "headerAdded": true
+    },
+    {
+      "path": "src/sensors/adapters.ts",
+      "component": "Replaceable synthetic sensor adapters",
+      "classification": "substantially_ai_generated_with_possible_mixed_edits",
+      "tools": [
+        "OpenAI Codex"
+      ],
+      "thirdParty": [],
+      "needsTeamVerification": true,
+      "evidence": [
+        "E-CODEX",
+        "E-SESSION"
+      ],
+      "sourceHistory": [
+        "fde72f2 fix: stabilize baseline retention, clinical evidence and mission demo",
+        "8831e4a feat: integrate v4.1 sensors and explainable multimodal assessment"
+      ],
+      "notes": "Substantial Codex-generated implementation/test code is supported by the implementation session; later edits may have mixed origins. No every-line attribution claimed.",
+      "headerAdded": true
+    },
+    {
+      "path": "src/sensors/ingestion.ts",
+      "component": "Canonical sensor packet validation and conflict rejection",
+      "classification": "substantially_ai_generated_with_possible_mixed_edits",
+      "tools": [
+        "OpenAI Codex"
+      ],
+      "thirdParty": [],
+      "needsTeamVerification": true,
+      "evidence": [
+        "E-CODEX",
+        "E-SESSION"
+      ],
+      "sourceHistory": [
+        "fde72f2 fix: stabilize baseline retention, clinical evidence and mission demo",
+        "8831e4a feat: integrate v4.1 sensors and explainable multimodal assessment"
+      ],
+      "notes": "Substantial Codex-generated implementation/test code is supported by the implementation session; later edits may have mixed origins. No every-line attribution claimed.",
+      "headerAdded": true
+    },
+    {
+      "path": "src/sensors/sensors.test.ts",
+      "component": "Sensor provenance, units and persistence regression tests",
+      "classification": "substantially_ai_generated_with_possible_mixed_edits",
+      "tools": [
+        "OpenAI Codex"
+      ],
+      "thirdParty": [
+        "vitest"
+      ],
+      "needsTeamVerification": true,
+      "evidence": [
+        "E-CODEX",
+        "E-SESSION"
+      ],
+      "sourceHistory": [
+        "8831e4a feat: integrate v4.1 sensors and explainable multimodal assessment"
+      ],
+      "notes": "Substantial Codex-generated implementation/test code is supported by the implementation session; later edits may have mixed origins. No every-line attribution claimed. Automated software checks; no clinical or physical-webcam validation implied.",
+      "headerAdded": true
+    },
+    {
+      "path": "src/shared/validation.ts",
+      "component": "Canonical schemas and camera/sensor result validation",
+      "classification": "ai_assisted_mixed_origin",
+      "tools": [
+        "OpenAI Codex"
+      ],
+      "thirdParty": [
+        "zod"
+      ],
+      "needsTeamVerification": true,
+      "evidence": [
+        "E-CODEX"
+      ],
+      "sourceHistory": [
+        "fde72f2 fix: stabilize baseline retention, clinical evidence and mission demo",
+        "8831e4a feat: integrate v4.1 sensors and explainable multimodal assessment",
+        "c38eaa2 fix: validate camera assessment availability and provenance",
+        "4b11e8e feat: implement astronaut-first AEGIS core workflows"
+      ],
+      "notes": "Team-directed AI-assisted implementation; exact line-level human/tool attribution is not established.",
+      "headerAdded": true
+    },
+    {
+      "path": "src/simulation/SimulationControls.tsx",
+      "component": "Synthetic mission controls",
+      "classification": "ai_assisted_mixed_origin",
+      "tools": [
+        "OpenAI Codex",
+        "Anthropic Claude Code"
+      ],
+      "thirdParty": [
+        "react"
+      ],
+      "needsTeamVerification": true,
+      "evidence": [
+        "E-CODEX",
+        "E-CLAUDE-UI"
+      ],
+      "sourceHistory": [
+        "3a4e055 feat(ui): restructure shell and redesign every application screen",
+        "4b11e8e feat: implement astronaut-first AEGIS core workflows"
+      ],
+      "notes": "Team-directed AI-assisted implementation; exact line-level human/tool attribution is not established.",
+      "headerAdded": true
+    },
+    {
+      "path": "src/simulation/engine.test.ts",
+      "component": "Deterministic scenario tests",
+      "classification": "ai_assisted_mixed_origin",
+      "tools": [
+        "OpenAI Codex"
+      ],
+      "thirdParty": [
+        "vitest"
+      ],
+      "needsTeamVerification": true,
+      "evidence": [
+        "E-CODEX"
+      ],
+      "sourceHistory": [
+        "4b11e8e feat: implement astronaut-first AEGIS core workflows"
+      ],
+      "notes": "Team-directed AI-assisted implementation; exact line-level human/tool attribution is not established. Automated software checks; no clinical or physical-webcam validation implied.",
+      "headerAdded": true
+    },
+    {
+      "path": "src/simulation/engine.ts",
+      "component": "Seeded synthetic mission scenarios",
+      "classification": "ai_assisted_mixed_origin",
+      "tools": [
+        "OpenAI Codex"
+      ],
+      "thirdParty": [],
+      "needsTeamVerification": true,
+      "evidence": [
+        "E-CODEX"
+      ],
+      "sourceHistory": [
+        "fde72f2 fix: stabilize baseline retention, clinical evidence and mission demo",
+        "8831e4a feat: integrate v4.1 sensors and explainable multimodal assessment",
+        "4b11e8e feat: implement astronaut-first AEGIS core workflows"
+      ],
+      "notes": "Team-directed AI-assisted implementation; exact line-level human/tool attribution is not established.",
+      "headerAdded": true
+    },
+    {
+      "path": "src/simulation/retention.ts",
+      "component": "Retention of baselines and alert evidence",
+      "classification": "substantially_ai_generated_with_possible_mixed_edits",
+      "tools": [
+        "OpenAI Codex"
+      ],
+      "thirdParty": [],
+      "needsTeamVerification": true,
+      "evidence": [
+        "E-CODEX",
+        "E-SESSION"
+      ],
+      "sourceHistory": [
+        "fde72f2 fix: stabilize baseline retention, clinical evidence and mission demo"
+      ],
+      "notes": "Substantial Codex-generated implementation/test code is supported by the implementation session; later edits may have mixed origins. No every-line attribution claimed.",
+      "headerAdded": true
+    },
+    {
+      "path": "src/vision/CameraAssessment.test.tsx",
+      "component": "Mocked camera UI and coverage-label tests",
+      "classification": "ai_assisted_mixed_origin",
+      "tools": [
+        "OpenAI Codex"
+      ],
+      "thirdParty": [
+        "@testing-library/react",
+        "@testing-library/user-event",
+        "vitest",
+        "MediaPipe landmarks/runtime indirectly through CameraSession"
+      ],
+      "needsTeamVerification": true,
+      "evidence": [
+        "E-CODEX"
+      ],
+      "sourceHistory": [
+        "2ab370c chore: preserve frozen RC1 handoff and local CV clarifications"
+      ],
+      "notes": "Team-directed AI-assisted implementation; exact line-level human/tool attribution is not established. Automated software checks; no clinical or physical-webcam validation implied.",
+      "headerAdded": true
+    },
+    {
+      "path": "src/vision/CameraAssessment.tsx",
+      "component": "Opt-in camera assessment and summary-saving UI",
+      "classification": "ai_assisted_mixed_origin",
+      "tools": [
+        "OpenAI Codex",
+        "Anthropic Claude Code"
+      ],
+      "thirdParty": [
+        "react",
+        "MediaPipe landmarks/runtime indirectly through CameraSession"
+      ],
+      "needsTeamVerification": true,
+      "evidence": [
+        "E-CODEX",
+        "E-CLAUDE-UI"
+      ],
+      "sourceHistory": [
+        "3a4e055 feat(ui): restructure shell and redesign every application screen",
+        "8831e4a feat: integrate v4.1 sensors and explainable multimodal assessment",
+        "2ab370c chore: preserve frozen RC1 handoff and local CV clarifications",
+        "4b66a21 feat: integrate local vision assessments and record-driven anatomy"
+      ],
+      "notes": "Team-directed AI-assisted implementation; exact line-level human/tool attribution is not established.",
+      "headerAdded": true
+    },
+    {
+      "path": "src/vision/CameraSession.test.ts",
+      "component": "Mocked stream/model lifecycle and permission tests",
+      "classification": "ai_assisted_mixed_origin",
+      "tools": [
+        "OpenAI Codex"
+      ],
+      "thirdParty": [
+        "vitest",
+        "MediaPipe landmarks/runtime indirectly through CameraSession"
+      ],
+      "needsTeamVerification": true,
+      "evidence": [
+        "E-CODEX"
+      ],
+      "sourceHistory": [
+        "2ab370c chore: preserve frozen RC1 handoff and local CV clarifications",
+        "4b66a21 feat: integrate local vision assessments and record-driven anatomy"
+      ],
+      "notes": "Team-directed AI-assisted implementation; exact line-level human/tool attribution is not established. Automated software checks; no clinical or physical-webcam validation implied.",
+      "headerAdded": true
+    },
+    {
+      "path": "src/vision/CameraSession.ts",
+      "component": "Local camera lifecycle and MediaPipe Face/Pose inference",
+      "classification": "ai_assisted_mixed_origin",
+      "tools": [
+        "OpenAI Codex"
+      ],
+      "thirdParty": [
+        "@mediapipe/tasks-vision"
+      ],
+      "needsTeamVerification": true,
+      "evidence": [
+        "E-CODEX"
+      ],
+      "sourceHistory": [
+        "2ab370c chore: preserve frozen RC1 handoff and local CV clarifications",
+        "4b66a21 feat: integrate local vision assessments and record-driven anatomy"
+      ],
+      "notes": "Team-directed AI-assisted implementation; exact line-level human/tool attribution is not established.",
+      "headerAdded": true
+    },
+    {
+      "path": "src/vision/MovementHistory.tsx",
+      "component": "Projected elbow-angle history chart",
+      "classification": "ai_assisted_mixed_origin",
+      "tools": [
+        "OpenAI Codex",
+        "Anthropic Claude Code"
+      ],
+      "thirdParty": [
+        "MediaPipe landmarks/runtime indirectly through CameraSession"
+      ],
+      "needsTeamVerification": true,
+      "evidence": [
+        "E-CODEX",
+        "E-CLAUDE-UI"
+      ],
+      "sourceHistory": [
+        "3a4e055 feat(ui): restructure shell and redesign every application screen",
+        "4b66a21 feat: integrate local vision assessments and record-driven anatomy"
+      ],
+      "notes": "Team-directed AI-assisted implementation; exact line-level human/tool attribution is not established.",
+      "headerAdded": true
+    },
+    {
+      "path": "src/vision/assets.test.ts",
+      "component": "Pinned third-party model/runtime hash tests",
+      "classification": "ai_assisted_mixed_origin",
+      "tools": [
+        "OpenAI Codex"
+      ],
+      "thirdParty": [
+        "node:fs",
+        "node:crypto",
+        "vitest",
+        "MediaPipe landmarks/runtime indirectly through CameraSession"
+      ],
+      "needsTeamVerification": true,
+      "evidence": [
+        "E-CODEX"
+      ],
+      "sourceHistory": [
+        "4b66a21 feat: integrate local vision assessments and record-driven anatomy"
+      ],
+      "notes": "Team-directed AI-assisted implementation; exact line-level human/tool attribution is not established. Automated software checks; no clinical or physical-webcam validation implied.",
+      "headerAdded": true
+    },
+    {
+      "path": "src/vision/fixtures.ts",
+      "component": "Authored synthetic landmark test fixtures",
+      "classification": "ai_assisted_mixed_origin",
+      "tools": [
+        "OpenAI Codex"
+      ],
+      "thirdParty": [
+        "MediaPipe landmarks/runtime indirectly through CameraSession"
+      ],
+      "needsTeamVerification": true,
+      "evidence": [
+        "E-CODEX"
+      ],
+      "sourceHistory": [
+        "4b66a21 feat: integrate local vision assessments and record-driven anatomy"
+      ],
+      "notes": "AI-assisted authored deterministic coordinates; synthetic test data, not human recordings or validated measurements.",
+      "headerAdded": true
+    },
+    {
+      "path": "src/vision/integration.test.ts",
+      "component": "Camera-record validation and persistence tests",
+      "classification": "ai_assisted_mixed_origin",
+      "tools": [
+        "OpenAI Codex"
+      ],
+      "thirdParty": [
+        "vitest",
+        "MediaPipe landmarks/runtime indirectly through CameraSession"
+      ],
+      "needsTeamVerification": true,
+      "evidence": [
+        "E-CODEX"
+      ],
+      "sourceHistory": [
+        "8831e4a feat: integrate v4.1 sensors and explainable multimodal assessment",
+        "4b66a21 feat: integrate local vision assessments and record-driven anatomy"
+      ],
+      "notes": "Team-directed AI-assisted implementation; exact line-level human/tool attribution is not established. Automated software checks; no clinical or physical-webcam validation implied.",
+      "headerAdded": true
+    },
+    {
+      "path": "src/vision/metrics.test.ts",
+      "component": "Geometry and elapsed-time metric regression tests",
+      "classification": "ai_assisted_mixed_origin",
+      "tools": [
+        "OpenAI Codex"
+      ],
+      "thirdParty": [
+        "vitest",
+        "MediaPipe landmarks/runtime indirectly through CameraSession"
+      ],
+      "needsTeamVerification": true,
+      "evidence": [
+        "E-CODEX"
+      ],
+      "sourceHistory": [
+        "2ab370c chore: preserve frozen RC1 handoff and local CV clarifications",
+        "4b66a21 feat: integrate local vision assessments and record-driven anatomy"
+      ],
+      "notes": "Team-directed AI-assisted implementation; exact line-level human/tool attribution is not established. Automated software checks; no clinical or physical-webcam validation implied.",
+      "headerAdded": true
+    },
+    {
+      "path": "src/vision/metrics.ts",
+      "component": "EAR closure/blink timing, coverage and elbow-cycle rules",
+      "classification": "ai_assisted_mixed_origin",
+      "tools": [
+        "OpenAI Codex"
+      ],
+      "thirdParty": [
+        "MediaPipe landmarks/runtime indirectly through CameraSession"
+      ],
+      "needsTeamVerification": true,
+      "evidence": [
+        "E-CODEX"
+      ],
+      "sourceHistory": [
+        "4b66a21 feat: integrate local vision assessments and record-driven anatomy"
+      ],
+      "notes": "Team-directed AI-assisted implementation; exact line-level human/tool attribution is not established.",
+      "headerAdded": true
+    },
+    {
+      "path": "src/vision/recorded-fixture.ts",
+      "component": "Selected SDK-output coordinates from public MediaPipe example images",
+      "classification": "ai_assisted_mixed_origin",
+      "tools": [
+        "OpenAI Codex"
+      ],
+      "thirdParty": [
+        "MediaPipe landmarks/runtime indirectly through CameraSession"
+      ],
+      "needsTeamVerification": true,
+      "evidence": [
+        "E-CODEX"
+      ],
+      "sourceHistory": [
+        "4b66a21 feat: integrate local vision assessments and record-driven anatomy"
+      ],
+      "notes": "Fixture assembly was AI-assisted; numeric coordinates are recorded pretrained-SDK output, not generative-AI medical data. Original upstream image references retained.",
+      "headerAdded": true
+    },
+    {
+      "path": "src/vision/records.ts",
+      "component": "Canonical camera summaries and linked activity records",
+      "classification": "ai_assisted_mixed_origin",
+      "tools": [
+        "OpenAI Codex"
+      ],
+      "thirdParty": [
+        "MediaPipe landmarks/runtime indirectly through CameraSession"
+      ],
+      "needsTeamVerification": true,
+      "evidence": [
+        "E-CODEX"
+      ],
+      "sourceHistory": [
+        "8831e4a feat: integrate v4.1 sensors and explainable multimodal assessment",
+        "4b66a21 feat: integrate local vision assessments and record-driven anatomy"
+      ],
+      "notes": "Team-directed AI-assisted implementation; exact line-level human/tool attribution is not established.",
+      "headerAdded": true
+    },
+    {
+      "path": "src/vision/signals.ts",
+      "component": "Landmark geometry, EAR, suitability checks and projected elbow angles",
+      "classification": "ai_assisted_mixed_origin",
+      "tools": [
+        "OpenAI Codex"
+      ],
+      "thirdParty": [
+        "@mediapipe/tasks-vision"
+      ],
+      "needsTeamVerification": true,
+      "evidence": [
+        "E-CODEX"
+      ],
+      "sourceHistory": [
+        "4b66a21 feat: integrate local vision assessments and record-driven anatomy"
+      ],
+      "notes": "Team-directed AI-assisted implementation; exact line-level human/tool attribution is not established.",
+      "headerAdded": true
+    },
+    {
+      "path": "vite.config.ts",
+      "component": "Build and test configuration",
+      "classification": "ai_assisted_mixed_origin",
+      "tools": [
+        "OpenAI Codex"
+      ],
+      "thirdParty": [
+        "@vitejs/plugin-react",
+        "@tailwindcss/vite",
+        "vitest/config"
+      ],
+      "needsTeamVerification": true,
+      "evidence": [
+        "E-CODEX"
+      ],
+      "sourceHistory": [
+        "034fcdb chore: prepare Cloudflare Pages release candidate",
+        "1e5f30d feat: establish AEGIS application and integration foundation"
+      ],
+      "notes": "Team-directed AI-assisted implementation; exact line-level human/tool attribution is not established.",
+      "headerAdded": true
+    }
+  ],
+  "otherTrackedFiles": [
+    {
+      "path": ".gitattributes",
+      "disposition": "configuration_or_project_instructions_preserved",
+      "sha256Before": "1bf09ac7aa77483d2a6007d105e24ed6b9db15c6515fb5b0b7e15899e92f71aa",
+      "attribution": "Project configuration/instructions; exact initial human/tool authorship unverified. Preserved unchanged."
+    },
+    {
+      "path": ".github/pull_request_template.md",
+      "disposition": "documentation_centrally_disclosed",
+      "sha256Before": "27755a8012de892a2af3ab3cd7ed534950864fa57f7e7ed4afe051727aade2c1",
+      "attribution": "Team-directed, AI-assisted project configuration/documentation. Exact initial line-level attribution unverified; centrally disclosed without content changes."
+    },
+    {
+      "path": ".github/workflows/ci.yml",
+      "disposition": "configuration_or_project_instructions_preserved",
+      "sha256Before": "5d5df705a21d0ec13d587517a70aa703de36cac40b2ed29895cb4250fadd211f",
+      "attribution": "Team-directed, AI-assisted project configuration/documentation. Exact initial line-level attribution unverified; centrally disclosed without content changes."
+    },
+    {
+      "path": ".gitignore",
+      "disposition": "configuration_or_project_instructions_preserved",
+      "sha256Before": "29bc495e807fbf497cb44dd030f882df0e0790a68134648929f166c863c7a212",
+      "attribution": "Project configuration/instructions; exact initial human/tool authorship unverified. Preserved unchanged."
+    },
+    {
+      "path": ".node-version",
+      "disposition": "configuration_or_project_instructions_preserved",
+      "sha256Before": "3151949a8b43e7df5385b69fbaeb5652bbdc7f7924e4278d550348f42b103f13",
+      "attribution": "Project configuration/instructions; exact initial human/tool authorship unverified. Preserved unchanged."
+    },
+    {
+      "path": "AGENTS.md",
+      "disposition": "documentation_centrally_disclosed",
+      "sha256Before": "f2acec189ee0831d03ad547e628cb2f82d82cea67f1d29c2a0c675628685fabd",
+      "attribution": "Team-directed project documentation with AI assistance; historical reports describe their own verification dates/scopes. Exact line-level authorship unverified."
+    },
+    {
+      "path": "README.md",
+      "disposition": "documentation_centrally_disclosed",
+      "sha256Before": "ef96e9ece54b0cb44c788b51e2bfc4cc8d966ee3d564f0d7790350a9dc60afc1",
+      "attribution": "Team-directed project documentation with AI assistance; historical reports describe their own verification dates/scopes. Exact line-level authorship unverified."
+    },
+    {
+      "path": "TEAM_TESTING.md",
+      "disposition": "documentation_centrally_disclosed",
+      "sha256Before": "0862b35d805864330a2360549d6b93aecf4c642222b70214137825ba27d3d963",
+      "attribution": "Team-directed project documentation with AI assistance; historical reports describe their own verification dates/scopes. Exact line-level authorship unverified."
+    },
+    {
+      "path": "docs/CONTRACTS_V2.md",
+      "disposition": "documentation_centrally_disclosed",
+      "sha256Before": "686dab2a6655de3766bf61891f0a7bad3dd11eb7fb555028bd1cd7e90befa334",
+      "attribution": "Team-directed project documentation with AI assistance; historical reports describe their own verification dates/scopes. Exact line-level authorship unverified."
+    },
+    {
+      "path": "docs/CONTRACTS_V3.md",
+      "disposition": "documentation_centrally_disclosed",
+      "sha256Before": "0acefec97c05658c1c1cb7168cda8ba8e333b959f4ed50d51e5b59ca871435b9",
+      "attribution": "Team-directed project documentation with AI assistance; historical reports describe their own verification dates/scopes. Exact line-level authorship unverified."
+    },
+    {
+      "path": "docs/CONTRACTS_V4_1.md",
+      "disposition": "documentation_centrally_disclosed",
+      "sha256Before": "3187c3a197cda0ba37e70f754f1101d9777ccd601ae4077204d850b134971cbc",
+      "attribution": "Team-directed project documentation with AI assistance; historical reports describe their own verification dates/scopes. Exact line-level authorship unverified."
+    },
+    {
+      "path": "docs/CORE_V2.md",
+      "disposition": "documentation_centrally_disclosed",
+      "sha256Before": "94b03d75d13eb671ae50dbab9e8d19e80155f40bb1acb8559acc6e5bdc994d2f",
+      "attribution": "Team-directed project documentation with AI assistance; historical reports describe their own verification dates/scopes. Exact line-level authorship unverified."
+    },
+    {
+      "path": "docs/CORE_V3.md",
+      "disposition": "documentation_centrally_disclosed",
+      "sha256Before": "3f0461ec373cfec3b184ad25a6294ad561e3b9fb85cafc8a9ad9f67a7dd45c17",
+      "attribution": "Team-directed project documentation with AI assistance; historical reports describe their own verification dates/scopes. Exact line-level authorship unverified."
+    },
+    {
+      "path": "docs/CORE_V4_1.md",
+      "disposition": "documentation_centrally_disclosed",
+      "sha256Before": "4af481179b8486747b05462d831b0592102310c33773383129c1e36f9c78a4a2",
+      "attribution": "Team-directed project documentation with AI assistance; historical reports describe their own verification dates/scopes. Exact line-level authorship unverified."
+    },
+    {
+      "path": "docs/DEMO.md",
+      "disposition": "documentation_centrally_disclosed",
+      "sha256Before": "f1d4101d69f1928bc5467eb5ae5a6031e22cfe4c88356367d7fb153cc2836333",
+      "attribution": "Team-directed project documentation with AI assistance; historical reports describe their own verification dates/scopes. Exact line-level authorship unverified."
+    },
+    {
+      "path": "docs/DEPLOYMENT.md",
+      "disposition": "documentation_centrally_disclosed",
+      "sha256Before": "afbd02bcbafe472a23b591aedce1978348437d8bdb7644d33d9b85e54cd7c759",
+      "attribution": "Team-directed project documentation with AI assistance; historical reports describe their own verification dates/scopes. Exact line-level authorship unverified."
+    },
+    {
+      "path": "docs/DEVELOPMENT_HANDOFF.md",
+      "disposition": "documentation_centrally_disclosed",
+      "sha256Before": "8a11ba83f754e840a7282f78b1dfb876a46a760773599977b45fa90cf6c1d24d",
+      "attribution": "Team-directed project documentation with AI assistance; historical reports describe their own verification dates/scopes. Exact line-level authorship unverified."
+    },
+    {
+      "path": "docs/GIT_WORKFLOW.md",
+      "disposition": "documentation_centrally_disclosed",
+      "sha256Before": "ad1250c9d9c1bb1708dec5362a1510c5f1830ff371341c26c215dfb9eb49453f",
+      "attribution": "Team-directed project documentation with AI assistance; historical reports describe their own verification dates/scopes. Exact line-level authorship unverified."
+    },
+    {
+      "path": "docs/INTEGRATION.md",
+      "disposition": "documentation_centrally_disclosed",
+      "sha256Before": "882ddf73e22649c1bacbe1a75ac9adc329aab5b0d889b1dee3e5b862287990f8",
+      "attribution": "Team-directed project documentation with AI assistance; historical reports describe their own verification dates/scopes. Exact line-level authorship unverified."
+    },
+    {
+      "path": "docs/INTEGRATION_READINESS.md",
+      "disposition": "documentation_centrally_disclosed",
+      "sha256Before": "156f07208b68dcfe642f562901c4a31550267b1b9b1f2a07875bccb9a40f8b25",
+      "attribution": "Team-directed project documentation with AI assistance; historical reports describe their own verification dates/scopes. Exact line-level authorship unverified."
+    },
+    {
+      "path": "docs/LIVE_DEMO.md",
+      "disposition": "documentation_centrally_disclosed",
+      "sha256Before": "7096c6bb1b54509f92b777a3868615b07bbfbc1c19adc0f56ddd7d13a53c6389",
+      "attribution": "Team-directed project documentation with AI assistance; historical reports describe their own verification dates/scopes. Exact line-level authorship unverified."
+    },
+    {
+      "path": "docs/PRODUCTION_VERIFICATION.md",
+      "disposition": "documentation_centrally_disclosed",
+      "sha256Before": "b973e9028b4a903fc983010759ce9934e3d56168f81b756b7a5a5ab05a4e7487",
+      "attribution": "Team-directed project documentation with AI assistance; historical reports describe their own verification dates/scopes. Exact line-level authorship unverified."
+    },
+    {
+      "path": "docs/PROJECT_STRUCTURE.md",
+      "disposition": "documentation_centrally_disclosed",
+      "sha256Before": "79c6c7993aa263612d56f3ed7809f296906c7906f0cf480a3f1eb9481fb467ab",
+      "attribution": "Team-directed project documentation with AI assistance; historical reports describe their own verification dates/scopes. Exact line-level authorship unverified."
+    },
+    {
+      "path": "docs/RADIATION_CAPABILITY.md",
+      "disposition": "documentation_centrally_disclosed",
+      "sha256Before": "3ec64bd9de33705c940bdc35286de9a9122d86572ea9ba2dfa4257bd0b0538cb",
+      "attribution": "Team-directed project documentation with AI assistance; historical reports describe their own verification dates/scopes. Exact line-level authorship unverified."
+    },
+    {
+      "path": "docs/RC1_STATUS.md",
+      "disposition": "documentation_centrally_disclosed",
+      "sha256Before": "3177655009cae859eb7a0919509fe86b416899849806532af01522f8124595f8",
+      "attribution": "Team-directed project documentation with AI assistance; historical reports describe their own verification dates/scopes. Exact line-level authorship unverified."
+    },
+    {
+      "path": "docs/RELEASE_CHECKLIST.md",
+      "disposition": "documentation_centrally_disclosed",
+      "sha256Before": "e78bf52c627661cac59b7c478f48d76d9dcce0ac0f74766504228006cb13c903",
+      "attribution": "Team-directed project documentation with AI assistance; historical reports describe their own verification dates/scopes. Exact line-level authorship unverified."
+    },
+    {
+      "path": "docs/RESEARCH_AND_SOURCES.md",
+      "disposition": "documentation_centrally_disclosed",
+      "sha256Before": "5dea58f35a2c7add161283b542c3be4f18cc2ffa8068d901fb01f126326e5dd8",
+      "attribution": "Team-directed project documentation with AI assistance; historical reports describe their own verification dates/scopes. Exact line-level authorship unverified."
+    },
+    {
+      "path": "docs/STABILIZATION_REPORT.md",
+      "disposition": "documentation_centrally_disclosed",
+      "sha256Before": "2e544c7f4ae7770df59b6e1f9e244d8a1fbb4d1be4d9107fd92b02110143c27c",
+      "attribution": "Team-directed project documentation with AI assistance; historical reports describe their own verification dates/scopes. Exact line-level authorship unverified."
+    },
+    {
+      "path": "docs/TEAM_TASKS.md",
+      "disposition": "documentation_centrally_disclosed",
+      "sha256Before": "63f16aac4e63c160a0207dfe5e770adb108ddfbf9347629851e237c0148da354",
+      "attribution": "Team-directed project documentation with AI assistance; historical reports describe their own verification dates/scopes. Exact line-level authorship unverified."
+    },
+    {
+      "path": "docs/TEAM_TESTING.md",
+      "disposition": "documentation_centrally_disclosed",
+      "sha256Before": "663597729f547220a79e3240bda741d4c6eea00491007e7add1719555f2667eb",
+      "attribution": "Team-directed project documentation with AI assistance; historical reports describe their own verification dates/scopes. Exact line-level authorship unverified."
+    },
+    {
+      "path": "docs/TECHNICAL_SPEC_RU.md",
+      "disposition": "documentation_centrally_disclosed",
+      "sha256Before": "e8aee58ddb801bf193f568c1ceeebd88ff28741be468760e20c4004f87b94206",
+      "attribution": "Team-directed project documentation with AI assistance; historical reports describe their own verification dates/scopes. Exact line-level authorship unverified."
+    },
+    {
+      "path": "docs/UI_DESIGN_SYSTEM.md",
+      "disposition": "documentation_centrally_disclosed",
+      "sha256Before": "aa4e1b46fb90d663f8c9a890f96b9151333287ff3a1508d0d026e36fb72373b7",
+      "attribution": "Team-directed project documentation with AI assistance; historical reports describe their own verification dates/scopes. Exact line-level authorship unverified."
+    },
+    {
+      "path": "docs/UI_UX_AUDIT.md",
+      "disposition": "documentation_centrally_disclosed",
+      "sha256Before": "79eeaf2177649c5469796a555a813e6cf8a6d139e5e46ae363e06f076c2af100",
+      "attribution": "Team-directed project documentation with AI assistance; historical reports describe their own verification dates/scopes. Exact line-level authorship unverified."
+    },
+    {
+      "path": "docs/V2_VALIDATION.md",
+      "disposition": "documentation_centrally_disclosed",
+      "sha256Before": "da4b9d73013c8eab8c90ee389f52bb762f468bb107ccc4ebc52d16946e0d9935",
+      "attribution": "Team-directed project documentation with AI assistance; historical reports describe their own verification dates/scopes. Exact line-level authorship unverified."
+    },
+    {
+      "path": "docs/VALIDATION.md",
+      "disposition": "documentation_centrally_disclosed",
+      "sha256Before": "7f7ceabd02d7e4779b8a036813ffc4a57cc2a668fe1a92ebd5434d99031ad03a",
+      "attribution": "Team-directed project documentation with AI assistance; historical reports describe their own verification dates/scopes. Exact line-level authorship unverified."
+    },
+    {
+      "path": "docs/VISUAL_SESSION_REVIEW.md",
+      "disposition": "documentation_centrally_disclosed",
+      "sha256Before": "0c31e50ecbd91666e6eb0b71da111e0ea1b1a2be6df3af53c064d350f77692bd",
+      "attribution": "Team-directed project documentation with AI assistance; historical reports describe their own verification dates/scopes. Exact line-level authorship unverified."
+    },
+    {
+      "path": "package-lock.json",
+      "disposition": "strict_json_or_generated_lockfile_preserved",
+      "sha256Before": "0d96ad0de0cf907f8e79947bf4b591f541affafed10cd2bc37413d61c8d16a1a",
+      "attribution": "Package-manager-generated dependency resolution; dependency authors retain authorship/licenses. Not edited for attribution."
+    },
+    {
+      "path": "package.json",
+      "disposition": "strict_json_or_generated_lockfile_preserved",
+      "sha256Before": "2befc368b049c6d7cfd1a1ce4134b5e34c2fa3aca36ef0b4da5b753a624f2d25",
+      "attribution": "Team-directed, AI-assisted project configuration/documentation. Exact initial line-level attribution unverified; centrally disclosed without content changes."
+    },
+    {
+      "path": "public/_headers",
+      "disposition": "configuration_or_project_instructions_preserved",
+      "sha256Before": "543f86e95798a4ca1e8824c6df115b6690551a544ab640f5afa655b4822fafe0",
+      "attribution": "Team-directed, AI-assisted project configuration/documentation. Exact initial line-level attribution unverified; centrally disclosed without content changes."
+    },
+    {
+      "path": "public/models/vision/LICENSE",
+      "disposition": "third_party_asset_or_asset_manifest_preserved",
+      "sha256Before": "8707eef0533987efc5b155d64761eeb6e20793f50b9bd1a68dad1cf4719d0ed8",
+      "attribution": "Google/MediaPipe third-party model/runtime or external notice/license; no AEGIS generative authorship asserted."
+    },
+    {
+      "path": "public/models/vision/NOTICE.txt",
+      "disposition": "third_party_asset_or_asset_manifest_preserved",
+      "sha256Before": "3ea3435973fc490012e3bf3df6b2b79bddd61be7d09d5d3946004551a3285c8e",
+      "attribution": "Google/MediaPipe third-party model/runtime or external notice/license; no AEGIS generative authorship asserted."
+    },
+    {
+      "path": "public/models/vision/face_landmarker.task",
+      "disposition": "third_party_asset_or_asset_manifest_preserved",
+      "sha256Before": "64184e229b263107bc2b804c6625db1341ff2bb731874b0bcc2fe6544e0bc9ff",
+      "attribution": "Google/MediaPipe third-party model/runtime or external notice/license; no AEGIS generative authorship asserted."
+    },
+    {
+      "path": "public/models/vision/manifest.json",
+      "disposition": "third_party_asset_or_asset_manifest_preserved",
+      "sha256Before": "36e1c2172b103afeccbaa1ddc0222c2bf2cf966360083c1f9f0684d41acf8509",
+      "attribution": "Project-owned package/asset provenance metadata; AI-assisted release preparation. Referenced Google assets retain their own authorship and notices."
+    },
+    {
+      "path": "public/models/vision/pose_landmarker_lite.task",
+      "disposition": "third_party_asset_or_asset_manifest_preserved",
+      "sha256Before": "59929e1d1ee95287735ddd833b19cf4ac46d29bc7afddbbf6753c459690d574a",
+      "attribution": "Google/MediaPipe third-party model/runtime or external notice/license; no AEGIS generative authorship asserted."
+    },
+    {
+      "path": "public/models/vision/wasm/vision_wasm_internal.js",
+      "disposition": "third_party_asset_or_asset_manifest_preserved",
+      "sha256Before": "6f6b86509cf9e163ea1cfec7edc8cf53732699c04781e4c21c557c1ba402310e",
+      "attribution": "Google/MediaPipe third-party model/runtime or external notice/license; no AEGIS generative authorship asserted."
+    },
+    {
+      "path": "public/models/vision/wasm/vision_wasm_internal.wasm",
+      "disposition": "third_party_asset_or_asset_manifest_preserved",
+      "sha256Before": "cb3ec20026a9aecc2a81a93c25630ceb5389297ddb7a5f0bd61dd09cde606b9b",
+      "attribution": "Google/MediaPipe third-party model/runtime or external notice/license; no AEGIS generative authorship asserted."
+    },
+    {
+      "path": "public/models/vision/wasm/vision_wasm_nosimd_internal.js",
+      "disposition": "third_party_asset_or_asset_manifest_preserved",
+      "sha256Before": "9f8fc960e363f0fb2f42f7937b97ae9cf9a5630490f71031fa90caa9bb121938",
+      "attribution": "Google/MediaPipe third-party model/runtime or external notice/license; no AEGIS generative authorship asserted."
+    },
+    {
+      "path": "public/models/vision/wasm/vision_wasm_nosimd_internal.wasm",
+      "disposition": "third_party_asset_or_asset_manifest_preserved",
+      "sha256Before": "924274fcd5ac8985f6570a8573e7971b7bd2d580ba1b8f3beb0ba8f95db6347c",
+      "attribution": "Google/MediaPipe third-party model/runtime or external notice/license; no AEGIS generative authorship asserted."
+    },
+    {
+      "path": "src/anatomy/README.md",
+      "disposition": "documentation_centrally_disclosed",
+      "sha256Before": "31073ef788a3fd4d855845ac594e452b962cf926dfd11ff9b8444343c6d6c670",
+      "disclosureNoteAdded": true,
+      "attribution": "Team-directed project documentation with AI assistance; historical reports describe their own verification dates/scopes. Exact line-level authorship unverified."
+    },
+    {
+      "path": "src/health/README.md",
+      "disposition": "documentation_centrally_disclosed",
+      "sha256Before": "dea2fa812b9eb026a0831c06a207f6f652b6446ec1b148b10384f52db479f196",
+      "disclosureNoteAdded": true,
+      "attribution": "Team-directed project documentation with AI assistance; historical reports describe their own verification dates/scopes. Exact line-level authorship unverified."
+    },
+    {
+      "path": "src/mission/README.md",
+      "disposition": "documentation_centrally_disclosed",
+      "sha256Before": "278e404183f1a1afe262fbbca158067e9941e9b65ae0b07277de3294844dacf1",
+      "disclosureNoteAdded": true,
+      "attribution": "Team-directed project documentation with AI assistance; historical reports describe their own verification dates/scopes. Exact line-level authorship unverified."
+    },
+    {
+      "path": "src/shared/README.md",
+      "disposition": "documentation_centrally_disclosed",
+      "sha256Before": "3a19a8495d3af31fcb7a44e6bd37a94b49fbdf74ecfad6b798efd9eb3679020e",
+      "disclosureNoteAdded": true,
+      "attribution": "Team-directed project documentation with AI assistance; historical reports describe their own verification dates/scopes. Exact line-level authorship unverified."
+    },
+    {
+      "path": "src/simulation/README.md",
+      "disposition": "documentation_centrally_disclosed",
+      "sha256Before": "143e7fe66414aaeeb1c1aad6886208a55e5543961a6a6d050e8d45396d9c25d0",
+      "disclosureNoteAdded": true,
+      "attribution": "Team-directed project documentation with AI assistance; historical reports describe their own verification dates/scopes. Exact line-level authorship unverified."
+    },
+    {
+      "path": "src/vision/README.md",
+      "disposition": "documentation_centrally_disclosed",
+      "sha256Before": "f5289d5b77fdc84978e68e5781e9d3aa2097e099f37806e4f2d111e28d02e2c8",
+      "disclosureNoteAdded": true,
+      "attribution": "Team-directed project documentation with AI assistance; historical reports describe their own verification dates/scopes. Exact line-level authorship unverified."
+    },
+    {
+      "path": "tsconfig.app.json",
+      "disposition": "strict_json_or_generated_lockfile_preserved",
+      "sha256Before": "0887047c4a9707bb82f2a3b582321b309e147aa48cb39ad438291d6d742e3863",
+      "attribution": "Team-directed, AI-assisted project configuration/documentation. Exact initial line-level attribution unverified; centrally disclosed without content changes."
+    },
+    {
+      "path": "tsconfig.json",
+      "disposition": "strict_json_or_generated_lockfile_preserved",
+      "sha256Before": "e8d6f7b50828db3953e21c7e92584f9206b3cd2551b4012507372afbb7fe9ce3",
+      "attribution": "Team-directed, AI-assisted project configuration/documentation. Exact initial line-level attribution unverified; centrally disclosed without content changes."
+    },
+    {
+      "path": "tsconfig.node.json",
+      "disposition": "strict_json_or_generated_lockfile_preserved",
+      "sha256Before": "62dbcdb1e7aa48303b04fdb3e9c6b049f5c9a9a639c0b7a28a70324fc2c12d24",
+      "attribution": "Team-directed, AI-assisted project configuration/documentation. Exact initial line-level attribution unverified; centrally disclosed without content changes."
+    }
+  ],
+  "thirdPartyVisionAssets": {
+    "sdk": "@mediapipe/tasks-vision@0.10.32",
+    "license": "Apache-2.0",
+    "assets": [
+      {
+        "path": "face_landmarker.task",
+        "bytes": 3758596,
+        "sha256": "64184e229b263107bc2b804c6625db1341ff2bb731874b0bcc2fe6544e0bc9ff",
+        "url": "https://storage.googleapis.com/mediapipe-models/face_landmarker/face_landmarker/float16/1/face_landmarker.task"
+      },
+      {
+        "path": "pose_landmarker_lite.task",
+        "bytes": 5777746,
+        "sha256": "59929e1d1ee95287735ddd833b19cf4ac46d29bc7afddbbf6753c459690d574a",
+        "url": "https://storage.googleapis.com/mediapipe-models/pose_landmarker/pose_landmarker_lite/float16/1/pose_landmarker_lite.task"
+      },
+      {
+        "path": "wasm/vision_wasm_internal.js",
+        "bytes": 204816,
+        "sha256": "6f6b86509cf9e163ea1cfec7edc8cf53732699c04781e4c21c557c1ba402310e",
+        "url": "https://www.npmjs.com/package/@mediapipe/tasks-vision/v/0.10.32"
+      },
+      {
+        "path": "wasm/vision_wasm_internal.wasm",
+        "bytes": 11453626,
+        "sha256": "cb3ec20026a9aecc2a81a93c25630ceb5389297ddb7a5f0bd61dd09cde606b9b",
+        "url": "https://www.npmjs.com/package/@mediapipe/tasks-vision/v/0.10.32"
+      },
+      {
+        "path": "wasm/vision_wasm_nosimd_internal.js",
+        "bytes": 204669,
+        "sha256": "9f8fc960e363f0fb2f42f7937b97ae9cf9a5630490f71031fa90caa9bb121938",
+        "url": "https://www.npmjs.com/package/@mediapipe/tasks-vision/v/0.10.32"
+      },
+      {
+        "path": "wasm/vision_wasm_nosimd_internal.wasm",
+        "bytes": 10647962,
+        "sha256": "924274fcd5ac8985f6570a8573e7971b7bd2d580ba1b8f3beb0ba8f95db6347c",
+        "url": "https://www.npmjs.com/package/@mediapipe/tasks-vision/v/0.10.32"
+      }
+    ]
+  },
+  "notIntegrated": [
+    {
+      "branch": "feat/v4.2-medical-assistant",
+      "commit": "3ce281fb90c46d8e2597c00d1ba59e62e75f2fa0",
+      "tool": "Anthropic Claude Code",
+      "status": "Separate branch only; local deterministic intent/rule assistant, no runtime LLM; not in b8e26c9."
+    },
+    {
+      "branch": "feat/v4.2-prevention-resources",
+      "commit": "3720ed800ede5765d20324076ae2e674079ffbb1",
+      "tool": "Google Gemini (team-reported)",
+      "status": "Separate branch only; prevention/resources not integrated into b8e26c9."
+    }
+  ],
+  "documentationNotes": [
+    "src/anatomy/README.md",
+    "src/health/README.md",
+    "src/mission/README.md",
+    "src/shared/README.md",
+    "src/simulation/README.md",
+    "src/vision/README.md"
+  ],
+  "newDisclosureFiles": [
+    "AI_DISCLOSURE.md",
+    "AI_DISCLOSURE_MANIFEST.json",
+    "docs/ATTRIBUTION_VALIDATION.md"
+  ],
+  "integrationPreview": {
+    "branch": "test/v4.2-integration",
+    "baseCommit": "5576e5ed599367b644ac55cd90971563bdf17d15",
+    "upstream": {
+      "claude": "3ce281fb90c46d8e2597c00d1ba59e62e75f2fa0",
+      "gemini": "3720ed800ede5765d20324076ae2e674079ffbb1"
+    },
+    "productionRemains": "b8e26c9dded392b0fb612f8ec034b7da2201d4e0",
+    "note": "Earlier file tables/notIntegrated describe the frozen implementation only. These modules are integrated solely on this preview branch; exact per-line authorship remains unverified.",
+    "moduleFiles": [
+      {
+        "path": "src/assistant/integration.test.tsx",
+        "upstreamTool": "Anthropic Claude Code",
+        "integrationTool": "OpenAI Codex",
+        "classification": "team_directed_ai_assisted_mixed_origin"
+      },
+      {
+        "path": "src/assistant/Assistant.test.tsx",
+        "upstreamTool": "Anthropic Claude Code",
+        "integrationTool": "OpenAI Codex",
+        "classification": "team_directed_ai_assisted_mixed_origin"
+      },
+      {
+        "path": "src/assistant/AssistantDock.tsx",
+        "upstreamTool": "Anthropic Claude Code",
+        "integrationTool": "OpenAI Codex",
+        "classification": "team_directed_ai_assisted_mixed_origin"
+      },
+      {
+        "path": "src/assistant/AssistantPanel.tsx",
+        "upstreamTool": "Anthropic Claude Code",
+        "integrationTool": "OpenAI Codex",
+        "classification": "team_directed_ai_assisted_mixed_origin"
+      },
+      {
+        "path": "src/assistant/assistant.css",
+        "upstreamTool": "Anthropic Claude Code",
+        "integrationTool": "OpenAI Codex",
+        "classification": "team_directed_ai_assisted_mixed_origin"
+      },
+      {
+        "path": "src/assistant/intents.test.ts",
+        "upstreamTool": "Anthropic Claude Code",
+        "integrationTool": "OpenAI Codex",
+        "classification": "team_directed_ai_assisted_mixed_origin"
+      },
+      {
+        "path": "src/assistant/intents.ts",
+        "upstreamTool": "Anthropic Claude Code",
+        "integrationTool": "OpenAI Codex",
+        "classification": "team_directed_ai_assisted_mixed_origin"
+      },
+      {
+        "path": "src/assistant/provider.ts",
+        "upstreamTool": "Anthropic Claude Code",
+        "integrationTool": "OpenAI Codex",
+        "classification": "team_directed_ai_assisted_mixed_origin"
+      },
+      {
+        "path": "src/assistant/respond.test.ts",
+        "upstreamTool": "Anthropic Claude Code",
+        "integrationTool": "OpenAI Codex",
+        "classification": "team_directed_ai_assisted_mixed_origin"
+      },
+      {
+        "path": "src/assistant/respond.ts",
+        "upstreamTool": "Anthropic Claude Code",
+        "integrationTool": "OpenAI Codex",
+        "classification": "team_directed_ai_assisted_mixed_origin"
+      },
+      {
+        "path": "src/assistant/safety.test.ts",
+        "upstreamTool": "Anthropic Claude Code",
+        "integrationTool": "OpenAI Codex",
+        "classification": "team_directed_ai_assisted_mixed_origin"
+      },
+      {
+        "path": "src/assistant/safety.ts",
+        "upstreamTool": "Anthropic Claude Code",
+        "integrationTool": "OpenAI Codex",
+        "classification": "team_directed_ai_assisted_mixed_origin"
+      },
+      {
+        "path": "src/assistant/scope.ts",
+        "upstreamTool": "Anthropic Claude Code",
+        "integrationTool": "OpenAI Codex",
+        "classification": "team_directed_ai_assisted_mixed_origin"
+      },
+      {
+        "path": "src/assistant/test-helpers.ts",
+        "upstreamTool": "Anthropic Claude Code",
+        "integrationTool": "OpenAI Codex",
+        "classification": "team_directed_ai_assisted_mixed_origin"
+      },
+      {
+        "path": "src/assistant/types.ts",
+        "upstreamTool": "Anthropic Claude Code",
+        "integrationTool": "OpenAI Codex",
+        "classification": "team_directed_ai_assisted_mixed_origin"
+      },
+      {
+        "path": "src/prevention/PreventiveHealth.test.tsx",
+        "upstreamTool": "Google Gemini",
+        "integrationTool": "OpenAI Codex",
+        "classification": "team_directed_ai_assisted_mixed_origin"
+      },
+      {
+        "path": "src/prevention/PreventiveHealth.tsx",
+        "upstreamTool": "Google Gemini",
+        "integrationTool": "OpenAI Codex",
+        "classification": "team_directed_ai_assisted_mixed_origin"
+      },
+      {
+        "path": "src/prevention/fixtures.ts",
+        "upstreamTool": "Google Gemini",
+        "integrationTool": "OpenAI Codex",
+        "classification": "team_directed_ai_assisted_mixed_origin"
+      },
+      {
+        "path": "src/prevention/index.ts",
+        "upstreamTool": "Google Gemini",
+        "integrationTool": "OpenAI Codex",
+        "classification": "team_directed_ai_assisted_mixed_origin"
+      },
+      {
+        "path": "src/prevention/prevention.css",
+        "upstreamTool": "Google Gemini",
+        "integrationTool": "OpenAI Codex",
+        "classification": "team_directed_ai_assisted_mixed_origin"
+      },
+      {
+        "path": "src/prevention/prevention.test.ts",
+        "upstreamTool": "Google Gemini",
+        "integrationTool": "OpenAI Codex",
+        "classification": "team_directed_ai_assisted_mixed_origin"
+      },
+      {
+        "path": "src/prevention/selectors.ts",
+        "upstreamTool": "Google Gemini",
+        "integrationTool": "OpenAI Codex",
+        "classification": "team_directed_ai_assisted_mixed_origin"
+      },
+      {
+        "path": "src/resources/MissionResources.tsx",
+        "upstreamTool": "Google Gemini",
+        "integrationTool": "OpenAI Codex",
+        "classification": "team_directed_ai_assisted_mixed_origin"
+      },
+      {
+        "path": "src/resources/index.ts",
+        "upstreamTool": "Google Gemini",
+        "integrationTool": "OpenAI Codex",
+        "classification": "team_directed_ai_assisted_mixed_origin"
+      },
+      {
+        "path": "src/resources/inventory.ts",
+        "upstreamTool": "Google Gemini",
+        "integrationTool": "OpenAI Codex",
+        "classification": "team_directed_ai_assisted_mixed_origin"
+      },
+      {
+        "path": "src/resources/resources.css",
+        "upstreamTool": "Google Gemini",
+        "integrationTool": "OpenAI Codex",
+        "classification": "team_directed_ai_assisted_mixed_origin"
+      },
+      {
+        "path": "src/resources/resources.test.ts",
+        "upstreamTool": "Google Gemini",
+        "integrationTool": "OpenAI Codex",
+        "classification": "team_directed_ai_assisted_mixed_origin"
+      },
+      {
+        "path": "src/resources/selectors.ts",
+        "upstreamTool": "Google Gemini",
+        "integrationTool": "OpenAI Codex",
+        "classification": "team_directed_ai_assisted_mixed_origin"
+      }
+    ],
+    "integrationRegressionFiles": [
+      "src/app/state/v42-integration.test.ts",
+      "src/assistant/integration.test.tsx"
+    ]
+  }
+}

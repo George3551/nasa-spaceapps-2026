@@ -1,3 +1,4 @@
+<!-- Development disclosure: team-directed, AI-assisted code/documentation. See ../../AI_DISCLOSURE.md for tool scope, third-party sources and attribution uncertainty. -->
 # Simulation — owned by feat/simulation
 
 Core v2 now implements engine.ts, SimulationControls.tsx and determinism tests.

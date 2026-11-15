@@ -1,3 +1,4 @@
+<!-- Development disclosure: team-directed, AI-assisted code/documentation. See ../../AI_DISCLOSURE.md for tool scope, third-party sources and attribution uncertainty. -->
 # Shared utilities
 
 Core v2 adds validation.ts with Zod runtime schemas approved through the user's

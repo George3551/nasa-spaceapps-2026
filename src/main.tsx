@@ -1,3 +1,10 @@
+/**
+ * AEGIS - NASA Space Apps Challenge 2026
+ * Component: React entry point.
+ * Implementation: team-directed, AI-assisted (OpenAI Codex).
+ * Team concept and requirements; exact line-level authorship remains unverified.
+ * See AI_DISCLOSURE.md and AI_DISCLOSURE_MANIFEST.json for evidence and attribution limits.
+ */
 import { StrictMode } from 'react'
 import { createRoot } from 'react-dom/client'
 import { App } from './app/App'

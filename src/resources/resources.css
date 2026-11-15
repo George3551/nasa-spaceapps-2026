@@ -1,0 +1,105 @@
+/** AEGIS - team-directed, AI-assisted implementation (Google Gemini); integration fixes/tests assisted by OpenAI Codex.
+ * Local research prototype, not clinical validation. See docs/V4_2_INTEGRATION_REPORT.md and AI_DISCLOSURE.md. */
+.resources-summary-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(175px, 1fr));
+  gap: 14px;
+  margin-bottom: 24px;
+}
+
+.resource-filter-bar {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(190px, 1fr));
+  gap: 14px;
+  margin-top: 16px;
+}
+
+.resource-filter-bar .field {
+  margin-bottom: 0;
+}
+
+.resource-badge-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  align-items: center;
+}
+
+.badge.status-available,
+.badge.status-functional {
+  background: #223d37;
+  color: #c5eee3;
+  border: 1px solid #3c685e;
+}
+
+.badge.status-unavailable,
+.badge.status-in_use {
+  background: #3d3422;
+  color: #f0dfb8;
+  border: 1px solid #6b5a3a;
+}
+
+.badge.status-out_of_service {
+  background: #422528;
+  color: #f2c6c9;
+  border: 1px solid #734045;
+}
+
+.badge.status-unknown {
+  background: #2b353e;
+  color: #cbd5dc;
+  border: 1px dashed #566775;
+}
+
+.resource-card {
+  padding: 18px 0;
+  border-bottom: 1px solid #30414c;
+  display: grid;
+  gap: 10px;
+}
+
+.resource-card:last-child {
+  border-bottom: 0;
+}
+
+.resource-meta-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 10px 18px;
+  background: #111c24;
+  border: 1px solid #2b3b45;
+  border-radius: 6px;
+  padding: 12px 14px;
+  font-size: 0.78rem;
+}
+
+.resource-meta-grid dt {
+  color: #a7b5bf;
+  font-size: 0.7rem;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+}
+
+.resource-meta-grid dd {
+  margin: 3px 0 0;
+  color: #edf1f2;
+}
+
+.query-inspector-box {
+  margin-top: 16px;
+  padding: 16px;
+  background: #111c24;
+  border: 1px solid #30414c;
+  border-radius: 6px;
+  display: grid;
+  gap: 10px;
+}
+
+.supervision-note {
+  padding: 10px 12px;
+  background: #232f38;
+  border-left: 3px solid #a8d8ce;
+  border-radius: 4px;
+  font-size: 0.78rem;
+  color: #d3e0e5;
+}

@@ -1,5 +1,17 @@
 # Git workflow for 5 teammates and multiple AI agents
 
+## Current release freeze — 2026-11-15
+
+Production is frozen at `034fcdb76863ce0f861230a66b55f188c68a03d5`.
+The owner confirmed Cloudflare automatic production deployments disabled and
+Preview deployments None. Preserve the local CV patch and completed documentation
+on develop; **do not push, deploy or merge PR #4** without a new explicit user
+instruction. The owner has now explicitly authorized local v4.1 implementation and commits on develop; publication remains forbidden. See CORE_V4_1.md. The remaining multi-branch instructions below are
+historical; the current single-developer workflow uses main and develop.
+See [RC1_STATUS.md](RC1_STATUS.md) and [DEVELOPMENT_HANDOFF.md](DEVELOPMENT_HANDOFF.md).
+
+## Historical team workflow
+
 ## Set up once — team lead
 
 1. Create a GitHub repository named `aegis-spaceapps-2026`. Choose **Private** until the team agrees to publish. **Do not** pre-create README or `.gitignore` on GitHub if uploading this kit using `git init`.

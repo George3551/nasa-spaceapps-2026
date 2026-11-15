@@ -1,3 +1,10 @@
+/**
+ * AEGIS - NASA Space Apps Challenge 2026
+ * Component: Integrated application regression tests.
+ * Implementation: team-directed, AI-assisted (OpenAI Codex; Anthropic Claude Code).
+ * AI-assisted software tests use fixtures/mocks; passing tests do not establish clinical or physical-camera validity.
+ * See AI_DISCLOSURE.md and AI_DISCLOSURE_MANIFEST.json for evidence and attribution limits.
+ */
 import { render, screen, within } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
 import { beforeEach, describe, expect, it } from 'vitest'
@@ -30,12 +37,12 @@ describe('astronaut-first integrated application', () => {
   it('runs a sleep scenario through detection and opens the affected profile from the ship', async () => {
     const user = userEvent.setup(); mount()
     await user.selectOptions(screen.getByLabelText('Demo user context'), 'mission')
-    await user.click(screen.getByRole('button', { name: 'Mission Simulation' }))
+    await user.click(screen.getByRole('button', { name: 'Simulator' }))
     await user.selectOptions(screen.getByLabelText('Scenario'), 'sleep-disruption')
-    const confirm = window.confirm; window.confirm = () => true
-    await user.click(screen.getByRole('button', { name: 'Load scenario' })); window.confirm = confirm
+    await user.click(screen.getByRole('button', { name: 'Load scenario' }))
+    await user.click(screen.getByRole('button', { name: 'Reset and load' }))
     await user.click(screen.getByRole('button', { name: 'Advance 3 virtual minutes' }))
-    await user.click(screen.getByRole('button', { name: 'Events & Alerts' }))
+    await user.click(screen.getByRole('button', { name: /^Alerts & Cases/ }))
     expect(screen.getAllByText('Recovery indicators changed').length).toBeGreaterThan(0)
     await user.click(screen.getByRole('button', { name: 'Acknowledge' }))
     expect(screen.getByRole('button', { name: 'Acknowledged' })).toBeDisabled()
@@ -46,7 +53,7 @@ describe('astronaut-first integrated application', () => {
   })
   it('keeps real assessments out of simulation previews', async () => {
     const user = userEvent.setup(); mount()
-    await user.click(screen.getByRole('button', { name: 'Daily Assessments' }))
+    await user.click(screen.getByRole('button', { name: 'Cognitive Tests' }))
     expect(screen.getByRole('button', { name: 'Start typing test' })).toBeInTheDocument()
     await user.selectOptions(screen.getByLabelText('Data workspace'), 'synthetic')
     expect(screen.queryByRole('button', { name: 'Start typing test' })).not.toBeInTheDocument()
@@ -61,5 +68,17 @@ describe('astronaut-first integrated application', () => {
     const user = userEvent.setup(); mount()
     await user.click(screen.getByRole('button', { name: 'Research & Sources' }))
     expect(within(screen.getByRole('main')).getByText(/No research dataset has been imported/)).toBeInTheDocument()
+  })
+  it('requires explicit demo association before camera activation and keeps optional workflows available', async () => {
+    const user = userEvent.setup(); mount()
+    await user.click(screen.getByRole('button', { name: 'Eye Observation' }))
+    expect(screen.getByRole('button', { name: 'Start Assessment' })).toBeDisabled()
+    await user.click(screen.getByRole('checkbox', { name: /Associate this observed session/ }))
+    expect(screen.getByRole('button', { name: 'Start Assessment' })).toBeEnabled()
+    await user.click(screen.getByRole('button', { name: 'Body Systems' }))
+    await user.click(screen.getByRole('button', { name: 'Nervous / Cognitive' }))
+    expect(screen.getByText(/Unknown does not mean healthy/)).toBeInTheDocument()
+    await user.click(screen.getByRole('button', { name: 'Cognitive Tests' }))
+    expect(screen.getByRole('button', { name: 'Start typing test' })).toBeEnabled()
   })
 })

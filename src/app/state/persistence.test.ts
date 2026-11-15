@@ -1,3 +1,10 @@
+/**
+ * AEGIS - NASA Space Apps Challenge 2026
+ * Component: Storage and recovery regression tests.
+ * Implementation: team-directed, AI-assisted (OpenAI Codex).
+ * AI-assisted software tests use fixtures/mocks; passing tests do not establish clinical or physical-camera validity.
+ * See AI_DISCLOSURE.md and AI_DISCLOSURE_MANIFEST.json for evidence and attribution limits.
+ */
 import { beforeEach, describe, expect, it } from 'vitest'
 import { appReducer, createAppState } from './reducer'
 import { persistState, restoreState, STORAGE_KEY } from './persistence'

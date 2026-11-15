@@ -1,3 +1,10 @@
+/**
+ * AEGIS - NASA Space Apps Challenge 2026
+ * Component: Canonical domain contracts.
+ * Implementation: team-directed, AI-assisted (OpenAI Codex).
+ * Team concept and requirements; exact line-level authorship remains unverified.
+ * See AI_DISCLOSURE.md and AI_DISCLOSURE_MANIFEST.json for evidence and attribution limits.
+ */
 /** AEGIS canonical integration contracts v1.0 (hackathon prototype).
  *  Changes require integrator review. Do not duplicate types per feature module.
  */
@@ -10,11 +17,15 @@ export type ScenarioId = 'normal-day' | 'sleep-disruption' | 'co2-excursion' | '
 
 /** Separates provenance, which is not the same thing as acquisition method. */
 export type DataOrigin = 'synthetic' | 'observed' | 'research_dataset';
-export type AcquisitionMethod = 'simulator' | 'manual' | 'wearable' | 'environment_sensor' | 'camera_pose' | 'dataset_import' | 'assessment';
+export type AcquisitionMethod = 'simulator' | 'manual' | 'wearable' | 'medical_device' | 'environment_sensor' | 'camera_pose' | 'camera_face' | 'dataset_import' | 'assessment';
 export type ObservationQuality = 'valid' | 'estimated' | 'missing' | 'invalid';
 
 export type MetricKey =
   | 'heart_rate'                // bpm
+  | 'body_temperature'          // °C
+  | 'oxygen_saturation'         // %
+  | 'heart_rate_variability'    // ms; protocol must identify the statistic
+  | 'laboratory'               // analyte + unit required; no implicit conversion
   | 'resting_heart_rate'        // bpm
   | 'blood_pressure_systolic'  // mmHg
   | 'blood_pressure_diastolic' // mmHg
@@ -44,6 +55,8 @@ export interface SourceReference {
 }
 
 export interface HealthMeasurement {
+  /** Only the mission sampler sets this; imported/manual records are retained. */
+  generatedTelemetry?: true;
   id: ObservationId;
   astronautId: AstronautId;
   metric: MetricKey;
@@ -60,9 +73,12 @@ export interface HealthMeasurement {
   demonstrationOnly?: boolean;
   /** Additional context, never a diagnosis. Symptom name or examination site. */
   note?: string;
+  acquisition?: AcquisitionContext;
+  analyte?: string;
 }
 
 export interface EnvironmentalMeasurement {
+  generatedTelemetry?: true;
   id: ObservationId;
   compartmentId: CompartmentId;
   metric: 'cabin_co2' | 'cabin_temperature' | 'cabin_pressure' | 'radiation_dose' | 'other';
@@ -74,6 +90,9 @@ export interface EnvironmentalMeasurement {
   quality: ObservationQuality;
   sourceRefId?: string;
   demonstrationOnly?: boolean;
+  /** Explicit association required when importing into personal observed records. */
+  astronautId?: AstronautId;
+  acquisition?: AcquisitionContext;
 }
 
 export interface CrewMember {
@@ -93,6 +112,7 @@ export interface Compartment {
 }
 
 export interface ActivityRecord {
+  generatedTelemetry?: true;
   id: string;
   astronautId: AstronautId;
   kind: 'exercise' | 'sleep' | 'work' | 'rest' | 'self_report' | 'medical_check';
@@ -102,6 +122,7 @@ export interface ActivityRecord {
   origin: DataOrigin;
   quality: ObservationQuality;
   details?: Record<string, number | string | boolean | null>;
+  acquisition?: AcquisitionContext;
 }
 
 export interface AlertEvidence {
@@ -110,6 +131,8 @@ export interface AlertEvidence {
 }
 
 export interface HealthAlert {
+  /** Original evidence is immutable; subsequent detections are dated snapshots. */
+  updates?: AlertUpdate[];
   id: string;
   astronautId?: AstronautId;
   compartmentId?: CompartmentId;
@@ -156,6 +179,9 @@ export interface MissionState {
   encounters?: MedicalEncounter[];
   sources?: SourceReference[];
   resources?: MedicalResource[];
+  examinations?: ExaminationRecord[];
+  preventionPlans?: PreventionPlanItem[];
+  hydrationRecords?: HydrationRecord[];
 }
 
 export interface SimulationPort {
@@ -178,6 +204,7 @@ export interface VisionPort {
 
 /** v2 provenance shared by assessment, encounter and follow-up records. */
 export interface RecordMetadata {
+  generatedTelemetry?: true;
   id: string;
   astronautId: AstronautId;
   timestamp: ISODateTime;
@@ -187,6 +214,7 @@ export interface RecordMetadata {
   unit: string;
   sourceRefIds: string[];
   demonstrationOnly: boolean;
+  acquisition?: AcquisitionContext;
 }
 
 export interface TypingMetrics {
@@ -229,6 +257,8 @@ export type AssessmentResult = RecordMetadata & (
   | { kind: 'typing'; result: TypingMetrics }
   | { kind: 'reaction'; result: ReactionMetrics }
   | { kind: 'procedure'; result: { attempts: ProcedureAttempt[]; completed: boolean } }
+  | { kind: 'visual'; experimental: true; association: DemoAssociation; result: VisualAssessmentMetrics }
+  | { kind: 'physical'; experimental: true; association: DemoAssociation; result: PhysicalAssessmentMetrics }
 );
 
 export interface ClinicalAction extends RecordMetadata {
@@ -256,6 +286,18 @@ export interface MedicalResource {
   timestamp: ISODateTime;
   source: AcquisitionMethod;
   sourceRefIds: string[];
+  category?: ResourceCategory;
+  availability?: ResourceAvailability;
+  operability?: ResourceOperability;
+  occupancy?: ResourceOccupancy;
+  compartmentId?: CompartmentId;
+  requiredQualification?: OperatorQualification;
+  qualificationNote?: string;
+  lastVerifiedAt?: ISODateTime | null;
+  statusReason?: string;
+  constraints?: string;
+  demonstrationOnly?: boolean;
+  history?: ResourceStatusHistoryEntry[];
 }
 
 export interface ClinicalWorkspace {
@@ -263,6 +305,11 @@ export interface ClinicalWorkspace {
   assessments: AssessmentResult[];
   alerts: HealthAlert[];
   encounters: MedicalEncounter[];
+  activities?: ActivityRecord[];
+  environment?: EnvironmentalMeasurement[];
+  examinations?: ExaminationRecord[];
+  preventionPlans?: PreventionPlanItem[];
+  hydrationRecords?: HydrationRecord[];
 }
 
 export interface MissionSnapshot extends MissionState {
@@ -279,4 +326,234 @@ export interface ResearchSource extends SourceReference {
   access: 'full_text' | 'abstract' | 'metadata' | 'unavailable';
   providesData: boolean;
   checkedAt: string;
+}
+
+export interface DemoAssociation {
+  kind: 'fictional_demo_profile';
+  confirmedAt: ISODateTime;
+}
+export type TrackingIssue = 'no_face' | 'multiple_faces' | 'head_pose' | 'unstable' | 'out_of_frame' | 'low_visibility' | 'no_pose' | 'multiple_poses' | 'camera_interrupted' | 'sampling_gap' | 'calibrating';
+export interface InvalidTrackingInterval { startMs: number; endMs: number; reason: TrackingIssue }
+export interface VisualAssessmentMetrics {
+  durationMs: number;
+  validObservationMs: number;
+  calibrationMs: number;
+  trackingCoverage: number;
+  blinkCount: number | null;
+  blinkRatePerMinute: number | null;
+  blinkDurationsMs: number[];
+  meanBlinkDurationMs: number | null;
+  eyeClosureMs: number | null;
+  prolongedClosureMs: number | null;
+  closureProportion: number | null;
+  perclosInspiredProportion: number | null;
+  calibratedOpenEar: number | null;
+  invalidIntervals: InvalidTrackingInterval[];
+  sufficient: boolean;
+  algorithm: 'ear-hysteresis-v1';
+}
+export interface PhysicalAssessmentMetrics {
+  exercise: 'right_elbow_flexion';
+  durationMs: number;
+  validObservationMs: number;
+  trackingCoverage: number;
+  repetitions: number | null;
+  angleHistory: { atMs: number; angleDeg: number | null }[];
+  rangeDeg: number | null;
+  invalidIntervals: InvalidTrackingInterval[];
+  sufficient: boolean;
+  algorithm: 'elbow-cycle-v1';
+}
+
+/** Acquisition labels are supplied, not proof of calibrated hardware identity. */
+export interface AcquisitionContext {
+  deviceId: string;
+  protocolId: string;
+  condition: string;
+  sessionId: string;
+}
+export interface ExaminationRecord extends RecordMetadata {
+  kind: 'ecg' | 'ultrasound';
+  summary: string | null;
+}
+export interface SensorBatch {
+  measurements: HealthMeasurement[];
+  environment: EnvironmentalMeasurement[];
+  examinations: ExaminationRecord[];
+}
+export interface SensorRequest {
+  astronautId: AstronautId;
+  compartmentId: CompartmentId;
+  timestamp: ISODateTime;
+  seed: number;
+}
+/** Acquisition transport only; the existing reducer remains the sole record store. */
+export interface SensorAdapter {
+  id: string;
+  label: string;
+  category: 'physiological' | 'medical' | 'environmental';
+  cadence: 'continuous' | 'periodic';
+  origin: DataOrigin;
+  read(request: SensorRequest): Promise<SensorBatch>;
+}
+export type PerformanceSignal = MetricKey | 'reaction_mean' | 'typing_wpm' | 'visual_blink_rate' | 'visual_closure_proportion' | 'physical_repetitions';
+export interface PerformanceObservation {
+  id: string;
+  astronautId: AstronautId;
+  signal: PerformanceSignal;
+  value: number | null;
+  unit: string;
+  timestamp: ISODateTime;
+  source: AcquisitionMethod;
+  origin: DataOrigin;
+  quality: ObservationQuality;
+  acquisition?: AcquisitionContext;
+  analyte?: string;
+}
+export interface BaselineComparison {
+  signal: PerformanceSignal;
+  current: PerformanceObservation | null;
+  latestEntry: PerformanceObservation | null;
+  baseline: number | null;
+  baselineRecords: PerformanceObservation[];
+  history: PerformanceObservation[];
+  delta: number | null;
+  percentChange: number | null;
+  status: 'ready' | 'missing' | 'invalid' | 'stale' | 'incompatible' | 'insufficient_baseline';
+  warnings: string[];
+}
+export interface MultimodalFinding {
+  ruleId: string;
+  title: string;
+  explanation: string;
+  evidence: AlertEvidence[];
+  nextStep: string;
+  demonstrationOnly: true;
+}
+export interface PerformanceAssessment {
+  astronautId: AstronautId;
+  origin: DataOrigin;
+  asOf: ISODateTime;
+  comparisons: BaselineComparison[];
+  findings: MultimodalFinding[];
+  limitations: string[];
+}
+
+export interface AlertUpdate {
+  at: ISODateTime;
+  title: string;
+  explanation: string;
+  evidence: AlertEvidence[];
+  safeNextStep: string;
+  ruleId: string;
+}
+
+/** v4.2 Preventive Health Management & Mission Medical Resources canonical contracts. */
+export type PreventionCategory = 'exercise' | 'sleep_recovery' | 'self_assessment' | 'hydration';
+export type PreventionPlanSource = 'synthetic_demo' | 'user_created';
+export type PreventionRecurrence = 'once' | 'daily' | 'per_shift';
+export type PreventionTargetKind =
+  | 'exercise_activity'
+  | 'physical_assessment'
+  | 'sleep_observation'
+  | 'fatigue_stress_check'
+  | 'reaction_assessment'
+  | 'typing_assessment'
+  | 'procedure_assessment'
+  | 'hydration_log';
+
+/** Coherent disjoint schedule states; missing records are never labeled noncompliance. */
+export type PreventionStatus =
+  | 'not_yet_due'
+  | 'due'
+  | 'completed'
+  | 'insufficient_evidence'
+  | 'unknown';
+
+export interface PreventionCompletionRecord {
+  id: string;
+  astronautId: AstronautId;
+  completedAt: ISODateTime;
+  source: AcquisitionMethod;
+  origin: DataOrigin;
+  quality: ObservationQuality;
+  evidenceIds: string[];
+  note?: string;
+  demonstrationOnly: boolean;
+}
+
+export interface PreventionHistoryEntry {
+  id: string;
+  at: ISODateTime;
+  action: 'created' | 'updated' | 'completed_manual' | 'evidence_linked' | 'evidence_withheld';
+  summary: string;
+  evidenceIds?: string[];
+}
+
+export interface PreventionPlanItem {
+  id: string;
+  astronautId: AstronautId;
+  origin: DataOrigin;
+  category: PreventionCategory;
+  targetKind: PreventionTargetKind;
+  title: string;
+  description: string;
+  plannedStartAt: ISODateTime;
+  plannedEndAt: ISODateTime;
+  recurrence: PreventionRecurrence;
+  planSource: PreventionPlanSource;
+  sourceRefIds: string[];
+  demonstrationOnly: boolean;
+  createdAt: ISODateTime;
+  updatedAt: ISODateTime;
+  linkedObservationIds: string[];
+  withheldObservationIds?: string[];
+  completions: PreventionCompletionRecord[];
+  history: PreventionHistoryEntry[];
+  /** Optional user-entered or synthetic demo reference in mL; never a clinical prescription. */
+  hydrationGoalMl?: number | null;
+}
+
+export type HydrationUnit = 'mL' | 'L';
+
+export interface HydrationRecord {
+  id: string;
+  astronautId: AstronautId;
+  timestamp: ISODateTime;
+  /** Missing entries require null and quality='missing', never 0. */
+  amount: number | null;
+  unit: HydrationUnit;
+  /** Normalized volume in mL (1 L = 1000 mL), or null when missing. */
+  amountMl: number | null;
+  source: 'manual' | 'simulator';
+  origin: DataOrigin;
+  quality: ObservationQuality;
+  demonstrationOnly: boolean;
+  sourceRefIds: string[];
+  note?: string;
+  linkedPlanId?: string;
+}
+
+export type ResourceCategory =
+  | 'cardiac_monitoring'
+  | 'imaging'
+  | 'vital_signs'
+  | 'first_aid'
+  | 'laboratory_point_of_care'
+  | 'general_equipment';
+
+export type ResourceAvailability = 'available' | 'unavailable' | 'unknown';
+export type ResourceOperability = 'functional' | 'out_of_service' | 'unknown';
+export type ResourceOccupancy = 'free' | 'in_use' | 'reserved' | 'unknown';
+export type OperatorQualification = 'any_crew' | 'trained_operator' | 'crew_medical_officer' | 'unknown';
+
+export interface ResourceStatusHistoryEntry {
+  id: string;
+  at: ISODateTime;
+  availability: ResourceAvailability;
+  operability: ResourceOperability;
+  occupancy: ResourceOccupancy;
+  quantity: number | null;
+  reason: string;
+  actorRole?: string;
 }

@@ -1,3 +1,4 @@
+<!-- Development disclosure: team-directed, AI-assisted code/documentation. See ../../AI_DISCLOSURE.md for tool scope, third-party sources and attribution uncertainty. -->
 # Health — owned by feat/health-engine
 
 Core v2: HealthMonitor, Assessments, Encounters, Research, engine, clinical,
