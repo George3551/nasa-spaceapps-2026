@@ -10,7 +10,7 @@ function setup() {
   const video = document.createElement('video'); video.play = vi.fn(async () => {}); video.pause = vi.fn()
   const ended = vi.fn(), failure = vi.fn()
   const session = new CameraSession('visual', video, document.createElement('canvas'), vi.fn(), failure, ended)
-  return { session, stop, stream, getUserMedia, ended, failure }
+  return { session, stop, stream, track, getUserMedia, ended, failure }
 }
 beforeEach(() => {
   vi.stubGlobal('isSecureContext', true); vi.stubGlobal('requestAnimationFrame', vi.fn(() => 1)); vi.stubGlobal('cancelAnimationFrame', vi.fn())
@@ -19,8 +19,10 @@ beforeEach(() => {
 afterEach(() => vi.unstubAllGlobals())
 describe('camera resource lifetime', () => {
   it('releases tracks and the model on explicit stop', async () => {
-    const { session, stop } = setup(); await session.start(); session.stop()
+    const { session, stop, failure, ended } = setup(); await session.start(); const result = session.stop()
     expect(stop).toHaveBeenCalledOnce(); expect(model.close).toHaveBeenCalledOnce()
+    expect(result).toMatchObject({ endReason: 'user_stop', issue: null })
+    expect(failure).not.toHaveBeenCalled(); expect(ended).not.toHaveBeenCalled()
   })
   it('releases late permission results after startup cancellation', async () => {
     const { session, stop, stream, getUserMedia } = setup()
@@ -52,6 +54,14 @@ describe('camera resource lifetime', () => {
     Object.defineProperty(document, 'hidden', { configurable: true, value: true })
     document.dispatchEvent(new Event('visibilitychange'))
     expect(stop).toHaveBeenCalledOnce(); expect(ended).toHaveBeenCalledOnce(); expect(failure).toHaveBeenCalled()
+    expect(ended.mock.calls[0]![0]).toMatchObject({ endReason: 'tab_hidden', issue: 'camera_interrupted' })
+    expect(session.stop().endReason).toBe('tab_hidden')
     Object.defineProperty(document, 'hidden', { configurable: true, value: false })
+  })
+  it('distinguishes external stream end from an explicit user stop', async () => {
+    const { session, track, ended } = setup(); await session.start()
+    const callback = track.addEventListener.mock.calls[0]![1] as EventListener
+    callback(new Event('ended'))
+    expect(ended.mock.calls[0]![0]).toMatchObject({ endReason: 'stream_ended', issue: 'camera_interrupted' })
   })
 })

@@ -4,12 +4,14 @@ import { PhysicalMetrics, VisualMetrics } from './metrics'
 import { faceSignal, poseSignal, POSE_CONNECTIONS } from './signals'
 import type { Point } from './signals'
 
+export type SessionEndReason = 'user_stop' | 'tab_hidden' | 'stream_ended' | 'frames_stalled' | 'time_limit' | 'processing_error' | 'startup_error'
 export interface CameraSnapshot {
   visual: VisualAssessmentMetrics | null
   physical: PhysicalAssessmentMetrics | null
   issue: TrackingIssue | null
   rawSignal: number | null
   visibility: number | null
+  endReason: SessionEndReason | null
 }
 export class CameraSession {
   private stream: MediaStream | null = null
@@ -26,8 +28,9 @@ export class CameraSession {
   private issue: TrackingIssue | null = null
   private rawSignal: number | null = null
   private visibility: number | null = null
+  private endReason: SessionEndReason | null = null
   private center: { x: number; y: number; span: number } | null = null
-  private onVisibility = () => { if (document.hidden) this.interrupted('Assessment stopped because the page became hidden.') }
+  private onVisibility = () => { if (document.hidden) this.interrupted('Assessment stopped because the page became hidden.', 'tab_hidden') }
   constructor(private kind: 'visual' | 'physical', private video: HTMLVideoElement, private canvas: HTMLCanvasElement, private onSnapshot: (snapshot: CameraSnapshot) => void, private onFailure: (error: string) => void, private onEnded: (snapshot: CameraSnapshot) => void) {}
   async start() {
     const generation = ++this.generation
@@ -37,7 +40,7 @@ export class CameraSession {
       if (generation !== this.generation) { stream.getTracks().forEach(t => t.stop()); return }
       this.stream = stream; this.video.srcObject = stream
       document.addEventListener('visibilitychange', this.onVisibility)
-      stream.getVideoTracks().forEach(track => track.addEventListener('ended', () => this.interrupted('Camera stream ended.'), { once: true }))
+      stream.getVideoTracks().forEach(track => track.addEventListener('ended', () => this.interrupted('Camera stream ended.', 'stream_ended'), { once: true }))
       await this.video.play()
       if (generation !== this.generation) return
       const { FaceLandmarker, PoseLandmarker, FilesetResolver } = await import('@mediapipe/tasks-vision')
@@ -53,22 +56,22 @@ export class CameraSession {
         if (generation !== this.generation) return
         const now = performance.now(), elapsed = now - this.started
         try {
-          if (document.hidden) { this.interrupted('Assessment stopped because the page became hidden.'); return }
-          if (elapsed >= 120000) { const result = this.stop(); this.onEnded(result); return }
+          if (document.hidden) { this.interrupted('Assessment stopped because the page became hidden.', 'tab_hidden'); return }
+          if (elapsed >= 120000) { const result = this.stop('time_limit'); this.onEnded(result); return }
           if (now - this.lastFrame >= 50 && this.video.readyState >= 2 && this.video.currentTime !== this.lastVideoTime) {
             this.lastFrame = now; this.lastVideoTime = this.video.currentTime; this.lastFresh = now
             this.process(now, elapsed)
           } else if (now - this.lastFresh > 750) {
             this.issue = 'camera_interrupted'; this.feedInvalid(elapsed)
-            if (now - this.lastFresh > 3000) { this.interrupted('Camera frames stopped arriving.'); return }
+            if (now - this.lastFresh > 3000) { this.interrupted('Camera frames stopped arriving.', 'frames_stalled'); return }
           }
           if (now - this.lastUi > 250) { this.lastUi = now; this.onSnapshot(this.snapshot(elapsed)) }
-        } catch (error) { this.interrupted(`Camera processing failed: ${error instanceof Error ? error.message : 'unknown error'}`); return }
+        } catch (error) { this.interrupted(`Camera processing failed: ${error instanceof Error ? error.message : 'unknown error'}`, 'processing_error'); return }
         this.frame = requestAnimationFrame(loop)
       }
       this.frame = requestAnimationFrame(loop)
     } catch (error) {
-      this.stop()
+      this.stop('startup_error')
       if (generation + 1 !== this.generation) return
       throw error
     }
@@ -112,14 +115,15 @@ export class CameraSession {
     for (const point of points) { context.beginPath(); context.arc(point.x * width, point.y * height, pose ? 3 : 1.2, 0, Math.PI * 2); context.fill() }
   }
   snapshot(duration = this.started ? performance.now() - this.started : 0): CameraSnapshot {
-    return { visual: this.kind === 'visual' ? this.visual.result(duration) : null, physical: this.kind === 'physical' ? this.physical.result(duration) : null, issue: this.issue, rawSignal: this.rawSignal, visibility: this.visibility }
+    return { visual: this.kind === 'visual' ? this.visual.result(duration) : null, physical: this.kind === 'physical' ? this.physical.result(duration) : null, issue: this.issue, rawSignal: this.rawSignal, visibility: this.visibility, endReason: this.endReason }
   }
-  private interrupted(message: string) {
+  private interrupted(message: string, reason: SessionEndReason) {
     if (!this.stream) return
     this.issue = 'camera_interrupted'; this.feedInvalid(this.started ? performance.now() - this.started : 0)
-    const result = this.stop(); this.onFailure(message); this.onEnded(result)
+    const result = this.stop(reason); this.onFailure(message); this.onEnded(result)
   }
-  stop(): CameraSnapshot {
+  stop(reason: SessionEndReason = 'user_stop'): CameraSnapshot {
+    this.endReason ??= reason
     const snapshot = this.snapshot()
     ++this.generation; cancelAnimationFrame(this.frame)
     document.removeEventListener('visibilitychange', this.onVisibility)

@@ -4,11 +4,17 @@ import { Panel } from '../app/components/Panel'
 import { useAppState } from '../app/state/context'
 import { selectWorkspace } from '../app/state/reducer'
 import { CameraSession } from './CameraSession'
-import type { CameraSnapshot } from './CameraSession'
+import type { CameraSnapshot, SessionEndReason } from './CameraSession'
 import { cameraRecord } from './records'
 import { MovementHistory } from './MovementHistory'
 
 const number = (value: number | null | undefined, digits = 1) => value == null ? 'Unavailable' : value.toFixed(digits)
+const endLabel: Record<SessionEndReason, string> = {
+  user_stop: 'Stopped by you.', tab_hidden: 'Stopped because the page became hidden (privacy safeguard).',
+  stream_ended: 'Camera stream ended unexpectedly.', frames_stalled: 'Stopped because camera frames stopped arriving.',
+  time_limit: 'Stopped at the 2-minute session limit.', processing_error: 'Stopped after a camera processing error.',
+  startup_error: 'Camera or model startup failed.',
+}
 export function CameraAssessment({ kind }: { kind: 'visual' | 'physical' }) {
   const { state, dispatch } = useAppState(), workspace = selectWorkspace(state)
   const person = workspace.crew.find(c => c.id === state.selectedAstronautId)
@@ -58,8 +64,9 @@ export function CameraAssessment({ kind }: { kind: 'visual' | 'physical' }) {
         <p className="sample-note">Processing is on this device with bundled models and WASM. No recognition of identity, emotions or psychological state. Stop, leaving the page, a hidden tab or a 2-minute limit releases the camera. No raw frames or landmarks are saved.</p>
       </Panel>
       <Panel title="Experimental observations" eyebrow="Tracking quality is not medical confidence">
-        <p className="muted">Tracking: {snapshot?.issue?.replaceAll('_', ' ') ?? (kind === 'visual' && snapshot?.visual?.calibratedOpenEar === null ? 'calibrating' : active ? 'usable geometry' : 'not started')}.</p>
-        {result && <><dl className="metadata"><div><dt>Session</dt><dd>{number(result.durationMs / 1000)} s</dd></div><div><dt>Usable observation</dt><dd>{number(result.validObservationMs / 1000)} s</dd></div><div><dt>Usable coverage</dt><dd>{number(result.trackingCoverage * 100)}% (time coverage, not confidence)</dd></div></dl>
+        <p className="muted">{active ? 'Tracking' : 'Last tracking observation'}: {snapshot?.issue?.replaceAll('_', ' ') ?? (kind === 'visual' && snapshot?.visual?.calibratedOpenEar === null ? 'calibrating' : snapshot ? 'usable geometry' : 'not started')}.</p>
+        {snapshot?.endReason && <p className="sample-note" role="status">Session ended: {endLabel[snapshot.endReason]}</p>}
+        {result && <><dl className="metadata"><div><dt>Session</dt><dd>{number(result.durationMs / 1000)} s</dd></div>{snapshot?.visual && <><div><dt>Calibration phase</dt><dd>{number(snapshot.visual.calibrationMs / 1000)} s (excluded from coverage)</dd></div><div><dt>Post-calibration window</dt><dd>{number(Math.max(0, result.durationMs - snapshot.visual.calibrationMs) / 1000)} s</dd></div></>}<div><dt>Usable observation</dt><dd>{number(result.validObservationMs / 1000)} s</dd></div><div><dt>{snapshot?.visual ? 'Usable coverage after calibration' : 'Usable coverage of session'}</dt><dd>{number(result.trackingCoverage * 100)}% (time coverage, not confidence)</dd></div>{snapshot?.visual && <div><dt>Whole-session usable proportion</dt><dd>{number(result.durationMs ? result.validObservationMs / result.durationMs * 100 : null)}%</dd></div>}</dl>
           {!result.sufficient && <p className="sample-note" role="status">Assessment unavailable — insufficient reliable visual data.</p>}
         </>}
         {snapshot?.visual && <dl className="metadata"><div><dt>Calibration</dt><dd>{snapshot.visual.calibratedOpenEar === null ? 'Incomplete' : `Open-eye EAR ${number(snapshot.visual.calibratedOpenEar, 3)}`}</dd></div><div><dt>Blinks</dt><dd>{number(snapshot.visual.blinkCount, 0)}</dd></div><div><dt>Blink rate</dt><dd>{number(snapshot.visual.blinkRatePerMinute)} / usable minute</dd></div><div><dt>Mean blink</dt><dd>{number(snapshot.visual.meanBlinkDurationMs)} ms</dd></div><div><dt>Eye closure</dt><dd>{number(snapshot.visual.eyeClosureMs == null ? null : snapshot.visual.eyeClosureMs / 1000)} s</dd></div><div><dt>Closure proportion</dt><dd>{number(snapshot.visual.closureProportion == null ? null : snapshot.visual.closureProportion * 100)}%</dd></div><div><dt>PERCLOS-inspired</dt><dd>{number(snapshot.visual.perclosInspiredProportion == null ? null : snapshot.visual.perclosInspiredProportion * 100)}% prolonged closure time</dd></div></dl>}

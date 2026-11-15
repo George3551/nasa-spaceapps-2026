@@ -13,6 +13,15 @@ function visualSession() {
   return metrics
 }
 describe('elapsed-time eye measurements from deterministic landmark fixtures', () => {
+  it('excludes the full calibration phase from coverage, including an initial tracking delay', () => {
+    const metrics = new VisualMetrics()
+    for (let at = 0; at <= 59700; at += 50) metrics.feed(at, at < 10400 ? { ear: null, issue: 'no_face' } : { ear: .298, issue: null })
+    const result = metrics.result(59800)
+    expect(result.calibrationMs).toBe(13400)
+    expect(result.trackingCoverage).toBeCloseTo(result.validObservationMs / (59800 - 13400), 10)
+    expect((result.trackingCoverage * 100).toFixed(1)).toBe('99.7')
+    expect(result.validObservationMs / result.durationMs).toBeLessThan(.78)
+  })
   it('accepts recorded SDK geometry and a controlled eyelid episode derived from it', () => {
     const face = recordedFace(), pose = recordedPose()
     expect(faceSignal([face], 640, 640).ear).toBeCloseTo(.208, 2)
