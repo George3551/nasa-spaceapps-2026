@@ -25,6 +25,8 @@ import { CameraAssessment } from '../vision/CameraAssessment'
 import { Anatomy } from '../anatomy/Anatomy'
 import { HumanPerformance } from '../health/HumanPerformance'
 import { SensorIntegration } from '../sensors/SensorIntegration'
+import { PreventiveHealth } from '../prevention/PreventiveHealth'
+import { MissionResources } from '../resources/MissionResources'
 import { ReleaseIntro } from './components/ReleaseIntro'
 
 function Sidebar({ open, onNavigate }: { open: boolean; onNavigate(): void }) {
@@ -126,6 +128,8 @@ export function App({ modules = {} }: { modules?: ModuleViews }) {
         {state.section === 'anatomy' && <Anatomy />}
         {state.section === 'performance' && <HumanPerformance />}
         {state.section === 'sensors' && <SensorIntegration />}
+        {state.section === 'prevention' && <PreventiveHealth />}
+        {state.section === 'resources' && <MissionResources />}
       </main>
       <footer className="footer"><span>AEGIS · research prototype · {state.scope} workspace</span><span>No clinical diagnosis · no external runtime API</span></footer>
     </div>

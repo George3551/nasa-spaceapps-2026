@@ -180,6 +180,8 @@ export interface MissionState {
   sources?: SourceReference[];
   resources?: MedicalResource[];
   examinations?: ExaminationRecord[];
+  preventionPlans?: PreventionPlanItem[];
+  hydrationRecords?: HydrationRecord[];
 }
 
 export interface SimulationPort {
@@ -284,6 +286,18 @@ export interface MedicalResource {
   timestamp: ISODateTime;
   source: AcquisitionMethod;
   sourceRefIds: string[];
+  category?: ResourceCategory;
+  availability?: ResourceAvailability;
+  operability?: ResourceOperability;
+  occupancy?: ResourceOccupancy;
+  compartmentId?: CompartmentId;
+  requiredQualification?: OperatorQualification;
+  qualificationNote?: string;
+  lastVerifiedAt?: ISODateTime | null;
+  statusReason?: string;
+  constraints?: string;
+  demonstrationOnly?: boolean;
+  history?: ResourceStatusHistoryEntry[];
 }
 
 export interface ClinicalWorkspace {
@@ -294,6 +308,8 @@ export interface ClinicalWorkspace {
   activities?: ActivityRecord[];
   environment?: EnvironmentalMeasurement[];
   examinations?: ExaminationRecord[];
+  preventionPlans?: PreventionPlanItem[];
+  hydrationRecords?: HydrationRecord[];
 }
 
 export interface MissionSnapshot extends MissionState {
@@ -431,3 +447,114 @@ export interface AlertUpdate {
   safeNextStep: string;
   ruleId: string;
 }
+
+/** v4.2 Preventive Health Management & Mission Medical Resources canonical contracts. */
+export type PreventionCategory = 'exercise' | 'sleep_recovery' | 'self_assessment' | 'hydration';
+export type PreventionPlanSource = 'synthetic_demo' | 'user_created';
+export type PreventionRecurrence = 'once' | 'daily' | 'per_shift';
+export type PreventionTargetKind =
+  | 'exercise_activity'
+  | 'physical_assessment'
+  | 'sleep_observation'
+  | 'fatigue_stress_check'
+  | 'reaction_assessment'
+  | 'typing_assessment'
+  | 'procedure_assessment'
+  | 'hydration_log';
+
+/** Coherent disjoint schedule states; missing records are never labeled noncompliance. */
+export type PreventionStatus =
+  | 'not_yet_due'
+  | 'due'
+  | 'completed'
+  | 'insufficient_evidence'
+  | 'unknown';
+
+export interface PreventionCompletionRecord {
+  id: string;
+  astronautId: AstronautId;
+  completedAt: ISODateTime;
+  source: AcquisitionMethod;
+  origin: DataOrigin;
+  quality: ObservationQuality;
+  evidenceIds: string[];
+  note?: string;
+  demonstrationOnly: boolean;
+}
+
+export interface PreventionHistoryEntry {
+  id: string;
+  at: ISODateTime;
+  action: 'created' | 'updated' | 'completed_manual' | 'evidence_linked' | 'evidence_withheld';
+  summary: string;
+  evidenceIds?: string[];
+}
+
+export interface PreventionPlanItem {
+  id: string;
+  astronautId: AstronautId;
+  origin: DataOrigin;
+  category: PreventionCategory;
+  targetKind: PreventionTargetKind;
+  title: string;
+  description: string;
+  plannedStartAt: ISODateTime;
+  plannedEndAt: ISODateTime;
+  recurrence: PreventionRecurrence;
+  planSource: PreventionPlanSource;
+  sourceRefIds: string[];
+  demonstrationOnly: boolean;
+  createdAt: ISODateTime;
+  updatedAt: ISODateTime;
+  linkedObservationIds: string[];
+  withheldObservationIds?: string[];
+  completions: PreventionCompletionRecord[];
+  history: PreventionHistoryEntry[];
+  /** Optional user-entered or synthetic demo reference in mL; never a clinical prescription. */
+  hydrationGoalMl?: number | null;
+}
+
+export type HydrationUnit = 'mL' | 'L';
+
+export interface HydrationRecord {
+  id: string;
+  astronautId: AstronautId;
+  timestamp: ISODateTime;
+  /** Missing entries require null and quality='missing', never 0. */
+  amount: number | null;
+  unit: HydrationUnit;
+  /** Normalized volume in mL (1 L = 1000 mL), or null when missing. */
+  amountMl: number | null;
+  source: 'manual' | 'simulator';
+  origin: DataOrigin;
+  quality: ObservationQuality;
+  demonstrationOnly: boolean;
+  sourceRefIds: string[];
+  note?: string;
+  linkedPlanId?: string;
+}
+
+export type ResourceCategory =
+  | 'cardiac_monitoring'
+  | 'imaging'
+  | 'vital_signs'
+  | 'first_aid'
+  | 'laboratory_point_of_care'
+  | 'general_equipment';
+
+export type ResourceAvailability = 'available' | 'unavailable' | 'unknown';
+export type ResourceOperability = 'functional' | 'out_of_service' | 'unknown';
+export type ResourceOccupancy = 'free' | 'in_use' | 'reserved' | 'unknown';
+export type OperatorQualification = 'any_crew' | 'trained_operator' | 'crew_medical_officer' | 'unknown';
+
+export interface ResourceStatusHistoryEntry {
+  id: string;
+  at: ISODateTime;
+  availability: ResourceAvailability;
+  operability: ResourceOperability;
+  occupancy: ResourceOccupancy;
+  quantity: number | null;
+  reason: string;
+  actorRole?: string;
+}
+

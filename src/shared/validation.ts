@@ -6,7 +6,7 @@
  * See AI_DISCLOSURE.md and AI_DISCLOSURE_MANIFEST.json for evidence and attribution limits.
  */
 import { z } from 'zod'
-import type { HealthMeasurement } from '../../contracts/types'
+import type { HealthMeasurement, HydrationRecord, MedicalResource, PreventionPlanItem } from '../../contracts/types'
 
 const id = z.string().min(1).max(200)
 const timestamp = z.iso.datetime({ offset: true })
@@ -99,7 +99,88 @@ export const examinationSchema = z.object({ ...metadata, kind: z.enum(['ecg', 'u
   if ((r.quality === 'missing') !== (r.summary === null) || (r.source === 'simulator' && r.origin !== 'synthetic')) ctx.addIssue({ code: 'custom', message: 'Examination quality/provenance mismatch' })
 })
 export const sensorBatchSchema = z.object({ measurements: z.array(measurementSchema), environment: z.array(environmentSchema), examinations: z.array(examinationSchema) })
-export const clinicalSchema = z.object({ measurements: z.array(measurementSchema), assessments: z.array(assessmentSchema), alerts: z.array(alertSchema), encounters: z.array(encounterSchema), activities: z.array(activitySchema).default([]), environment: z.array(environmentSchema).default([]), examinations: z.array(examinationSchema).default([]) })
+export const preventionCompletionSchema = z.object({
+  id, astronautId: id, completedAt: timestamp, source, origin: originSchema, quality,
+  evidenceIds: z.array(id), note: z.string().max(1000).optional(), demonstrationOnly: z.boolean(),
+}).superRefine((r, ctx) => {
+  if (r.source === 'simulator' && r.origin !== 'synthetic') ctx.addIssue({ code: 'custom', message: 'Simulator completion must be synthetic' })
+})
+export const preventionHistorySchema = z.object({
+  id, at: timestamp, action: z.enum(['created', 'updated', 'completed_manual', 'evidence_linked', 'evidence_withheld']),
+  summary: z.string().trim().min(1).max(1000), evidenceIds: z.array(id).optional(),
+})
+export const preventionPlanSchema = z.object({
+  id, astronautId: id, origin: originSchema,
+  category: z.enum(['exercise', 'sleep_recovery', 'self_assessment', 'hydration']),
+  targetKind: z.enum(['exercise_activity', 'physical_assessment', 'sleep_observation', 'fatigue_stress_check', 'reaction_assessment', 'typing_assessment', 'procedure_assessment', 'hydration_log']),
+  title: z.string().trim().min(1).max(300),
+  description: z.string().trim().min(1).max(2000),
+  plannedStartAt: timestamp, plannedEndAt: timestamp,
+  recurrence: z.enum(['once', 'daily', 'per_shift']),
+  planSource: z.enum(['synthetic_demo', 'user_created']),
+  sourceRefIds: z.array(id), demonstrationOnly: z.boolean(),
+  createdAt: timestamp, updatedAt: timestamp,
+  linkedObservationIds: z.array(id),
+  withheldObservationIds: z.array(id).optional(),
+  completions: z.array(preventionCompletionSchema),
+  history: z.array(preventionHistorySchema),
+  hydrationGoalMl: finite.gt(0).max(10000).nullable().optional(),
+}).superRefine((r, ctx) => {
+  if (Date.parse(r.plannedEndAt) < Date.parse(r.plannedStartAt)) ctx.addIssue({ code: 'custom', message: 'Planned schedule end must not precede start.' })
+  if (r.origin === 'observed' && r.planSource === 'synthetic_demo') ctx.addIssue({ code: 'custom', message: 'Synthetic demo plans cannot enter observed records.' })
+  if (r.origin === 'synthetic' && !r.demonstrationOnly) ctx.addIssue({ code: 'custom', message: 'Synthetic plans must declare demonstrationOnly.' })
+  if (r.completions.some(c => c.astronautId !== r.astronautId || c.origin !== r.origin)) ctx.addIssue({ code: 'custom', message: 'Completion subject/origin must match plan.' })
+})
+export const hydrationRecordSchema = z.object({
+  id, astronautId: id, timestamp,
+  amount: finite.gt(0).max(10000).nullable(),
+  unit: z.enum(['mL', 'L']),
+  amountMl: finite.gt(0).max(10000).nullable(),
+  source: z.enum(['manual', 'simulator']),
+  origin: originSchema, quality,
+  demonstrationOnly: z.boolean(),
+  sourceRefIds: z.array(id),
+  note: z.string().max(1000).optional(),
+  linkedPlanId: id.optional(),
+}).superRefine((r, ctx) => {
+  if ((r.quality === 'missing') !== (r.amount === null || r.amountMl === null) || (r.amount === null) !== (r.amountMl === null)) {
+    ctx.addIssue({ code: 'custom', message: 'Missing hydration entries require null amount and quality=missing; available entries require positive numbers.' })
+  }
+  if (r.source === 'simulator' && r.origin !== 'synthetic') ctx.addIssue({ code: 'custom', message: 'Simulator hydration entries must be synthetic.' })
+  if (r.origin === 'synthetic' && !r.demonstrationOnly) ctx.addIssue({ code: 'custom', message: 'Synthetic hydration entries must declare demonstrationOnly.' })
+  if (r.amount !== null && r.amountMl !== null) {
+    const expectedMl = r.unit === 'L' ? r.amount * 1000 : r.amount
+    if (Math.abs(r.amountMl - expectedMl) > 0.01) ctx.addIssue({ code: 'custom', message: 'Hydration mL normalization does not match declared amount and unit.' })
+  }
+})
+export const resourceHistorySchema = z.object({
+  id, at: timestamp,
+  availability: z.enum(['available', 'unavailable', 'unknown']),
+  operability: z.enum(['functional', 'out_of_service', 'unknown']),
+  occupancy: z.enum(['free', 'in_use', 'reserved', 'unknown']),
+  quantity: positive.int().nullable(),
+  reason: z.string().trim().min(1).max(1000),
+  actorRole: z.string().max(200).optional(),
+})
+export const resourceSchema = z.object({
+  id, label: z.string().trim().min(1).max(300), quantity: positive.nullable(), unit: z.string().min(1),
+  origin: originSchema, quality, timestamp, source, sourceRefIds: z.array(id),
+  category: z.enum(['cardiac_monitoring', 'imaging', 'vital_signs', 'first_aid', 'laboratory_point_of_care', 'general_equipment']).optional(),
+  availability: z.enum(['available', 'unavailable', 'unknown']).optional(),
+  operability: z.enum(['functional', 'out_of_service', 'unknown']).optional(),
+  occupancy: z.enum(['free', 'in_use', 'reserved', 'unknown']).optional(),
+  compartmentId: id.optional(),
+  requiredQualification: z.enum(['any_crew', 'trained_operator', 'crew_medical_officer', 'unknown']).optional(),
+  qualificationNote: z.string().max(1000).optional(),
+  lastVerifiedAt: timestamp.nullable().optional(),
+  statusReason: z.string().max(1000).optional(),
+  constraints: z.string().max(1000).optional(),
+  demonstrationOnly: z.boolean().optional(),
+  history: z.array(resourceHistorySchema).optional(),
+}).superRefine((r, ctx) => {
+  if (r.source === 'simulator' && r.origin !== 'synthetic') ctx.addIssue({ code: 'custom', message: 'Simulator resource records must be synthetic.' })
+})
+export const clinicalSchema = z.object({ measurements: z.array(measurementSchema), assessments: z.array(assessmentSchema), alerts: z.array(alertSchema), encounters: z.array(encounterSchema), activities: z.array(activitySchema).default([]), environment: z.array(environmentSchema).default([]), examinations: z.array(examinationSchema).default([]), preventionPlans: z.array(preventionPlanSchema).default([]), hydrationRecords: z.array(hydrationRecordSchema).default([]) })
 const sourceRef = z.object({ id, title: z.string(), url: z.url().optional(), kind: z.enum(['research', 'dataset', 'synthetic_fixture', 'user_entry', 'device']), note: z.string().optional() })
 export const missionSchema = z.object({
   missionTime: timestamp, paused: z.boolean(), speed: finite.min(1).max(3600), activeScenario: z.enum(['normal-day', 'sleep-disruption', 'co2-excursion', 'radiation-event']), seed: positive.int().max(4294967295),
@@ -110,7 +191,7 @@ export const missionSchema = z.object({
   activities: z.array(activitySchema),
   events: z.array(z.object({ id, at: timestamp, kind: z.enum(['crew_movement', 'routine', 'measurement', 'environment_incident', 'radiation_incident', 'health_alert', 'operator_action']), astronautId: id.optional(), compartmentId: id.optional(), summary: z.string(), scenarioId: z.enum(['normal-day', 'sleep-disruption', 'co2-excursion', 'radiation-event']).optional(), synthetic: z.boolean() })),
   sources: z.array(sourceRef),
-  resources: z.array(z.object({ id, label: z.string(), quantity: positive.nullable(), unit: z.string(), origin: originSchema, quality, timestamp, source, sourceRefIds: z.array(id) })),
+  resources: z.array(resourceSchema),
 })
 
 export function validateMeasurement(input: unknown): HealthMeasurement {
@@ -120,4 +201,13 @@ export function validateMeasurement(input: unknown): HealthMeasurement {
 export function readableValidationError(error: unknown): string {
   if (error instanceof z.ZodError) return error.issues.map(i => i.message).slice(0, 2).join(" ")
   return error instanceof Error ? error.message : "Invalid input. Check the value, unit and date."
+}
+export function validatePreventionPlan(input: unknown): PreventionPlanItem {
+  return preventionPlanSchema.parse(input) as PreventionPlanItem
+}
+export function validateHydrationRecord(input: unknown): HydrationRecord {
+  return hydrationRecordSchema.parse(input) as HydrationRecord
+}
+export function validateResource(input: unknown): MedicalResource {
+  return resourceSchema.parse(input) as MedicalResource
 }
