@@ -30,12 +30,12 @@ describe('astronaut-first integrated application', () => {
   it('runs a sleep scenario through detection and opens the affected profile from the ship', async () => {
     const user = userEvent.setup(); mount()
     await user.selectOptions(screen.getByLabelText('Demo user context'), 'mission')
-    await user.click(screen.getByRole('button', { name: 'Mission Simulation' }))
+    await user.click(screen.getByRole('button', { name: 'Simulator' }))
     await user.selectOptions(screen.getByLabelText('Scenario'), 'sleep-disruption')
-    const confirm = window.confirm; window.confirm = () => true
-    await user.click(screen.getByRole('button', { name: 'Load scenario' })); window.confirm = confirm
+    await user.click(screen.getByRole('button', { name: 'Load scenario' }))
+    await user.click(screen.getByRole('button', { name: 'Reset and load' }))
     await user.click(screen.getByRole('button', { name: 'Advance 3 virtual minutes' }))
-    await user.click(screen.getByRole('button', { name: 'Events & Alerts' }))
+    await user.click(screen.getByRole('button', { name: /^Alerts & Cases/ }))
     expect(screen.getAllByText('Recovery indicators changed').length).toBeGreaterThan(0)
     await user.click(screen.getByRole('button', { name: 'Acknowledge' }))
     expect(screen.getByRole('button', { name: 'Acknowledged' })).toBeDisabled()
@@ -46,7 +46,7 @@ describe('astronaut-first integrated application', () => {
   })
   it('keeps real assessments out of simulation previews', async () => {
     const user = userEvent.setup(); mount()
-    await user.click(screen.getByRole('button', { name: 'Daily Assessments' }))
+    await user.click(screen.getByRole('button', { name: 'Cognitive Tests' }))
     expect(screen.getByRole('button', { name: 'Start typing test' })).toBeInTheDocument()
     await user.selectOptions(screen.getByLabelText('Data workspace'), 'synthetic')
     expect(screen.queryByRole('button', { name: 'Start typing test' })).not.toBeInTheDocument()
@@ -64,14 +64,14 @@ describe('astronaut-first integrated application', () => {
   })
   it('requires explicit demo association before camera activation and keeps optional workflows available', async () => {
     const user = userEvent.setup(); mount()
-    await user.click(screen.getByRole('button', { name: 'Visual Assessment' }))
+    await user.click(screen.getByRole('button', { name: 'Eye Observation' }))
     expect(screen.getByRole('button', { name: 'Start Assessment' })).toBeDisabled()
     await user.click(screen.getByRole('checkbox', { name: /Associate this observed session/ }))
     expect(screen.getByRole('button', { name: 'Start Assessment' })).toBeEnabled()
-    await user.click(screen.getByRole('button', { name: 'Anatomy' }))
+    await user.click(screen.getByRole('button', { name: 'Body Systems' }))
     await user.click(screen.getByRole('button', { name: 'Nervous / Cognitive' }))
     expect(screen.getByText(/Unknown does not mean healthy/)).toBeInTheDocument()
-    await user.click(screen.getByRole('button', { name: 'Daily Assessments' }))
+    await user.click(screen.getByRole('button', { name: 'Cognitive Tests' }))
     expect(screen.getByRole('button', { name: 'Start typing test' })).toBeEnabled()
   })
 })

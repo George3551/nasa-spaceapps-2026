@@ -1,77 +1,45 @@
-# AEGIS — Astronaut Health Monitoring & Mission Digital Twin
+# AEGIS
 
-**Current local implementation on develop: Core v4.1.**
-Sensor Integration and Human Performance Assessment extend the existing v3 shell.
-See [docs/CORE_V4_1.md](docs/CORE_V4_1.md) for architecture, local demonstration,
-validation and limitations. Public RC1 stays frozen at 034fcdb; local v4.1 is not
-pushed or deployed.
+Autonomous Health Monitoring & Decision Support for Deep-Space Missions.
 
-**Preserved v3 workflows:** Start in Astronaut Mode → My Health.
-The existing shell now includes health entry, assessments, clinical follow-up,
-deterministic scenarios, a spacecraft cutaway and validated local persistence.
-V3 adds voluntary local face/pose assessments, integrated assessment/activity
-history and a record-driven interactive anatomical SVG. See
-[docs/CORE_V3.md](docs/CORE_V3.md) for the demo, algorithms and camera limitations,
-and [docs/CORE_V2.md](docs/CORE_V2.md) for the preserved core workflows.
-The planning-kit and v0.1 descriptions below are retained as historical context.
+A functioning React/TypeScript research prototype for NASA Space Apps 2026.
+Astronauts can record observations, complete cognitive tests, compare compatible
+personal baselines, understand explained alerts and record human-controlled
+follow-up. The spacecraft and mission scenarios use clearly labelled synthetic
+fixtures. Optional face/pose measurements run locally; no raw video is stored.
 
-**Release preparation:** see [the release checklist](docs/RELEASE_CHECKLIST.md),
-[Cloudflare Pages deployment](docs/DEPLOYMENT.md) and
-[the reproducible live demo](docs/LIVE_DEMO.md). Preparation is local; no public
-production deployment or physical-webcam validation is implied.
-
-**NASA Space Apps Challenge 2026 | Team starter (planning and interface contracts)**
-
-AEGIS is a proposed **astronaut-facing**, offline-capable health monitoring and decision-support prototype. It integrates time-stamped physiological observations, self-reports, spacecraft environment measurements, and optional camera-based exercise analysis. An interactive spacecraft cutaway is the demonstration interface, not the source of medical measurements.
-
-**Status:** planning kit. This archive is **not yet a functioning application**. It is intended to be the first commit shared by five developers and multiple AI coding agents.
-
-## Read first
-
-1. [`docs/TECHNICAL_SPEC_RU.md`](docs/TECHNICAL_SPEC_RU.md) — full initial specification, accepted assumptions, acceptance tests.
-2. [`docs/TEAM_TASKS.md`](docs/TEAM_TASKS.md) — five independent workstreams and priorities.
-3. [`docs/GIT_WORKFLOW.md`](docs/GIT_WORKFLOW.md) — safe Git collaboration for humans and AI agents.
-4. [`AGENTS.md`](AGENTS.md) — shared coding-agent instructions.
-5. [`contracts/types.ts`](contracts/types.ts) — proposed integration contract; change only by agreement.
-6. [`docs/RESEARCH_AND_SOURCES.md`](docs/RESEARCH_AND_SOURCES.md) — evidence, provenance, NASA source plan.
-7. [`docs/DEMO.md`](docs/DEMO.md) — demo acceptance scenario.
-
-## Proposed stack
-
-- Vite + React + TypeScript, TypeScript simulation/analytics, SVG/2.5D ship initially; optional Three.js.
-- Browser-local storage; no server required for the hackathon prototype.
-- Camera module (MediaPipe) is strictly opt-in and disabled by default.
-- Separate demo scenarios from real data; no diagnosis or prescribing.
-
-## Starting the implementation
-
-Only the **integrator** initializes the application scaffold and chooses dependency versions. Do not have several AI agents independently scaffold separate applications. Bootstrap using `npm create vite@latest . -- --template react-ts` **in a separate temporary directory** and copy the application files into this repository without overwriting documentation or contracts. Then `npm install` and `npm run dev`.
-
-Project must identify all simulated values as *synthetic* and display relevant NASA sources. Make the first committed milestone an application that loads and can render one `HealthMeasurement` from `contracts/types.ts`.
-
-## Historical milestone — integration foundation v0.1
-
-The original planning kit above is preserved. A working React/TypeScript/Vite
-shell is now included, with Tailwind v4, centralized Context/reducer state,
-five navigation sections and a labelled synthetic observation. Domain engines
-and the spacecraft/camera/anatomy views remain integration placeholders.
-
-Requires Node.js 22.13+ on the 22.x line, 24.x or 26+.
+## Start here
 
 ```sh
-npm install
+npm ci
 npm run dev
 ```
+
+Open the printed local URL. Click **Start Mission Demo** to load the real Sleep
+Disruption scenario and open **Integrated Review**. Read the sleep, fatigue and
+reaction comparisons, then **Open alerts and follow-up**. Acknowledge, begin review,
+and record a completed follow-up. Resolution is separate and available only in
+the Medical Officer demo context; it is not proof of recovery.
+
+**Check My Health** opens personal observed records. **Explore the Spacecraft**
+opens the fictional vehicle. The **Simulator** also provides the cabin CO2 incident.
+Replay asks before replacing existing synthetic mission records; observed records
+are preserved. Browser-local persistence survives refresh and pauses the mission.
+
+## Verify
 
 ```sh
 npm run check
 npm run build
-npm run preview
+node scripts/verify-release.mjs
 ```
 
-Use `npm ci` for the exact locked dependencies. Refresh resets the in-memory
-integration fixture. The app has no runtime API/CDN dependency; offline PWA
-caching and persistence are not yet implemented.
+No runtime API, backend or third-party model CDN is required. LocalStorage is not
+encrypted; use non-sensitive test data only. Role switching is not authentication.
+No hardware integration, diagnosis, treatment prescription, validated clinical
+threshold or personal cumulative radiation-risk calculation is claimed.
 
-Read [docs/INTEGRATION.md](docs/INTEGRATION.md) for module interfaces, ownership,
-contract proposals, development commands and the four teammate assignments.
+See [release fixes](docs/STABILIZATION_REPORT.md),
+[branch inventory](docs/INTEGRATION_READINESS.md),
+[radiation capability](docs/RADIATION_CAPABILITY.md),
+[v4.1 architecture](docs/CORE_V4_1.md) and [team tests](docs/TEAM_TESTING.md).

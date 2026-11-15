@@ -10,7 +10,7 @@ it('starts the actual scenario, opens evidence and alerts, and confirms before r
   const user = userEvent.setup(); render(<AppProvider><App /></AppProvider>)
   expect(screen.getByText(/Gather health observations/)).toBeInTheDocument()
   await user.click(screen.getByRole('button', { name: 'Start Mission Demo' }))
-  expect(screen.getByRole('heading', { level: 1, name: 'Human Performance Assessment' })).toBeInTheDocument()
+  expect(screen.getByRole('heading', { level: 1, name: 'Integrated Review' })).toBeInTheDocument()
   expect(screen.getByText('Multiple performance indicators changed')).toBeInTheDocument()
   const stored = JSON.parse(localStorage.getItem(STORAGE_KEY)!)
   expect(stored.state.mission.activeScenario).toBe('sleep-disruption')
