@@ -11,8 +11,8 @@ team direction. This is a test-branch integration, not a production release.
 | Frozen production / origin/review/v4.1 | b8e26c9dded392b0fb612f8ec034b7da2201d4e0 |
 | Gemini prevention/resources branch | 3720ed800ede5765d20324076ae2e674079ffbb1 |
 | Claude medical-assistant branch | 3ce281fb90c46d8e2597c00d1ba59e62e75f2fa0 |
-| Verified Gemini merge | 6cab61d (full merge identity in Git history) |
-| Final implementation merge / deployed source | Pending publication verification; updated in the publication record below |
+| Verified Gemini merge | 6cab61d051b4bcf600c7771b8c2f7b60af0e2d20 |
+| Final implementation merge / deployed source | d282c509fd1a96a87dbd1602b77757d5a3ca564a |
 | Branch | test/v4.2-integration |
 
 Neither feature branch was integrated into the stable base. Both contributor
@@ -156,8 +156,50 @@ Real webcam, scientific review and team usability acceptance remain manual.
 
 ## Publication record
 
-Preview publication and online verification are pending at this report revision.
-Recommendation at this point: **NEEDS FIXES — publication verification pending**.
-No production promotion is authorized. Production was checked in authenticated
-Cloudflare: b8e26c9, deployment a8662144-abaa-46ef-91f8-4acea6e87816, automatic
-production deployments paused. Settings were not changed.
+Recommendation: **READY — for independent preview review and rehearsal**.
+No production promotion is authorized. Manual webcam, scientific and team
+usability acceptance are still required before deciding to use v4.2 in finals.
+No known blocking regression was identified within the executed checks; this
+does not establish clinical accuracy or exhaust all devices and browsers.
+
+- Public preview: https://test-v4-2-integration.aegis-spaceapps-2026.pages.dev/
+- Immutable deployment: https://2db702a6.aegis-spaceapps-2026.pages.dev/
+- Cloudflare deployment: `2db702a6-6760-4a7f-a2b1-0c9e67e0864c`, **Preview**,
+  `test/v4.2-integration`, source **d282c509fd1a96a87dbd1602b77757d5a3ca564a**.
+- Deployed successfully on 2026-11-15 at 13:32:52 UTC / 18:32:52 Asia/Tashkent.
+  The Cloudflare dashboard confirmed branch, SHA, environment and success.
+- Existing custom preview filter skipped the automatic build. A **single manual
+  retry of that preview deployment** built the exact SHA. No branch filter,
+  production configuration, automatic production deployment or permission was
+  changed. The retry dialog explicitly said future commits to this branch will
+  not deploy automatically.
+- GitHub Actions passed for the implementation SHA:
+  [run 43719230164](https://github.com/George3551/nasa-spaceapps-2026/actions/runs/43719230164).
+  Cloudflare independently ran npm ci, npm run check and verify-release before
+  publishing the build.
+- Both alias and immutable URLs passed the existing verify-deployment.mjs:
+  HTTPS, three entry assets, six pinned model/WASM/runtime assets, required HTTP
+  headers and SPA fallback/refresh. Returned build assets matched the local build.
+- Public Chrome tests passed: Guided Demo and Integrated Review; grounded
+  performance answer; acknowledge/review/completed follow-up; a fresh assistant
+  answer seeing the new follow-up; prevention completion retained after refresh;
+  equipment view; synthetic ultrasound status edit followed by an assistant
+  answer reflecting unavailable/out_of_service; explicit Medical Officer case
+  resolution followed by an assistant answer reporting the actual resolved state.
+  Public application console error log was empty. No private data/video uploaded.
+- Production after preview deployment: HTTP 200 and identical HTML SHA-256 to
+  immutable b8e26c9 deployment a8662144-abaa-46ef-91f8-4acea6e87816:
+  `69e00f9f8da5989adb819e1685353922dd8690b13866da8fb25c692927d11972`.
+  Authenticated dashboard still showed production b8e26c9 and automatic
+  deployments paused. Production URL: https://aegis-spaceapps-2026.pages.dev/.
+- Remote branches verified unchanged: develop 5576e5e, review/v4.1 b8e26c9,
+  main 55fa13d, Claude 3ce281f, Gemini 3720ed8. PR #4 remains unmerged.
+- [Draft review PR #5](https://github.com/George3551/nasa-spaceapps-2026/pull/5)
+  proposes this integration and contract compatibility for review only. No merge.
+
+This completed publication record is a **documentation-only follow-up** to
+deployed implementation d282c50. Its Git commit updates the report/reference,
+not the application build, and is not manually redeployed. The branch tip may
+therefore be newer than the frozen preview SHA. Use the immutable URL/SHA above
+when reproducing the verified build. Test with non-sensitive data; **Replay demo**
+asks before resetting only synthetic history.
