@@ -1,6 +1,12 @@
 # AEGIS — Astronaut Health Monitoring & Mission Digital Twin
 
-**Current implementation on develop: Core v3.** Start in Astronaut Mode → My Health.
+**Current local implementation on develop: Core v4.1.**
+Sensor Integration and Human Performance Assessment extend the existing v3 shell.
+See [docs/CORE_V4_1.md](docs/CORE_V4_1.md) for architecture, local demonstration,
+validation and limitations. Public RC1 stays frozen at 034fcdb; local v4.1 is not
+pushed or deployed.
+
+**Preserved v3 workflows:** Start in Astronaut Mode → My Health.
 The existing shell now includes health entry, assessments, clinical follow-up,
 deterministic scenarios, a spacecraft cutaway and validated local persistence.
 V3 adds voluntary local face/pose assessments, integrated assessment/activity

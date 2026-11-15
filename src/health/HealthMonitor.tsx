@@ -6,11 +6,15 @@ import { useAppState } from '../app/state/context'
 import { selectWorkspace } from '../app/state/reducer'
 import { measurementRules, validateMeasurement } from '../shared/validation'
 import { AssessmentHistory } from './AssessmentHistory'
+import { acquisition, Conditions } from './Conditions'
 
 export function ObservationForm({ astronautId }: { astronautId: string }) {
   const { state, dispatch } = useAppState()
   const [metric, setMetric] = useState<MetricKey>('sleep_duration'), [value, setValue] = useState(''), [note, setNote] = useState(''), [error, setError] = useState('')
   const [at, setAt] = useState('')
+  const [condition, setCondition] = useState('unspecified')
+  const [device, setDevice] = useState(''), [protocol, setProtocol] = useState('')
+  const selfReport = ['sleep_duration', 'reported_fatigue', 'reported_mood', 'reported_stress', 'symptom_severity', 'exercise_duration'].includes(metric)
   const rule = measurementRules[metric]!
   return <Panel title="Record an observation" eyebrow={state.scope === 'synthetic' ? 'Manual entry into synthetic scenario' : 'Observed · manual self-report or measurement'}>
     <form className="entry-form" onSubmit={event => {
@@ -19,13 +23,17 @@ export function ObservationForm({ astronautId }: { astronautId: string }) {
         if (!value.trim()) throw new Error('Enter a value. Missing is not zero.')
         if (metric === 'symptom_severity' && !note.trim()) throw new Error('Describe the symptom in the note.')
         const timestamp = at ? new Date(at).toISOString() : state.scope === 'synthetic' ? state.mission.missionTime : new Date().toISOString()
-        const record = validateMeasurement({ id: crypto.randomUUID(), astronautId, metric, value: Number(value), unit: rule.unit, timestamp, source: 'manual', origin: state.scope, quality: 'valid', sourceRefId: 'manual-entry', demonstrationOnly: state.scope === 'synthetic', note: note.trim() })
+        const record = validateMeasurement({ id: crypto.randomUUID(), astronautId, metric, value: Number(value), unit: rule.unit, timestamp, source: 'manual', origin: state.scope, quality: 'valid', sourceRefId: 'manual-entry', demonstrationOnly: state.scope === 'synthetic', note: note.trim(), acquisition: acquisition(device.trim() || (selfReport ? 'manual-entry' : 'not_recorded'), protocol.trim() || (selfReport ? `manual-${metric}-v1` : 'not_recorded'), condition) })
         dispatch({ type: 'measurements/upsert', records: [record] }); setValue(''); setNote('')
       } catch (e) { setError(e instanceof Error ? e.message : 'Invalid input') }
     }}>
       <label className="field">Indicator<select value={metric} onChange={e => setMetric(e.target.value as MetricKey)}>{Object.entries(measurementRules).filter(([key]) => !key.startsWith('cabin_') && key !== 'radiation_dose').map(([key, r]) => <option key={key} value={key}>{r.label}</option>)}</select></label>
       <label className="field">Value ({rule.unit})<input type="number" step="any" required min={rule.min} max={rule.max} value={value} onChange={e => setValue(e.target.value)} /></label>
       <label className="field">Recorded at (optional, local time)<input type="datetime-local" value={at} onChange={e => setAt(e.target.value)} /></label>
+      <Conditions value={condition} onChange={setCondition} />
+      <label className="field">Declared device identifier (optional)<input maxLength={200} value={device} onChange={e => setDevice(e.target.value)} /></label>
+      <label className="field">Measurement protocol / statistic (optional)<input maxLength={200} value={protocol} onChange={e => setProtocol(e.target.value)} /></label>
+      <p className="sample-note">For physiological/examination values, record the actual device and measurement method (including the HRV statistic) to qualify a baseline. Unspecified device/method is kept as unknown; no automatic unit conversion. These labels are self-declared.</p>
       <label className="field">Context / symptom / examination note<textarea maxLength={2000} value={note} onChange={e => setNote(e.target.value)} placeholder="For an examination, include the site and source report." /></label>
       <button className="button primary" type="submit">Save observation</button>
       {error && <p role="alert">{error}</p>}
@@ -63,13 +71,15 @@ export function HealthMonitor() {
     </Panel>
     <div className="content-grid"><Panel title="History & individual baseline" eyebrow="Traceable observations">
       <label className="field">Trend indicator<select value={metric} onChange={e => setMetric(e.target.value as MetricKey)}>{Object.entries(measurementRules).map(([key, r]) => <option key={key} value={key}>{r.label}</option>)}</select></label>
-      <p className="sample-note">Baseline: {crew?.baselines[metric]?.toFixed(2) ?? 'Not established'} {crew?.baselines[metric] === undefined ? '' : measurementRules[metric]?.unit}. {state.scope === 'observed' ? 'Descriptive mean of the first three same-unit valid observations; compare only similar conditions.' : 'Scenario-provided comparison.'} Demo rules are labelled separately.</p>
+      <p className="sample-note">Legacy descriptive summary: {crew?.baselines[metric]?.toFixed(2) ?? 'Not established'} {crew?.baselines[metric] === undefined ? '' : measurementRules[metric]?.unit}. Conditions were not checked in this legacy summary; do not compare incompatible sources or sessions. Use Human Performance Assessment for qualified baseline comparisons. Demo rules are labelled separately.</p>
       <Trend records={records.filter(r => r.metric === metric).slice(-12)} />
       <div className="table-wrap"><table><caption>Latest observations for {metric.replaceAll('_', ' ')}</caption><thead><tr><th>Time (UTC)</th><th>Value</th><th>Origin / source / quality</th></tr></thead><tbody>{records.filter(r => r.metric === metric).slice(-12).reverse().map(r => <tr key={r.id}><td>{r.timestamp}</td><td>{r.value ?? 'No data'} {r.unit}</td><td>{r.origin} / {r.source} / {r.quality}{r.note && <p>{r.note}</p>}</td></tr>)}</tbody></table></div>
     </Panel>{crew && <ObservationForm astronautId={crew.id} key={`${crew.id}-${state.scope}`} />}</div>
     <AssessmentHistory records={(workspace.assessments ?? []).filter(a => a.astronautId === crew?.id)} />
     <Panel title="Activity history" eyebrow="Recorded exercises · source and quality"><div className="history-list">{workspace.activities.filter(a => a.astronautId === crew?.id).slice(-12).reverse().map(a => <p className="event-item" key={a.id}>{a.startedAt} · {a.kind} · {a.source} · {a.origin} · {a.quality}{a.details?.repetitions !== undefined && ` · ${a.details.repetitions ?? 'Unavailable'} repetitions`}</p>)}{!workspace.activities.some(a => a.astronautId === crew?.id) && <p className="empty-copy">No recorded exercise sessions.</p>}</div></Panel>
     <Panel title="Medical history" eyebrow="Recorded examinations and context">
+      {(workspace.examinations ?? []).filter(r => r.astronautId === crew?.id).slice(-12).reverse().map(r => <p className="event-item" key={r.id}>{r.timestamp} · {r.kind} · {r.summary ?? 'Result unavailable'} · {r.origin} · {r.source} · {r.quality}</p>)}
+      {records.filter(r => r.metric === 'laboratory').slice(-12).reverse().map(r => <p className="event-item" key={r.id}>{r.timestamp} · {r.analyte} · {r.value ?? 'Result unavailable'} {r.unit} · {r.origin} · {r.source} · {r.quality}</p>)}
       <p className="muted">Bone density is shown only when an examination is recorded. Exercise activity alone does not measure bone loss. Model-based estimates require a separately validated model; none is active.</p>
       {records.filter(r => r.metric === 'bone_mineral_density' || r.note).slice(-12).map(r => <p className="event-item" key={r.id}>{r.timestamp} · {r.metric.replaceAll('_', ' ')} · {r.value ?? 'No data'} {r.unit} · {r.origin} · {r.note}</p>)}
       {!records.some(r => r.metric === 'bone_mineral_density') && <p className="empty-copy">No bone-density examination available.</p>}

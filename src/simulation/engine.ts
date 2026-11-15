@@ -1,4 +1,5 @@
 import type { HealthMeasurement, MissionSnapshot, MissionState, ScenarioId, SimulationPort } from '../../contracts/types'
+import { syntheticSample } from '../sensors/adapters'
 
 const epoch = Date.parse('2026-11-14T08:00:00.000Z')
 const rooms = [
@@ -25,7 +26,7 @@ export function initialState(seed = 42): MissionSnapshot {
       baselines: { resting_heart_rate: 64 + index * 3, sleep_duration: 8, reported_fatigue: 2 },
       currentCompartmentId: ['living', 'exercise', 'work'][index]!, syntheticIdentity: true,
     })),
-    compartments: rooms.map(room => ({ ...room })), measurements: [], environment: [], activities: [], alerts: [], events: [], assessments: [], encounters: [],
+    compartments: rooms.map(room => ({ ...room })), measurements: [], environment: [], activities: [], alerts: [], events: [], assessments: [], encounters: [], examinations: [],
     sources: [{ id: 'synthetic-v2', title: 'AEGIS reproducible scenario fixtures', kind: 'synthetic_fixture', note: 'Illustrative test data, not a physiological prediction.' }],
     resources: [{ id: 'bp-monitor', label: 'Blood pressure monitor', quantity: 1, unit: 'device', origin: 'synthetic', quality: 'estimated', timestamp: new Date(epoch).toISOString(), source: 'simulator', sourceRefIds: ['synthetic-v2'] }],
   }
@@ -44,7 +45,7 @@ function sample(state: MissionSnapshot, tick: number) {
   state.crew.forEach((person, index) => {
     const tired = disrupted && index === 0
     const add = (metric: HealthMeasurement['metric'], value: number, unit: string, note?: string) => {
-      state.measurements.push({ id: `${state.activeScenario}-${tick}-${person.id}-${metric}`, astronautId: person.id, metric, value, unit, timestamp, source: 'simulator', origin: 'synthetic', quality: 'estimated', compartmentId: person.currentCompartmentId, sourceRefId: 'synthetic-v2', demonstrationOnly: true, ...(note ? { note } : {}) })
+      state.measurements.push({ id: `${state.activeScenario}-${tick}-${person.id}-${metric}`, astronautId: person.id, metric, value, unit, timestamp, source: 'simulator', origin: 'synthetic', quality: 'estimated', compartmentId: person.currentCompartmentId, sourceRefId: 'synthetic-v2', demonstrationOnly: true, acquisition: { deviceId: 'demo-mission-observations', protocolId: `demo-${metric}-v1`, condition: 'quiet-seated', sessionId: `${state.activeScenario}-${tick}-${person.id}` }, ...(note ? { note } : {}) })
     }
     add('resting_heart_rate', Math.round(64 + index * 3 + noise(state.seed, tick, index) * 3 + (tired ? 10 : 0)), 'bpm')
     add('sleep_duration', tired ? 5.2 : 7.5 + noise(state.seed, tick, index + 3) * .5, 'h')
@@ -52,13 +53,20 @@ function sample(state: MissionSnapshot, tick: number) {
     add('reported_mood', tired ? 4 : 7, '0–10')
     add('reported_stress', tired ? 7 : 2, '0–10')
     add('exercise_duration', tired ? 20 : 40, 'min')
+    const batch = syntheticSample('physiological', { astronautId: person.id, compartmentId: person.currentCompartmentId, timestamp, seed: state.seed })
+    state.measurements.push(...batch.measurements.filter(r => !['sleep_duration', 'exercise_duration'].includes(r.metric)).map(r => r.metric === 'heart_rate' && tired ? { ...r, value: r.value! + 12 } : r))
     if (incident && index < 2) add('symptom_severity', 4, '0–10', 'Reported headache in the synthetic scenario; cause not established.')
     state.activities.push({ id: `activity-${tick}-${person.id}`, astronautId: person.id, kind: person.currentCompartmentId === 'exercise' ? 'exercise' : person.currentCompartmentId === 'living' ? 'rest' : 'work', startedAt: timestamp, source: 'simulator', origin: 'synthetic', quality: 'estimated' })
     if (tick >= 0) state.events.push({ id: `routine-${tick}-${person.id}`, at: timestamp, kind: 'routine', astronautId: person.id, compartmentId: person.currentCompartmentId, summary: `${person.displayName}: ${person.currentCompartmentId}`, synthetic: true })
-    if (tired || tick < 0) state.assessments.push({ id: `performance-${tick}-${person.id}`, astronautId: person.id, timestamp, source: 'simulator', origin: 'synthetic', quality: 'estimated', unit: 'ms', sourceRefIds: ['synthetic-v2'], demonstrationOnly: true, kind: 'reaction', result: { mode: 'demo', durationMs: 30000, trials: [{ waitMs: 1500, responseMs: tired ? 420 : 260, outcome: 'response' }], meanMs: tired ? 420 : 260, medianMs: tired ? 420 : 260, missed: 0, premature: 0 } })
+    if (tired || tick < 0) {
+      const acquisition = { deviceId: 'demo-browser', protocolId: 'reaction-demo-30000-v1', condition: 'quiet-seated', sessionId: `${state.activeScenario}-${tick}-${person.id}` }
+      state.assessments.push({ id: `performance-${tick}-${person.id}`, astronautId: person.id, timestamp, source: 'simulator', origin: 'synthetic', quality: 'estimated', unit: 'ms', sourceRefIds: ['synthetic-v2'], demonstrationOnly: true, acquisition, kind: 'reaction', result: { mode: 'demo', durationMs: 30000, trials: [{ waitMs: 1500, responseMs: tired ? 420 : 260, outcome: 'response' }], meanMs: tired ? 420 : 260, medianMs: tired ? 420 : 260, missed: 0, premature: 0 } })
+      const blinks = tired ? 12 : 15, closure = tired ? 5000 : 2250
+      state.assessments.push({ id: `visual-fixture-${tick}-${person.id}`, astronautId: person.id, timestamp, source: 'simulator', origin: 'synthetic', quality: 'estimated', unit: 'assessment', sourceRefIds: ['synthetic-sensors-v4'], demonstrationOnly: true, acquisition: { ...acquisition, deviceId: 'demo-visual-fixture', protocolId: 'ear-hysteresis-v1-fixture' }, kind: 'visual', experimental: true, association: { kind: 'fictional_demo_profile', confirmedAt: timestamp }, result: { durationMs: 60000, validObservationMs: 55000, calibrationMs: 3000, trackingCoverage: 55000 / 57000, blinkCount: blinks, blinkRatePerMinute: blinks / (55000 / 60000), blinkDurationsMs: Array.from({ length: blinks }, (_, i) => tired && i === 0 ? 3350 : 150), meanBlinkDurationMs: closure / blinks, eyeClosureMs: closure, prolongedClosureMs: tired ? 3350 : 0, closureProportion: closure / 55000, perclosInspiredProportion: tired ? 3350 / 55000 : 0, calibratedOpenEar: .3, invalidIntervals: [{ startMs: 0, endMs: 3000, reason: 'calibrating' }, { startMs: 58000, endMs: 60000, reason: 'no_face' }], sufficient: true, algorithm: 'ear-hysteresis-v1' } })
+    }
   })
   state.compartments.forEach(room => {
-    const add = (metric: 'cabin_co2' | 'cabin_temperature' | 'cabin_pressure' | 'radiation_dose', value: number, unit: string) => state.environment.push({ id: `${state.activeScenario}-${tick}-${room.id}-${metric}`, compartmentId: room.id, metric, value, unit, timestamp, source: 'simulator', origin: 'synthetic', quality: 'estimated', sourceRefId: 'synthetic-v2', demonstrationOnly: true })
+    const add = (metric: 'cabin_co2' | 'cabin_temperature' | 'cabin_pressure' | 'radiation_dose', value: number, unit: string) => state.environment.push({ id: `${state.activeScenario}-${tick}-${room.id}-${metric}`, compartmentId: room.id, metric, value, unit, timestamp, source: 'simulator', origin: 'synthetic', quality: 'estimated', sourceRefId: 'synthetic-v2', demonstrationOnly: true, acquisition: { deviceId: `demo-cabin-${room.id}`, protocolId: `demo-${metric}-v1`, condition: 'fixed-compartment', sessionId: `${state.activeScenario}-${tick}-${room.id}` } })
     add('cabin_co2', incident && room.id === 'living' ? 2500 : 600, 'ppm')
     add('cabin_temperature', 22, '°C'); add('cabin_pressure', 101, 'kPa')
     add('radiation_dose', state.activeScenario === 'radiation-event' && tick >= 1 ? .2 : .001, 'mSv')

@@ -128,6 +128,9 @@ a { color: inherit; text-decoration: none; }
 .missing-value { font-size: 1.5rem; margin: 18px 0; }
 .trend-svg { width: 100%; height: auto; margin-top: 14px; }
 .table-wrap { overflow-x: auto; }
+.performance-table { min-width: 850px; }
+.performance-table th:first-child { min-width: 140px; }
+.performance-table td:last-child { min-width: 250px; }
 table { width: 100%; border-collapse: collapse; font-size: .75rem; margin-top: 18px; }
 caption { text-align: left; color: #a7b5bf; padding: 10px 0; }
 th,td { padding: 10px 8px; border-bottom: 1px solid #30414c; text-align: left; overflow-wrap: anywhere; }

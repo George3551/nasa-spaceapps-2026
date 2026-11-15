@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState } from 'react'
-import type { DemoAssociation } from '../../contracts/types'
+import type { AcquisitionContext, DemoAssociation } from '../../contracts/types'
 import { Panel } from '../app/components/Panel'
 import { useAppState } from '../app/state/context'
 import { selectWorkspace } from '../app/state/reducer'
@@ -7,6 +7,7 @@ import { CameraSession } from './CameraSession'
 import type { CameraSnapshot, SessionEndReason } from './CameraSession'
 import { cameraRecord } from './records'
 import { MovementHistory } from './MovementHistory'
+import { acquisition, Conditions } from '../health/Conditions'
 
 const number = (value: number | null | undefined, digits = 1) => value == null ? 'Unavailable' : value.toFixed(digits)
 const endLabel: Record<SessionEndReason, string> = {
@@ -23,11 +24,13 @@ export function CameraAssessment({ kind }: { kind: 'visual' | 'physical' }) {
   const [snapshot, setSnapshot] = useState<CameraSnapshot | null>(null), [error, setError] = useState(''), [saved, setSaved] = useState(false)
   const video = useRef<HTMLVideoElement>(null), canvas = useRef<HTMLCanvasElement>(null), session = useRef<CameraSession | null>(null), generation = useRef(0), alive = useRef(false)
   const finished = useRef('')
+  const [condition, setCondition] = useState('unspecified'), context = useRef<AcquisitionContext | undefined>(undefined)
   useEffect(() => { alive.current = true; return () => { alive.current = false; session.current?.stop() } }, [])
   const active = status === 'starting' || status === 'running'
   async function start() {
     if (!person || !association || !video.current || !canvas.current || state.scope !== 'observed') return
     const current = ++generation.current
+    context.current = acquisition('local-camera', kind === 'visual' ? 'ear-hysteresis-v1' : 'elbow-cycle-v1', condition)
     setError(''); setSnapshot(null); setSaved(false); setStatus('starting')
     const controller = new CameraSession(kind, video.current, canvas.current,
       result => { if (alive.current && generation.current === current) { setSnapshot(result); setStatus('running') } },
@@ -46,8 +49,8 @@ export function CameraAssessment({ kind }: { kind: 'visual' | 'physical' }) {
   function save() {
     if (!person || !association || !snapshot || saved || active) return
     const record = kind === 'visual' && snapshot.visual
-      ? cameraRecord('visual', person.id, association, snapshot.visual, finished.current)
-      : kind === 'physical' && snapshot.physical ? cameraRecord('physical', person.id, association, snapshot.physical, finished.current) : null
+      ? cameraRecord('visual', person.id, association, snapshot.visual, finished.current, context.current)
+      : kind === 'physical' && snapshot.physical ? cameraRecord('physical', person.id, association, snapshot.physical, finished.current, context.current) : null
     if (!record) return
     dispatch({ type: 'assessment/add', record }); setSaved(true)
   }
@@ -57,6 +60,7 @@ export function CameraAssessment({ kind }: { kind: 'visual' | 'physical' }) {
       <Panel title={kind === 'visual' ? 'Eye movement observation' : 'Right elbow flexion'} eyebrow={`Camera ${status}`}>
         <p className="muted">{kind === 'visual' ? 'Keep your face frontal, eyes naturally open and head steady for at least 3 seconds of calibration. Then blink normally. At least 10 usable seconds after calibration are required.' : 'Show your right shoulder, elbow and wrist clearly from the side. Start with the arm extended (>150°), bend (<65°), then fully extend. Hold each end position briefly. At least 3 usable seconds are required.'}</p>
         <label className="check-label"><input type="checkbox" disabled={active} checked={!!association} onChange={e => setAssociation(e.target.checked ? { kind: 'fictional_demo_profile', confirmedAt: new Date().toISOString() } : null)} />Associate this observed session with the fictional demo profile {person?.displayName}. It is not a measurement of a real astronaut.</label>
+        <Conditions value={condition} onChange={setCondition} disabled={active} label="Camera assessment conditions" />
         <div className="camera-preview"><video ref={video} muted playsInline aria-label="Live camera preview" /><canvas ref={canvas} aria-label={kind === 'visual' ? 'Detected facial landmarks overlay' : 'Detected body skeleton overlay'} />{!active && <span className="camera-off">Camera off</span>}</div>
         <div className="control-row"><button className="button primary" disabled={active || !association || !person} onClick={() => void start()}>Start Assessment</button><button className="button" disabled={!active} onClick={stop}>Stop Assessment</button></div>
         <p className="muted" role="status">{status === 'starting' ? 'Requesting camera and initializing the local model… Stop cancels startup.' : `Camera ${status}. Mirrored preview. No audio, raw recording or upload.`}</p>

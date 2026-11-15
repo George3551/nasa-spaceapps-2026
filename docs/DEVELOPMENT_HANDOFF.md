@@ -1,3 +1,15 @@
+# Current local continuation — v4.1
+
+The owner explicitly assigned Sensor Integration and Multimodal Health Intelligence
+after local checkpoint 2ab370c. Implementation, local checks and commits on develop
+are authorized. No push, deployment or PR #4 merge is authorized; frozen production
+034fcdb is unchanged. See [CORE_V4_1.md](CORE_V4_1.md) for current architecture,
+demonstration, actual tests and v4.2 dependencies. The earlier freeze handoff below
+is retained as a historical record; its no-v4-work statement has been superseded
+only by the explicit local v4.1 assignment.
+
+---
+
 # AEGIS — local development checkpoint after RC1 freeze
 
 Date: 2026-11-15 (Asia/Tashkent). **Ready to resume only when explicitly instructed.**

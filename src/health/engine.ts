@@ -1,4 +1,5 @@
 import type { ClinicalWorkspace, HealthAlert, HealthMeasurement, MissionState } from '../../contracts/types'
+import { assessPerformance } from './intelligence'
 
 export function usable(record: HealthMeasurement) {
   return record.value !== null && Number.isFinite(record.value) && (record.quality === 'valid' || record.quality === 'estimated')
@@ -11,20 +12,20 @@ export function evaluate(state: MissionState): HealthAlert[] {
     const records = state.measurements.filter(r => r.astronautId === crew.id && r.origin === origin && usable(r)).sort((a, b) => a.timestamp.localeCompare(b.timestamp))
     const sleeps = records.filter(r => r.metric === 'sleep_duration').slice(-3)
     const fatigue = records.filter(r => r.metric === 'reported_fatigue').at(-1)
-    const reaction = (state.assessments ?? []).filter(a => a.astronautId === crew.id && a.origin === origin && a.kind === 'reaction' && (a.quality === 'valid' || a.quality === 'estimated')).sort((a, b) => a.timestamp.localeCompare(b.timestamp))
-    const baseline = reaction.slice(0, 3).flatMap(a => a.kind === 'reaction' && a.result.meanMs !== null ? [a.result.meanMs] : [])
-    const latest = reaction.at(-1)
-    const baselineMean = baseline.length ? baseline.reduce((a, b) => a + b, 0) / baseline.length : null
-    const slowdown = reaction.length >= 4 && latest?.kind === 'reaction' && latest.result.meanMs !== null && baselineMean !== null && latest.result.meanMs > baselineMean * 1.2
+    const reaction = assessPerformance(state, crew.id, origin, origin === 'observed' ? new Date().toISOString() : state.missionTime).comparisons.find(c => c.signal === 'reaction_mean')
+    const latest = reaction?.current
+    const slowdown = reaction?.status === 'ready' && reaction.percentChange !== null && reaction.percentChange > 20
     if (sleeps.length === 3 && sleeps.every(r => r.unit === 'h' && r.value! < 6) && fatigue && fatigue.unit === '0–10' && fatigue.value! >= 7) {
       alerts.push({ id: `${origin}-${crew.id}-recovery`, astronautId: crew.id, createdAt: fatigue.timestamp, level: 'review', title: 'Recovery indicators changed',
-        explanation: `Three recent sleep records are below the demo cutoff of 6 h and the latest fatigue entry is at least 7/10.${slowdown ? ' Reaction performance is also slower than the first three same-origin sessions.' : ' More comparable performance sessions may be needed.'} This association does not establish a cause or diagnosis.`,
-        evidence: [...sleeps.map(r => ({ observationId: r.id, explanation: `Sleep ${r.value} ${r.unit}` })), { observationId: fatigue.id, explanation: `Fatigue ${fatigue.value}/10` }, ...(slowdown && latest ? [{ observationId: latest.id, explanation: 'Reaction mean exceeds the same-origin baseline by more than 20% (demo comparison).' }] : [])],
+        explanation: `Three recent sleep records are below the demo cutoff of 6 h and the latest fatigue entry is at least 7/10.${slowdown ? ' Reaction performance is also slower than three compatible earlier sessions.' : ' A qualified reaction comparison is unavailable or shows no demo slowdown; legacy records without conditions are not pooled.'} This association does not establish a cause or diagnosis.`,
+        evidence: [...sleeps.map(r => ({ observationId: r.id, explanation: `Sleep ${r.value} ${r.unit}` })), { observationId: fatigue.id, explanation: `Fatigue ${fatigue.value}/10` }, ...(slowdown && latest ? [{ observationId: latest.id, explanation: 'Reaction mean exceeds the compatible three-session baseline by more than 20% (demo comparison).' }] : [])],
         safeNextStep: 'Confirm the sleep entries, record current fatigue, and consider a repeat performance check under comparable conditions. Request a crew medical review if concerns persist.', status: 'new', ruleId: 'DEMO-RECOVERY-01', demonstrationOnly: true, sourceRefIds: ['hrp-risks', 'hrr-721'],
       })
     }
     const environment = state.environment.filter(r => r.origin === origin && r.compartmentId === crew.currentCompartmentId && r.metric === 'cabin_co2' && r.unit === 'ppm' && r.value !== null && (r.quality === 'valid' || r.quality === 'estimated')).sort((a, b) => a.timestamp.localeCompare(b.timestamp)).at(-1)
-    if (environment && environment.value! >= 2000) {
+    // Observed environmental association requires explicit subject/location data
+    // and is evaluated by the qualified multimodal rule, not fictional ship positions.
+    if (origin !== 'observed' && environment && environment.value! >= 2000) {
       const symptoms = state.measurements.filter(r => r.origin === origin && r.compartmentId === crew.currentCompartmentId && r.metric === 'symptom_severity' && usable(r) && Math.abs(Date.parse(r.timestamp) - Date.parse(environment.timestamp)) <= 120000)
       const affected = new Set(symptoms.map(r => r.astronautId))
       if (affected.size >= 2 && affected.has(crew.id)) alerts.push({
@@ -40,8 +41,16 @@ export function evaluate(state: MissionState): HealthAlert[] {
   return alerts
 }
 
-export function synchronizeClinical(state: MissionState): ClinicalWorkspace {
+export function synchronizeClinical(state: MissionState, asOf = state.missionTime): ClinicalWorkspace {
   const detected = evaluate(state)
+  for (const person of state.crew) for (const origin of ['synthetic', 'observed'] as const) {
+    for (const finding of assessPerformance(state, person.id, origin, asOf).findings) {
+      const legacyId = `${origin}-${person.id}-${finding.ruleId === 'DEMO-MULTI-PERF-01' ? 'recovery' : 'environment'}`
+      const legacy = detected.find(a => a.id === legacyId)
+      if (legacy) { legacy.explanation += ` ${finding.explanation}`; legacy.evidence = [...new Map([...legacy.evidence, ...finding.evidence].map(e => [e.observationId, e])).values()]; legacy.sourceRefIds = [...new Set([...(legacy.sourceRefIds ?? []), 'aegis-multimodal-v1'])] }
+      else detected.push({ id: `${origin}-${person.id}-${finding.ruleId}`, astronautId: person.id, createdAt: asOf, level: 'review', title: finding.title, explanation: finding.explanation, evidence: finding.evidence, safeNextStep: finding.nextStep, status: 'new', ruleId: finding.ruleId, demonstrationOnly: true, sourceRefIds: ['aegis-multimodal-v1'] })
+    }
+  }
   const alerts = new Map(state.alerts.map(a => [a.id, a]))
   for (const alert of detected) {
     const previous = alerts.get(alert.id)
@@ -49,11 +58,11 @@ export function synchronizeClinical(state: MissionState): ClinicalWorkspace {
   }
   const encounters = [...(state.encounters ?? [])]
   for (const alert of detected) if (alert.astronautId && !encounters.some(e => e.alertId === alert.id)) {
-    const record = state.measurements.find(r => alert.evidence.some(e => e.observationId === r.id))
+    const record = [...state.measurements, ...(state.assessments ?? []), ...state.environment].find(r => alert.evidence.some(e => e.observationId === r.id))
     encounters.push({ id: `case-${alert.id}`, astronautId: alert.astronautId, alertId: alert.id, title: alert.title,
       status: 'open', actions: [], timestamp: alert.createdAt, source: 'assessment', origin: record?.origin ?? 'synthetic',
       quality: 'estimated', unit: 'encounter', sourceRefIds: alert.sourceRefIds ?? [], demonstrationOnly: true,
     })
   }
-  return { measurements: state.measurements, assessments: state.assessments ?? [], alerts: [...alerts.values()], encounters, activities: state.activities }
+  return { measurements: state.measurements, assessments: state.assessments ?? [], alerts: [...alerts.values()], encounters, activities: state.activities, environment: state.environment, examinations: state.examinations ?? [] }
 }

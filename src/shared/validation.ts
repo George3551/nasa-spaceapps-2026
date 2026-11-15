@@ -7,21 +7,27 @@ const finite = z.number().finite()
 const positive = finite.nonnegative()
 export const originSchema = z.enum(['synthetic', 'observed', 'research_dataset'])
 const quality = z.enum(['valid', 'estimated', 'missing', 'invalid'])
-const source = z.enum(['simulator', 'manual', 'wearable', 'environment_sensor', 'camera_pose', 'camera_face', 'dataset_import', 'assessment'])
-const metric = z.enum(['heart_rate', 'resting_heart_rate', 'blood_pressure_systolic', 'blood_pressure_diastolic', 'sleep_duration', 'reported_stress', 'reported_fatigue', 'reported_mood', 'exercise_duration', 'exercise_repetitions', 'cabin_co2', 'cabin_temperature', 'cabin_pressure', 'radiation_dose', 'bone_mineral_density', 'movement_range', 'visual_fatigue', 'symptom_severity', 'other'])
+const source = z.enum(['simulator', 'manual', 'wearable', 'medical_device', 'environment_sensor', 'camera_pose', 'camera_face', 'dataset_import', 'assessment'])
+const metric = z.enum(['heart_rate', 'body_temperature', 'oxygen_saturation', 'heart_rate_variability', 'laboratory', 'resting_heart_rate', 'blood_pressure_systolic', 'blood_pressure_diastolic', 'sleep_duration', 'reported_stress', 'reported_fatigue', 'reported_mood', 'exercise_duration', 'exercise_repetitions', 'cabin_co2', 'cabin_temperature', 'cabin_pressure', 'radiation_dose', 'bone_mineral_density', 'movement_range', 'visual_fatigue', 'symptom_severity', 'other'])
+export const acquisitionSchema = z.object({ deviceId: id, protocolId: id, condition: id, sessionId: id })
 export const measurementSchema = z.object({
   id, astronautId: id, metric, value: finite.nullable(), unit: z.string().min(1), timestamp,
   source, origin: originSchema, quality, compartmentId: id.optional(), sourceRefId: id.optional(),
   demonstrationOnly: z.boolean().optional(), note: z.string().max(2000).optional(),
+  acquisition: acquisitionSchema.optional(), analyte: id.optional(),
 }).superRefine((record, ctx) => {
   if ((record.quality === 'missing') !== (record.value === null)) ctx.addIssue({ code: 'custom', message: 'Missing readings require null; available readings require a number.' })
   if (record.source === 'simulator' && record.origin !== 'synthetic') ctx.addIssue({ code: 'custom', message: 'Simulator data must be synthetic.' })
+  if (record.metric === 'laboratory' && !record.analyte) ctx.addIssue({ code: 'custom', message: 'Laboratory records require an analyte and explicit unit.' })
   const rule = measurementRules[record.metric]
   if (rule && (record.unit !== rule.unit || (record.value !== null && (record.value < rule.min || record.value > rule.max)))) ctx.addIssue({ code: 'custom', message: `Use ${rule.unit}; accepted entry range ${rule.min}–${rule.max}. This is input validation, not a health range.` })
 })
 
 export const measurementRules: Partial<Record<HealthMeasurement['metric'], { label: string; unit: string; min: number; max: number }>> = {
   heart_rate: { label: 'Heart rate', unit: 'bpm', min: 0, max: 400 },
+  body_temperature: { label: 'Body temperature', unit: '°C', min: -100, max: 150 },
+  oxygen_saturation: { label: 'Oxygen saturation', unit: '%', min: 0, max: 100 },
+  heart_rate_variability: { label: 'HRV · protocol identifies statistic', unit: 'ms', min: 0, max: 1000000 },
   resting_heart_rate: { label: 'Resting heart rate', unit: 'bpm', min: 0, max: 400 },
   blood_pressure_systolic: { label: 'Blood pressure · systolic', unit: 'mmHg', min: 0, max: 400 },
   blood_pressure_diastolic: { label: 'Blood pressure · diastolic', unit: 'mmHg', min: 0, max: 400 },
@@ -41,6 +47,7 @@ export const measurementRules: Partial<Record<HealthMeasurement['metric'], { lab
 const metadata = {
   id, astronautId: id, timestamp, source, origin: originSchema, quality,
   unit: z.string().min(1), sourceRefIds: z.array(id), demonstrationOnly: z.boolean(),
+  acquisition: acquisitionSchema.optional(),
 }
 const typing = z.object({ durationMs: positive, typedCharacters: positive.int(), correctCharacters: positive.int(), errors: positive.int(), corrections: positive.int(), interKeyMs: z.array(positive), wpm: positive, accuracy: finite.min(0).max(100) })
 const trial = z.object({ waitMs: positive, responseMs: positive.nullable(), outcome: z.enum(['response', 'missed', 'premature']) }).refine(t => (t.outcome === 'response') === (t.responseMs !== null), 'Response time only exists for a valid response')
@@ -63,23 +70,33 @@ export const assessmentSchema = z.discriminatedUnion('kind', [
   z.object({ ...metadata, kind: z.literal('typing'), result: typing }),
   z.object({ ...metadata, kind: z.literal('reaction'), result: z.object({ durationMs: positive, mode: z.enum(['demo', 'extended']), trials: z.array(trial), meanMs: positive.nullable(), medianMs: positive.nullable(), missed: positive.int(), premature: positive.int() }) }),
   z.object({ ...metadata, kind: z.literal('procedure'), result: z.object({ attempts: z.array(z.object({ field: id, unit: z.string().min(1), expected: finite, entered: finite, matched: z.boolean(), elapsedMs: positive })), completed: z.boolean() }) }),
-  z.object({ ...metadata, kind: z.literal('visual'), source: z.literal('camera_face'), origin: z.literal('observed'), experimental: z.literal(true), demonstrationOnly: z.literal(true), association, result: visualMetrics }),
+  z.object({ ...metadata, kind: z.literal('visual'), source: z.enum(['camera_face', 'simulator']), origin: z.enum(['observed', 'synthetic']), experimental: z.literal(true), demonstrationOnly: z.literal(true), association, result: visualMetrics }),
   z.object({ ...metadata, kind: z.literal('physical'), source: z.literal('camera_pose'), origin: z.literal('observed'), experimental: z.literal(true), demonstrationOnly: z.literal(true), association, result: physicalMetrics }),
 ]).superRefine((r, ctx) => {
   if ((r.kind === 'visual' || r.kind === 'physical') && r.quality !== (r.result.sufficient ? 'estimated' : 'missing')) ctx.addIssue({ code: 'custom', message: 'Camera quality must match available observations' })
+  if (r.kind === 'visual' && ((r.origin === 'synthetic') !== (r.source === 'simulator'))) ctx.addIssue({ code: 'custom', message: 'Visual source/origin mismatch' })
 })
 export const actionSchema = z.object({ ...metadata, kind: z.enum(['review', 'follow_up']), note: z.string().min(1).max(2000), observationIds: z.array(id), completed: z.boolean() })
 export const encounterSchema = z.object({ ...metadata, alertId: id, title: z.string(), status: z.enum(['open', 'under_review', 'resolved']), actions: z.array(actionSchema), resolvedAt: timestamp.optional() })
 export const alertSchema = z.object({ id, astronautId: id.optional(), compartmentId: id.optional(), createdAt: timestamp, level: z.enum(['information', 'attention', 'review']), title: z.string(), explanation: z.string(), evidence: z.array(z.object({ observationId: id, explanation: z.string() })), safeNextStep: z.string(), status: z.enum(['new', 'acknowledged']), ruleId: id, demonstrationOnly: z.boolean(), sourceRefIds: z.array(id).optional() })
-export const activitySchema = z.object({ id, astronautId: id, kind: z.enum(['exercise', 'sleep', 'work', 'rest', 'self_report', 'medical_check']), startedAt: timestamp, endedAt: timestamp.optional(), source, origin: originSchema, quality, details: z.record(z.string(), z.union([finite, z.string(), z.boolean(), z.null()])).optional() })
-export const clinicalSchema = z.object({ measurements: z.array(measurementSchema), assessments: z.array(assessmentSchema), alerts: z.array(alertSchema), encounters: z.array(encounterSchema), activities: z.array(activitySchema).default([]) })
+export const activitySchema = z.object({ id, astronautId: id, kind: z.enum(['exercise', 'sleep', 'work', 'rest', 'self_report', 'medical_check']), startedAt: timestamp, endedAt: timestamp.optional(), source, origin: originSchema, quality, acquisition: acquisitionSchema.optional(), details: z.record(z.string(), z.union([finite, z.string(), z.boolean(), z.null()])).optional() })
+export const environmentSchema = z.object({ id, compartmentId: id, astronautId: id.optional(), metric: z.enum(['cabin_co2', 'cabin_temperature', 'cabin_pressure', 'radiation_dose', 'other']), value: finite.nullable(), unit: z.string().min(1), timestamp, source: z.enum(['simulator', 'environment_sensor', 'dataset_import']), origin: originSchema, quality, sourceRefId: id.optional(), demonstrationOnly: z.boolean().optional(), acquisition: acquisitionSchema.optional() }).superRefine((r, ctx) => {
+  if ((r.quality === 'missing') !== (r.value === null) || (r.source === 'simulator' && r.origin !== 'synthetic')) ctx.addIssue({ code: 'custom', message: 'Environmental quality/provenance mismatch' })
+  const rule = measurementRules[r.metric]
+  if (rule && (rule.unit !== r.unit || (r.value !== null && (r.value < rule.min || r.value > rule.max)))) ctx.addIssue({ code: 'custom', message: 'Environmental unit/entry bounds mismatch; not a clinical range' })
+})
+export const examinationSchema = z.object({ ...metadata, kind: z.enum(['ecg', 'ultrasound']), summary: z.string().trim().min(1).max(2000).nullable() }).superRefine((r, ctx) => {
+  if ((r.quality === 'missing') !== (r.summary === null) || (r.source === 'simulator' && r.origin !== 'synthetic')) ctx.addIssue({ code: 'custom', message: 'Examination quality/provenance mismatch' })
+})
+export const sensorBatchSchema = z.object({ measurements: z.array(measurementSchema), environment: z.array(environmentSchema), examinations: z.array(examinationSchema) })
+export const clinicalSchema = z.object({ measurements: z.array(measurementSchema), assessments: z.array(assessmentSchema), alerts: z.array(alertSchema), encounters: z.array(encounterSchema), activities: z.array(activitySchema).default([]), environment: z.array(environmentSchema).default([]), examinations: z.array(examinationSchema).default([]) })
 const sourceRef = z.object({ id, title: z.string(), url: z.url().optional(), kind: z.enum(['research', 'dataset', 'synthetic_fixture', 'user_entry', 'device']), note: z.string().optional() })
 export const missionSchema = z.object({
   missionTime: timestamp, paused: z.boolean(), speed: finite.min(1).max(3600), activeScenario: z.enum(['normal-day', 'sleep-disruption', 'co2-excursion', 'radiation-event']), seed: positive.int().max(4294967295),
   crew: z.array(z.object({ id, displayName: z.string(), role: z.string(), baselines: z.partialRecord(metric, finite), currentCompartmentId: id, syntheticIdentity: z.boolean() })),
   compartments: z.array(z.object({ id, label: z.string(), category: z.enum(['living', 'exercise', 'medical', 'work', 'life_support', 'shelter']) })),
   ...clinicalSchema.shape,
-  environment: z.array(z.object({ id, compartmentId: id, metric: z.enum(['cabin_co2', 'cabin_temperature', 'cabin_pressure', 'radiation_dose', 'other']), value: finite.nullable(), unit: z.string(), timestamp, source: z.enum(['simulator', 'environment_sensor', 'dataset_import']), origin: originSchema, quality, sourceRefId: id.optional(), demonstrationOnly: z.boolean().optional() })),
+  environment: z.array(environmentSchema),
   activities: z.array(activitySchema),
   events: z.array(z.object({ id, at: timestamp, kind: z.enum(['crew_movement', 'routine', 'measurement', 'environment_incident', 'radiation_incident', 'health_alert', 'operator_action']), astronautId: id.optional(), compartmentId: id.optional(), summary: z.string(), scenarioId: z.enum(['normal-day', 'sleep-disruption', 'co2-excursion', 'radiation-event']).optional(), synthetic: z.boolean() })),
   sources: z.array(sourceRef),

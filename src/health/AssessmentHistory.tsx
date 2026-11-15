@@ -6,6 +6,8 @@ export function AssessmentHistory({ records }: { records: AssessmentResult[] }) 
   return <Panel title="Assessment history" eyebrow="Observed and synthetic records are never pooled">
     {!records.length && <p className="empty-copy">No completed assessments in this workspace.</p>}
     <div className="history-list">{records.slice().reverse().slice(0, 40).map(a => <article className="event-item" key={a.id}><h3>{a.kind} · {a.origin}</h3><p className="mono">{a.timestamp} · {a.source} · {a.quality}</p>
+      {a.origin === 'synthetic' && <p className="sample-note">Synthetic fixture — generated values and baseline, not a camera or cognitive measurement.</p>}
+      <p className="sample-note">{a.acquisition ? `${a.acquisition.deviceId} · ${a.acquisition.protocolId} · ${a.acquisition.condition} · session ${a.acquisition.sessionId}` : 'Acquisition conditions unrecorded; no qualified new baseline comparison.'}</p>
       {a.kind === 'typing' && <p>{a.result.wpm.toFixed(1)} WPM · {a.result.accuracy.toFixed(1)}% accuracy · {a.result.errors} errors · {a.result.corrections} corrections · {a.result.interKeyMs.length} intervals · {a.result.durationMs / 1000} s</p>}
       {a.kind === 'reaction' && <p>Mean {fixed(a.result.meanMs)} ms · Median {fixed(a.result.medianMs)} ms · {a.result.missed} missed · {a.result.premature} premature</p>}
       {a.kind === 'procedure' && <p>{a.result.attempts.filter(t => !t.matched).length} mismatches · {a.result.attempts.length} attempts · {a.result.attempts.map(t => `${t.field} ${t.entered} ${t.unit}: ${t.elapsedMs.toFixed(0)} ms`).join('; ')}</p>}

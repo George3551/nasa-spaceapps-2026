@@ -6,10 +6,10 @@ import { selectWorkspace } from '../app/state/reducer'
 import { AssessmentHistory } from '../health/AssessmentHistory'
 
 const systems: { id: string; name: string; metrics: MetricKey[]; note: string }[] = [
-  { id: 'cardiovascular', name: 'Cardiovascular', metrics: ['heart_rate', 'resting_heart_rate', 'blood_pressure_systolic', 'blood_pressure_diastolic'], note: 'Heart rate and blood pressure are records, not an image of the heart. Compare historical values with context; no cardiovascular diagnosis is inferred.' },
+  { id: 'cardiovascular', name: 'Cardiovascular', metrics: ['heart_rate', 'resting_heart_rate', 'blood_pressure_systolic', 'blood_pressure_diastolic', 'heart_rate_variability'], note: 'Heart rate and blood pressure are records, not an image of the heart. Compare historical values with context; no cardiovascular diagnosis is inferred.' },
   { id: 'musculoskeletal', name: 'Musculoskeletal', metrics: ['exercise_duration', 'exercise_repetitions', 'movement_range', 'bone_mineral_density'], note: 'Exercise and projected elbow angles describe movement. Bone density is available only from a separately recorded examination, never from the camera.' },
   { id: 'cognitive', name: 'Nervous / Cognitive', metrics: ['sleep_duration', 'reported_fatigue', 'reported_stress', 'reported_mood', 'visual_fatigue'], note: 'Sleep, self-reports and task performance provide context. Eyelid measurements are experimental and do not diagnose fatigue, neurological or psychological conditions.' },
-  { id: 'respiratory', name: 'Respiratory / Environment', metrics: ['cabin_co2', 'cabin_pressure', 'cabin_temperature', 'symptom_severity'], note: 'Environmental records describe the selected astronaut’s current compartment in the synthetic preview. They are not personal absorbed exposure or a respiratory diagnosis. Symptoms require their recorded context.' },
+  { id: 'respiratory', name: 'Respiratory / Environment', metrics: ['oxygen_saturation', 'cabin_co2', 'cabin_pressure', 'cabin_temperature', 'symptom_severity'], note: 'Environmental records describe the selected astronaut’s current compartment in the synthetic preview. They are not personal absorbed exposure or a respiratory diagnosis. Symptoms require their recorded context.' },
   { id: 'radiation', name: 'Radiation', metrics: ['radiation_dose'], note: 'Recorded dose values retain their units and source. They are not summed across incompatible or overlapping records. No organ damage or cancer risk is calculated.' },
 ]
 export function Anatomy() {

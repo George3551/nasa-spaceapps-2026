@@ -36,7 +36,7 @@ The owner has completed the branch-control changes. Keep production deployments
 disabled and Preview deployments at None. No Retry deployment, new deployment,
 GitHub Release, tag publication or PR #4 merge is part of this freeze operation.
 Current policy also forbids pushing the local development checkpoint, even though
-automatic Cloudflare builds are disabled. V4 must not begin until explicitly assigned.
+automatic Cloudflare builds are disabled. Local v4.1 was subsequently explicitly assigned on develop; see CORE_V4_1.md. That assignment does not permit publication or change this release reference.
 
 The setting values are owner-confirmed, not inferred from public headers or a
 GitHub check. See [Cloudflare branch controls](https://developers.cloudflare.com/pages/configuration/branch-build-controls/).

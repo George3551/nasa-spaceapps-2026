@@ -1,11 +1,12 @@
-import type { AssessmentResult, ClinicalAction, ClinicalWorkspace, HealthAlert, HealthMeasurement, MetricKey, MissionSnapshot, MissionState, ScenarioId } from '../../../contracts/types'
+import type { AssessmentResult, ClinicalAction, ClinicalWorkspace, HealthAlert, HealthMeasurement, MetricKey, MissionSnapshot, MissionState, ScenarioId, SensorBatch } from '../../../contracts/types'
 import { initialState, runScenario, step } from '../../simulation/engine'
 import { synchronizeClinical } from '../../health/engine'
 import { addFollowUp, transitionEncounter } from '../../health/clinical'
 import { actionSchema, assessmentSchema, validateMeasurement } from '../../shared/validation'
 import { physicalActivity } from '../../vision/records'
+import { appendAcquisition, validateSensorBatch } from '../../sensors/ingestion'
 
-export type Section = 'dashboard' | 'health' | 'spacecraft' | 'simulation' | 'events' | 'assessments' | 'research' | 'visual' | 'physical' | 'anatomy'
+export type Section = 'dashboard' | 'health' | 'spacecraft' | 'simulation' | 'events' | 'assessments' | 'research' | 'visual' | 'physical' | 'anatomy' | 'performance' | 'sensors'
 export type UserMode = 'astronaut' | 'medical' | 'mission'
 export type DataScope = 'observed' | 'synthetic'
 export interface AppState {
@@ -33,6 +34,7 @@ export type AppAction =
   | { type: 'mission/replace'; mission: MissionState }
   | { type: 'measurements/upsert'; records: HealthMeasurement[] }
   | { type: 'assessment/add'; record: AssessmentResult }
+  | { type: 'sensors/ingest'; batch: SensorBatch }
   | { type: 'alerts/replace'; alerts: HealthAlert[] }
   | { type: 'alerts/acknowledge'; id: string }
   | { type: 'encounter/transition'; id: string; transition: 'review' | 'resolve'; at: string }
@@ -41,14 +43,14 @@ export type AppAction =
   | { type: 'fixture/reset' }
 
 export function createAppState(): AppState {
-  return { mission: initialState(), personal: { measurements: [], assessments: [], alerts: [], encounters: [], activities: [] }, section: 'health', mode: 'astronaut', scope: 'observed', sessionAstronautId: 'crew-01', selectedAstronautId: 'crew-01', selectedCompartmentId: null, notice: null }
+  return { mission: initialState(), personal: { measurements: [], assessments: [], alerts: [], encounters: [], activities: [], environment: [], examinations: [] }, section: 'health', mode: 'astronaut', scope: 'observed', sessionAstronautId: 'crew-01', selectedAstronautId: 'crew-01', selectedCompartmentId: null, notice: null }
 }
 export function canAccessSubject(state: AppState, id: string) {
   return state.mode === 'astronaut' ? id === state.sessionAstronautId : state.mode === 'medical' || state.scope === 'synthetic'
 }
 // UI isolation only; real authentication and authorization require a trusted boundary.
 export function selectWorkspace(state: AppState): MissionState {
-  const base = state.scope === 'synthetic' ? state.mission : { ...state.mission, ...state.personal, environment: [], activities: state.personal.activities ?? [], events: [], crew: state.mission.crew.map(c => {
+  const base = state.scope === 'synthetic' ? state.mission : { ...state.mission, ...state.personal, environment: state.personal.environment ?? [], examinations: state.personal.examinations ?? [], activities: state.personal.activities ?? [], events: [], crew: state.mission.crew.map(c => {
     const baselines: Partial<Record<MetricKey, number>> = {}
     const records = state.personal.measurements.filter(r => r.astronautId === c.id && r.value !== null && r.quality === 'valid').sort((a, b) => a.timestamp.localeCompare(b.timestamp))
     for (const metric of new Set(records.map(r => r.metric))) {
@@ -59,15 +61,15 @@ export function selectWorkspace(state: AppState): MissionState {
   }) }
   if (state.mode !== 'astronaut') return base
   const own = state.sessionAstronautId
-  return { ...base, crew: base.crew.filter(c => c.id === own), measurements: base.measurements.filter(r => r.astronautId === own), assessments: (base.assessments ?? []).filter(r => r.astronautId === own), encounters: (base.encounters ?? []).filter(r => r.astronautId === own), alerts: base.alerts.filter(r => r.astronautId === own), activities: base.activities.filter(r => r.astronautId === own), events: [] }
+  return { ...base, crew: base.crew.filter(c => c.id === own), measurements: base.measurements.filter(r => r.astronautId === own), assessments: (base.assessments ?? []).filter(r => r.astronautId === own), encounters: (base.encounters ?? []).filter(r => r.astronautId === own), alerts: base.alerts.filter(r => r.astronautId === own), activities: base.activities.filter(r => r.astronautId === own), examinations: (base.examinations ?? []).filter(r => r.astronautId === own), environment: base.environment.filter(r => state.scope === 'synthetic' || r.astronautId === own), events: [] }
 }
 function updateClinical(state: AppState, data: ClinicalWorkspace): AppState {
   return state.scope === 'synthetic' ? { ...state, mission: { ...state.mission, ...data } } : { ...state, personal: data }
 }
 function clinicalData(state: AppState): ClinicalWorkspace { return state.scope === 'synthetic' ? state.mission : state.personal }
 function reevaluate(state: AppState): AppState {
-  const full = state.scope === 'synthetic' ? state.mission : { ...state.mission, ...state.personal, environment: [] }
-  return updateClinical(state, synchronizeClinical(full))
+  const full = state.scope === 'synthetic' ? state.mission : { ...state.mission, ...state.personal, environment: state.personal.environment ?? [], examinations: state.personal.examinations ?? [] }
+  return updateClinical(state, synchronizeClinical(full, state.scope === 'synthetic' ? full.missionTime : new Date().toISOString()))
 }
 export function appReducer(state: AppState, action: AppAction): AppState {
   try {
@@ -116,6 +118,17 @@ export function appReducer(state: AppState, action: AppAction): AppState {
         if (record.kind === 'physical') activities = [...activities.filter(a => a.id !== `activity-${record.id}`), physicalActivity(record)]
         if ((record.kind === 'visual' || record.kind === 'physical') && record.quality !== (record.result.sufficient ? 'estimated' : 'missing')) throw new Error('Camera quality must match available observations.')
         return reevaluate({ ...state, personal: { ...data, activities, assessments: [...data.assessments.filter(a => a.id !== record.id), record] }, notice: 'Assessment saved locally. No diagnosis is inferred.' })
+      }
+      case 'sensors/ingest': {
+        const batch = validateSensorBatch(action.batch, state.scope), data = clinicalData(state)
+        const records = [...batch.measurements, ...batch.environment, ...batch.examinations]
+        if (records.some(r => !r.astronautId || !canAccessSubject(state, r.astronautId) || !state.mission.crew.some(c => c.id === r.astronautId))) throw new Error('Acquisition subject is not accessible.')
+        if (batch.environment.some(r => !state.mission.compartments.some(c => c.id === r.compartmentId))) throw new Error('Unknown acquisition compartment.')
+        const nonMeasurementIds = new Set([...data.assessments, ...(data.activities ?? []), ...data.alerts, ...data.encounters].map(r => r.id))
+        if (records.some(r => nonMeasurementIds.has(r.id))) throw new Error('Acquisition ID conflicts with an existing assessment/activity/case.')
+        const measurements = appendAcquisition(data.measurements, batch.measurements), environment = appendAcquisition(data.environment ?? [], batch.environment), examinations = appendAcquisition(data.examinations ?? [], batch.examinations)
+        if (new Set([...measurements, ...environment, ...examinations].map(r => r.id)).size !== measurements.length + environment.length + examinations.length) throw new Error('Acquisition ID crosses record categories.')
+        return reevaluate(updateClinical({ ...state, notice: 'Acquisition batch saved atomically. No real hardware connection is claimed.' }, { ...data, measurements, environment, examinations }))
       }
       case 'alerts/replace': {
         const data = clinicalData(state), read = new Set(data.alerts.filter(a => a.status === 'acknowledged').map(a => a.id))

@@ -55,6 +55,6 @@ describe('canonical observed camera records', () => {
     expect(restored.error).toBeNull(); expect(restored.state?.personal.activities).toEqual([])
     persistState(localStorage, restored.state!)
     expect(localStorage.getItem(LEGACY_STORAGE_KEY)).toBe(raw)
-    expect(JSON.parse(localStorage.getItem(STORAGE_KEY)!).version).toBe(3)
+    expect(JSON.parse(localStorage.getItem(STORAGE_KEY)!).version).toBe(4)
   })
 })
