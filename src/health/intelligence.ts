@@ -17,6 +17,19 @@ export function performanceObservations(state: MissionState, subject: string, or
   }
   return result
 }
+export function baselineRecordIds(observations: PerformanceObservation[]): Set<string> {
+  const groups = new Map<string, PerformanceObservation[]>()
+  for (const r of observations.filter(r => usable(r) && contextKnown(r)).sort((a, b) => Date.parse(a.timestamp) - Date.parse(b.timestamp))) {
+    const key = JSON.stringify([r.astronautId, r.origin, r.signal, r.analyte, r.unit, r.source, r.acquisition!.deviceId, r.acquisition!.protocolId, r.acquisition!.condition])
+    const group = groups.get(key) ?? []
+    if (group.length < 3 && !group.some(p => p.acquisition!.sessionId === r.acquisition!.sessionId || Date.parse(p.timestamp) === Date.parse(r.timestamp))) group.push(r)
+    groups.set(key, group)
+  }
+  return new Set([...groups.values()].flat().map(r => r.id))
+}
+export function freshnessWindow(signal: PerformanceSignal): number {
+  return signal === 'sleep_duration' ? 86400000 : signal === 'laboratory' || signal === 'bone_mineral_density' ? 7 * 86400000 : 30 * 60000
+}
 export function compareBaseline(records: PerformanceObservation[], signal: PerformanceSignal, asOf: string): BaselineComparison {
   records = records.filter(r => r.signal === signal)
   const now = Date.parse(asOf), future = records.some(r => Date.parse(r.timestamp) > now)
@@ -26,11 +39,13 @@ export function compareBaseline(records: PerformanceObservation[], signal: Perfo
   const base: BaselineComparison = { signal, current, latestEntry, history: history.slice(-12), baseline: null, baselineRecords: [], delta: null, percentChange: null, status: 'missing', warnings }
   if (!current) { warnings.push('No usable observation. Missing is not zero or good health.'); return base }
   if (current !== latestEntry) { warnings.push('Latest entry is unavailable/invalid. Prior usable value is history only.'); return { ...base, status: 'invalid' } }
+  const simultaneous = history.filter(r => Date.parse(r.timestamp) === Date.parse(latestEntry!.timestamp))
+  if (simultaneous.some(r => r !== current && (r.value !== current.value || !compatible(r, current)))) { warnings.push('Conflicting or incompatible observations at the same instant; no insertion-order selection. Review the sources.'); return { ...base, current: null, status: 'invalid' } }
   // Engineering freshness windows, not health limits.
-  const maxAge = signal === 'sleep_duration' ? 86400000 : signal === 'laboratory' || signal === 'bone_mineral_density' ? 7 * 86400000 : 30 * 60000
+  const maxAge = freshnessWindow(signal)
   if (now - Date.parse(current.timestamp) > maxAge) { warnings.push('Outside the demonstration freshness window.'); return { ...base, status: 'stale' } }
   if (!contextKnown(current)) { warnings.push('Acquisition conditions/device/protocol unrecorded; no qualified comparison.'); return { ...base, status: 'incompatible' } }
-  const prior = history.filter(r => usable(r) && Date.parse(r.timestamp) < Date.parse(current.timestamp) && now - Date.parse(r.timestamp) <= 30 * 86400000 && r.acquisition?.sessionId !== current.acquisition?.sessionId)
+  const prior = history.filter(r => usable(r) && Date.parse(r.timestamp) < Date.parse(current.timestamp) && r.acquisition?.sessionId !== current.acquisition?.sessionId)
   const candidates = prior.filter(r => compatible(r, current))
   if (prior.length !== candidates.length) warnings.push('Other units, origins, devices, protocols or conditions excluded; no silent conversion.')
   const sessions = new Set<string>(), timestamps = new Set<number>()
@@ -41,10 +56,11 @@ export function compareBaseline(records: PerformanceObservation[], signal: Perfo
     sessions.add(id); timestamps.add(at); return true
   }).slice(0, 3)
   if (baselineRecords.length < 3) { warnings.push(`Need three earlier compatible sessions; found ${baselineRecords.length}.`); return { ...base, baselineRecords, status: candidates.length === 0 && prior.length >= 3 ? 'incompatible' : 'insufficient_baseline' } }
+  if (baselineRecords.some(r => now - Date.parse(r.timestamp) > 30 * 86400000)) { warnings.push('Original baseline expired. Historical anchors retained; explicit review is needed before establishing a new baseline.'); return { ...base, baselineRecords, status: 'insufficient_baseline' } }
   const baseline = median(baselineRecords.map(r => r.value!)), delta = current.value! - baseline
   if (baseline === 0) warnings.push('Zero baseline: percentage change unavailable.')
   warnings.push('Declared acquisition labels are not verified device calibration or clinical comparability.')
-  return { ...base, baseline, baselineRecords, delta, percentChange: baseline === 0 ? null : delta / Math.abs(baseline) * 100, status: 'ready' }
+  return { ...base, baseline, baselineRecords, delta, percentChange: baseline === 0 || ['reported_fatigue', 'reported_stress', 'reported_mood', 'symptom_severity'].includes(signal) ? null : delta / Math.abs(baseline) * 100, status: 'ready' }
 }
 export function assessPerformance(state: MissionState, subject: string, origin: DataOrigin, asOf: string): PerformanceAssessment {
   const observations = performanceObservations(state, subject, origin)
@@ -61,7 +77,7 @@ export function assessPerformance(state: MissionState, subject: string, origin: 
   const performance = reaction ?? typing
   if (sleep && fatigue && performance && Math.abs(Date.parse(fatigue.current!.timestamp) - Date.parse(performance.current!.timestamp)) <= 15 * 60000) {
     const context = ['heart_rate', 'visual_blink_rate', 'visual_closure_proportion'].flatMap(signal => { const c = get(signal as PerformanceSignal); return c?.current && ['ready', 'insufficient_baseline', 'incompatible'].includes(c.status) ? [c] : [] })
-    const evidence = [...[sleep, fatigue, performance], ...context].map(c => ({ observationId: c.current!.id, explanation: `${c.signal}: ${c.current!.value} ${c.current!.unit}; baseline ${c.baseline ?? 'unavailable'}${c.percentChange === null ? '' : `; change ${c.percentChange.toFixed(1)}%`}. ${c.current!.source}/${origin}.` }))
+    const evidence = [...[sleep, fatigue, performance], ...context].map(c => ({ observationId: c.current!.id, explanation: `${c.signal}: ${c.current!.value!.toFixed(2)} ${c.current!.unit}; baseline ${c.baseline?.toFixed(2) ?? 'unavailable'}${c.delta === null ? '' : c.percentChange === null ? `; difference ${c.delta.toFixed(2)} ${c.current!.unit}` : `; change ${c.percentChange.toFixed(1)}%`}. ${c.current!.source}/${origin}.` }))
     findings.push({ ruleId: 'DEMO-MULTI-PERF-01', title: 'Multiple performance indicators changed', explanation: 'Compared with three earlier compatible sessions: sleep decreased ≥20%, fatigue increased ≥2 points, and reaction slowed ≥20% or typing decreased ≥20%. Fatigue/performance are within 15 minutes; sleep is contextual within 24 hours. These are demonstration choices, not clinical cutoffs. Additional physiology/eyelid records are descriptive context, never proof of fatigue or causation.', evidence, nextStep: 'Check recording conditions and quality, repeat comparable assessments, and request human medical review if concerns persist.', demonstrationOnly: true })
   }
   const ownSymptoms = state.measurements.filter(r => r.astronautId === subject && r.origin === origin && r.metric === 'symptom_severity' && r.value !== null && ['valid', 'estimated'].includes(r.quality) && Date.parse(r.timestamp) <= Date.parse(asOf)).sort((a, b) => Date.parse(a.timestamp) - Date.parse(b.timestamp))

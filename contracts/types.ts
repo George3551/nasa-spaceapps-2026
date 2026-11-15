@@ -48,6 +48,8 @@ export interface SourceReference {
 }
 
 export interface HealthMeasurement {
+  /** Only the mission sampler sets this; imported/manual records are retained. */
+  generatedTelemetry?: true;
   id: ObservationId;
   astronautId: AstronautId;
   metric: MetricKey;
@@ -69,6 +71,7 @@ export interface HealthMeasurement {
 }
 
 export interface EnvironmentalMeasurement {
+  generatedTelemetry?: true;
   id: ObservationId;
   compartmentId: CompartmentId;
   metric: 'cabin_co2' | 'cabin_temperature' | 'cabin_pressure' | 'radiation_dose' | 'other';
@@ -102,6 +105,7 @@ export interface Compartment {
 }
 
 export interface ActivityRecord {
+  generatedTelemetry?: true;
   id: string;
   astronautId: AstronautId;
   kind: 'exercise' | 'sleep' | 'work' | 'rest' | 'self_report' | 'medical_check';
@@ -120,6 +124,8 @@ export interface AlertEvidence {
 }
 
 export interface HealthAlert {
+  /** Original evidence is immutable; subsequent detections are dated snapshots. */
+  updates?: AlertUpdate[];
   id: string;
   astronautId?: AstronautId;
   compartmentId?: CompartmentId;
@@ -189,6 +195,7 @@ export interface VisionPort {
 
 /** v2 provenance shared by assessment, encounter and follow-up records. */
 export interface RecordMetadata {
+  generatedTelemetry?: true;
   id: string;
   astronautId: AstronautId;
   timestamp: ISODateTime;
@@ -407,4 +414,13 @@ export interface PerformanceAssessment {
   comparisons: BaselineComparison[];
   findings: MultimodalFinding[];
   limitations: string[];
+}
+
+export interface AlertUpdate {
+  at: ISODateTime;
+  title: string;
+  explanation: string;
+  evidence: AlertEvidence[];
+  safeNextStep: string;
+  ruleId: string;
 }

@@ -13,7 +13,6 @@ export function syntheticSample(category: SensorAdapter['category'], request: Se
   if (category === 'physiological') {
     add('heart_rate', 65 + jitter, 'bpm'); add('blood_pressure_systolic', 118 + jitter, 'mmHg'); add('blood_pressure_diastolic', 76, 'mmHg')
     add('body_temperature', 36.7, '°C'); add('oxygen_saturation', 98, '%'); add('heart_rate_variability', 45 + jitter, 'ms')
-    add('sleep_duration', 7.8, 'h'); add('exercise_duration', 35, 'min')
   } else if (category === 'medical') {
     for (const kind of ['ecg', 'ultrasound'] as const) result.examinations.push({ ...metadata, id: `${id}-${kind}`, kind, unit: 'report', sourceRefIds: ['synthetic-sensors-v4'], summary: `Synthetic ${kind} examination record; no raw image/waveform or automated interpretation.` })
     add('laboratory', 5, 'mmol/L', 'glucose'); add('laboratory', null, 'g/L', 'hemoglobin')

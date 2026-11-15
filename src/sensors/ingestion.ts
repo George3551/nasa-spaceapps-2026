@@ -6,6 +6,7 @@ export function validateSensorBatch(input: unknown, origin: DataOrigin): SensorB
   const records = [...batch.measurements, ...batch.environment, ...batch.examinations]
   if (new Set(records.map(r => r.id)).size !== records.length) throw new Error('Duplicate ID inside acquisition batch.')
   for (const r of records) {
+    delete r.generatedTelemetry // Explicit acquisitions are never disposable clock telemetry.
     if (r.origin !== origin || !r.acquisition) throw new Error('Acquisition context and workspace origin must match.')
     if (origin === 'synthetic' && (r.source !== 'simulator' || !r.demonstrationOnly)) throw new Error('Synthetic adapters must declare simulator/demo provenance.')
     if (origin === 'observed' && (r.source === 'simulator' || !r.astronautId)) throw new Error('Observed records require explicit subject association and non-simulator acquisition.')

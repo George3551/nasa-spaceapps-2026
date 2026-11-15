@@ -2,7 +2,7 @@ import type { AssessmentResult, ClinicalAction, ClinicalWorkspace, HealthAlert, 
 import { initialState, runScenario, step } from '../../simulation/engine'
 import { synchronizeClinical } from '../../health/engine'
 import { addFollowUp, transitionEncounter } from '../../health/clinical'
-import { actionSchema, assessmentSchema, validateMeasurement } from '../../shared/validation'
+import { actionSchema, assessmentSchema, validateMeasurement, readableValidationError } from '../../shared/validation'
 import { physicalActivity } from '../../vision/records'
 import { appendAcquisition, validateSensorBatch } from '../../sensors/ingestion'
 
@@ -41,6 +41,7 @@ export type AppAction =
   | { type: 'encounter/follow-up'; id: string; action: ClinicalAction }
   | { type: 'notice'; message: string | null }
   | { type: 'fixture/reset' }
+  | { type: 'demo/start' }
 
 export function createAppState(): AppState {
   return { mission: initialState(), personal: { measurements: [], assessments: [], alerts: [], encounters: [], activities: [], environment: [], examinations: [] }, section: 'health', mode: 'astronaut', scope: 'observed', sessionAstronautId: 'crew-01', selectedAstronautId: 'crew-01', selectedCompartmentId: null, notice: null }
@@ -52,7 +53,7 @@ export function canAccessSubject(state: AppState, id: string) {
 export function selectWorkspace(state: AppState): MissionState {
   const base = state.scope === 'synthetic' ? state.mission : { ...state.mission, ...state.personal, environment: state.personal.environment ?? [], examinations: state.personal.examinations ?? [], activities: state.personal.activities ?? [], events: [], crew: state.mission.crew.map(c => {
     const baselines: Partial<Record<MetricKey, number>> = {}
-    const records = state.personal.measurements.filter(r => r.astronautId === c.id && r.value !== null && r.quality === 'valid').sort((a, b) => a.timestamp.localeCompare(b.timestamp))
+    const records = state.personal.measurements.filter(r => r.astronautId === c.id && r.value !== null && r.quality === 'valid').sort((a, b) => Date.parse(a.timestamp) - Date.parse(b.timestamp))
     for (const metric of new Set(records.map(r => r.metric))) {
       const first = records.filter(r => r.metric === metric).slice(0, 3)
       if (first.length === 3 && first.every(r => r.unit === first[0]!.unit)) baselines[metric] = first.reduce((sum, r) => sum + r.value!, 0) / 3
@@ -77,7 +78,7 @@ export function appReducer(state: AppState, action: AppAction): AppState {
       case 'navigate':
         if ((action.section === 'spacecraft' || action.section === 'simulation') && state.mode !== 'mission') return state
         if ((action.section === 'visual' || action.section === 'physical') && state.mode === 'mission') return state
-        return { ...state, section: action.section }
+        return { ...state, section: action.section, notice: null }
       case 'mode/set': return { ...state, mode: action.mode, scope: action.mode === 'mission' ? 'synthetic' : 'observed', selectedAstronautId: state.sessionAstronautId, section: action.mode === 'mission' ? 'dashboard' : 'health', notice: null }
       case 'scope/set': return { ...state, scope: state.mode === 'mission' ? 'synthetic' : action.scope, notice: null }
       case 'crew/select': return canAccessSubject(state, action.id) && state.mission.crew.some(c => c.id === action.id) ? { ...state, selectedAstronautId: action.id, section: 'health' } : state
@@ -105,9 +106,12 @@ export function appReducer(state: AppState, action: AppAction): AppState {
         return { ...state, mission: { ...mission, ...synchronizeClinical(mission) }, selectedAstronautId: mission.crew.some(c => c.id === state.selectedAstronautId) ? state.selectedAstronautId : mission.crew[0]?.id ?? null }
       }
       case 'measurements/upsert': {
-        const data = clinicalData(state), records = action.records.map(validateMeasurement)
+        const data = clinicalData(state), records = action.records.map(input => { const record = validateMeasurement(input); delete record.generatedTelemetry; return record })
         if (records.some(r => !canAccessSubject(state, r.astronautId) || r.origin !== state.scope || !state.mission.crew.some(c => c.id === r.astronautId))) throw new Error('Record subject or origin does not match this workspace.')
-        const measurements = [...new Map([...data.measurements, ...records].map(r => [r.id, r])).values()]
+        const otherIds = new Set([...state.mission.measurements, ...state.personal.measurements].filter(r => !data.measurements.includes(r)).map(r => r.id))
+        const reservedIds = new Set([...(data.assessments ?? []), ...(data.environment ?? []), ...(data.examinations ?? []), ...(data.activities ?? [])].map(r => r.id))
+        if (records.some(r => otherIds.has(r.id) || reservedIds.has(r.id))) throw new Error('Record ID belongs to another workspace or record category; existing record retained.')
+        const measurements = appendAcquisition(data.measurements, records)
         return reevaluate(updateClinical({ ...state, notice: 'Observation saved locally.' }, { ...data, measurements }))
       }
       case 'assessment/add': {
@@ -136,20 +140,25 @@ export function appReducer(state: AppState, action: AppAction): AppState {
       }
       case 'alerts/acknowledge': {
         const data = clinicalData(state)
-        return updateClinical(state, { ...data, alerts: data.alerts.map(a => a.id === action.id && a.astronautId && canAccessSubject(state, a.astronautId) ? { ...a, status: 'acknowledged' } : a) })
+        return updateClinical({ ...state, notice: 'Alert acknowledged. This does not resolve the case.' }, { ...data, alerts: data.alerts.map(a => a.id === action.id && a.astronautId && canAccessSubject(state, a.astronautId) ? { ...a, status: 'acknowledged' } : a) })
       }
       case 'encounter/transition': {
         const data = clinicalData(state)
         if (action.transition === 'resolve' && state.mode !== 'medical') throw new Error('Case resolution requires the medical officer review context.')
-        return updateClinical(state, { ...data, encounters: data.encounters.map(e => e.id === action.id && canAccessSubject(state, e.astronautId) ? transitionEncounter(e, action.transition, action.at) : e) })
+        return updateClinical({ ...state, notice: action.transition === 'review' ? 'Review started in the current demo context; this is not authenticated clinician attribution.' : 'Case status updated by the Medical Officer demo context; this is not proof of recovery.' }, { ...data, encounters: data.encounters.map(e => e.id === action.id && canAccessSubject(state, e.astronautId) ? transitionEncounter(e, action.transition, action.at) : e) })
       }
       case 'encounter/follow-up': {
         const data = clinicalData(state)
         const followUp = actionSchema.parse(action.action) as ClinicalAction
-        return updateClinical(state, { ...data, encounters: data.encounters.map(e => e.id === action.id && canAccessSubject(state, e.astronautId) ? addFollowUp(e, followUp) : e) })
+        return updateClinical({ ...state, notice: 'Follow-up recorded locally. Resolution is a separate medical-context action.' }, { ...data, encounters: data.encounters.map(e => e.id === action.id && canAccessSubject(state, e.astronautId) ? addFollowUp(e, followUp) : e) })
       }
       case 'notice': return { ...state, notice: action.message }
       case 'fixture/reset': return { ...state, mission: initialState(state.mission.seed), notice: 'Synthetic mission reset; observed records preserved.' }
+      case 'demo/start': {
+        const mission = step({ ...runScenario(initialState(42), 'sleep-disruption'), paused: false }, 180)
+        mission.paused = true
+        return { ...state, mode: 'mission', scope: 'synthetic', section: 'performance', selectedAstronautId: state.sessionAstronautId, selectedCompartmentId: null, mission: { ...mission, ...synchronizeClinical(mission) }, notice: 'Synthetic demonstration ready. Your observed records were preserved.' }
+      }
     }
-  } catch (error) { return { ...state, notice: `Not saved: ${error instanceof Error ? error.message : 'Invalid data'}` } }
+  } catch (error) { return { ...state, notice: `Not saved: ${readableValidationError(error)}` } }
 }

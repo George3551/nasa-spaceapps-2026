@@ -4,7 +4,7 @@ import { Panel } from '../app/components/Panel'
 import { MeasurementCard } from '../app/components/MeasurementCard'
 import { useAppState } from '../app/state/context'
 import { selectWorkspace } from '../app/state/reducer'
-import { measurementRules, validateMeasurement } from '../shared/validation'
+import { measurementRules, validateMeasurement, readableValidationError } from '../shared/validation'
 import { AssessmentHistory } from './AssessmentHistory'
 import { acquisition, Conditions } from './Conditions'
 
@@ -23,14 +23,17 @@ export function ObservationForm({ astronautId }: { astronautId: string }) {
         if (!value.trim()) throw new Error('Enter a value. Missing is not zero.')
         if (metric === 'symptom_severity' && !note.trim()) throw new Error('Describe the symptom in the note.')
         const timestamp = at ? new Date(at).toISOString() : state.scope === 'synthetic' ? state.mission.missionTime : new Date().toISOString()
+        const asOf = state.scope === 'synthetic' ? Date.parse(state.mission.missionTime) : Date.now()
+        if (Date.parse(timestamp) > asOf) throw new Error('The observation date is in the future. Choose the actual recording time.')
         const record = validateMeasurement({ id: crypto.randomUUID(), astronautId, metric, value: Number(value), unit: rule.unit, timestamp, source: 'manual', origin: state.scope, quality: 'valid', sourceRefId: 'manual-entry', demonstrationOnly: state.scope === 'synthetic', note: note.trim(), acquisition: acquisition(device.trim() || (selfReport ? 'manual-entry' : 'not_recorded'), protocol.trim() || (selfReport ? `manual-${metric}-v1` : 'not_recorded'), condition) })
         dispatch({ type: 'measurements/upsert', records: [record] }); setValue(''); setNote('')
-      } catch (e) { setError(e instanceof Error ? e.message : 'Invalid input') }
+      } catch (e) { setError(readableValidationError(e)) }
     }}>
       <label className="field">Indicator<select value={metric} onChange={e => setMetric(e.target.value as MetricKey)}>{Object.entries(measurementRules).filter(([key]) => !key.startsWith('cabin_') && key !== 'radiation_dose').map(([key, r]) => <option key={key} value={key}>{r.label}</option>)}</select></label>
       <label className="field">Value ({rule.unit})<input type="number" step="any" required min={rule.min} max={rule.max} value={value} onChange={e => setValue(e.target.value)} /></label>
       <label className="field">Recorded at (optional, local time)<input type="datetime-local" value={at} onChange={e => setAt(e.target.value)} /></label>
       <Conditions value={condition} onChange={setCondition} />
+      {metric === 'sleep_duration' && <p className="sample-note">For sleep, use the sleep-report context and describe the reporting period in the note. Seated posture is not a sleep condition.</p>}
       <label className="field">Declared device identifier (optional)<input maxLength={200} value={device} onChange={e => setDevice(e.target.value)} /></label>
       <label className="field">Measurement protocol / statistic (optional)<input maxLength={200} value={protocol} onChange={e => setProtocol(e.target.value)} /></label>
       <p className="sample-note">For physiological/examination values, record the actual device and measurement method (including the HRV statistic) to qualify a baseline. Unspecified device/method is kept as unknown; no automatic unit conversion. These labels are self-declared.</p>
@@ -59,7 +62,7 @@ export function HealthMonitor() {
   const { state } = useAppState(), workspace = selectWorkspace(state)
   const crew = workspace.crew.find(c => c.id === state.selectedAstronautId)
   const [metric, setMetric] = useState<MetricKey>('sleep_duration')
-  const records = workspace.measurements.filter(r => r.astronautId === crew?.id).sort((a, b) => a.timestamp.localeCompare(b.timestamp))
+  const records = workspace.measurements.filter(r => r.astronautId === crew?.id).sort((a, b) => Date.parse(a.timestamp) - Date.parse(b.timestamp))
   const latest = (key: MetricKey) => records.filter(r => r.metric === key).at(-1)
   return <div className="stack">
     <Panel title={crew?.displayName ?? 'No crew selected'} eyebrow={state.scope === 'synthetic' ? 'Fictional crew · synthetic scenario' : 'Personal observed records · local prototype'}>
