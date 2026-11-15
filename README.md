@@ -112,3 +112,10 @@ See **[AI_DISCLOSURE.md](AI_DISCLOSURE.md)** for the detailed human/AI contribut
 ---
 
 *AEGIS supports informed human review; it does not replace professional medical judgment.*
+
+## v4.2 integration preview
+
+This branch combines the local deterministic Guided Assistant, Preventive Health
+and Mission Medical Resources for independent review. Production remains on the
+frozen v4.1 release. See [V4_2_INTEGRATION_REPORT.md](docs/V4_2_INTEGRATION_REPORT.md)
+for the preview URL, exact source references, test results and limitations.

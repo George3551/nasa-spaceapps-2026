@@ -557,4 +557,3 @@ export interface ResourceStatusHistoryEntry {
   reason: string;
   actorRole?: string;
 }
-

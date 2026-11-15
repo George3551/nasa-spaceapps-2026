@@ -1,3 +1,5 @@
+/** AEGIS - team-directed, AI-assisted implementation (Google Gemini); integration fixes/tests assisted by OpenAI Codex.
+ * Local research prototype, not clinical validation. See docs/V4_2_INTEGRATION_REPORT.md and AI_DISCLOSURE.md. */
 import { useState } from 'react'
 import type {
   OperatorQualification,

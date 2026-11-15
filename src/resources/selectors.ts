@@ -1,3 +1,5 @@
+/** AEGIS - team-directed, AI-assisted implementation (Google Gemini); integration fixes/tests assisted by OpenAI Codex.
+ * Local research prototype, not clinical validation. See docs/V4_2_INTEGRATION_REPORT.md and AI_DISCLOSURE.md. */
 import type {
   CompartmentId,
   DataOrigin,
@@ -218,7 +220,7 @@ export function selectAvailableMedicalEquipment(
   const allEvaluated = rawList.map(r => evaluateMedicalResource(r, asOf, filter.actorQualification))
   const counts = {
     total: allEvaluated.length,
-    availableAndFunctional: allEvaluated.filter(i => i.availability === 'available' && i.operability === 'functional' && (i.quantity === null || i.quantity > 0)).length,
+    availableAndFunctional: allEvaluated.filter(i => i.usableForExamination).length,
     unavailable: allEvaluated.filter(i => i.availability === 'unavailable').length,
     outOfService: allEvaluated.filter(i => i.operability === 'out_of_service').length,
     unknown: allEvaluated.filter(i => i.availability === 'unknown' || i.operability === 'unknown').length,

@@ -100,7 +100,7 @@ function appendWorkspaceRecords<T extends { id: string }>(state: AppState, exist
     ...(w.activities ?? []), ...(w.environment ?? []), ...(w.examinations ?? []),
     ...(w.preventionPlans ?? []), ...(w.hydrationRecords ?? []),
   ]).filter(r => !allowed.has(r)).map(r => r.id))
-  if (new Set(incoming.map(r => r.id)).size !== incoming.length || incoming.some(r => reserved.has(r.id))) throw new Error('Record ID belongs to another workspace or record category; existing record retained.')
+  if (incoming.some(r => reserved.has(r.id))) throw new Error('Record ID belongs to another workspace or record category; existing record retained.')
   return appendAcquisition(existing, incoming)
 }
 function reevaluate(state: AppState): AppState {
@@ -146,7 +146,7 @@ export function appReducer(state: AppState, action: AppAction): AppState {
         const otherIds = new Set([...state.mission.measurements, ...state.personal.measurements].filter(r => !data.measurements.includes(r)).map(r => r.id))
         const reservedIds = new Set([...(data.assessments ?? []), ...(data.environment ?? []), ...(data.examinations ?? []), ...(data.activities ?? []), ...(data.preventionPlans ?? []), ...(data.hydrationRecords ?? [])].map(r => r.id))
         if (records.some(r => otherIds.has(r.id) || reservedIds.has(r.id))) throw new Error('Record ID belongs to another workspace or record category; existing record retained.')
-        const measurements = appendAcquisition(data.measurements, records)
+        const measurements = appendWorkspaceRecords(state, data.measurements, records)
         return reevaluate(updateClinical({ ...state, notice: 'Observation saved locally.' }, { ...data, measurements }))
       }
       case 'assessment/add': {
@@ -154,9 +154,10 @@ export function appReducer(state: AppState, action: AppAction): AppState {
         if (state.scope !== 'observed' || record.origin !== 'observed' || !canAccessSubject(state, record.astronautId)) throw new Error('Live assessments are saved only in the observed workspace.')
         const data = state.personal
         let activities = data.activities ?? []
-        if (record.kind === 'physical') activities = [...activities.filter(a => a.id !== `activity-${record.id}`), physicalActivity(record)]
+        if (record.kind === 'physical') activities = appendWorkspaceRecords(state, activities, [physicalActivity(record)])
         if ((record.kind === 'visual' || record.kind === 'physical') && record.quality !== (record.result.sufficient ? 'estimated' : 'missing')) throw new Error('Camera quality must match available observations.')
-        return reevaluate({ ...state, personal: { ...data, activities, assessments: [...data.assessments.filter(a => a.id !== record.id), record] }, notice: 'Assessment saved locally. No diagnosis is inferred.' })
+        const assessments = appendWorkspaceRecords(state, data.assessments, [record])
+        return reevaluate({ ...state, personal: { ...data, activities, assessments }, notice: 'Assessment saved locally. No diagnosis is inferred.' })
       }
       case 'sensors/ingest': {
         const batch = validateSensorBatch(action.batch, state.scope), data = clinicalData(state)
@@ -165,7 +166,7 @@ export function appReducer(state: AppState, action: AppAction): AppState {
         if (batch.environment.some(r => !state.mission.compartments.some(c => c.id === r.compartmentId))) throw new Error('Unknown acquisition compartment.')
         const nonMeasurementIds = new Set([...data.assessments, ...(data.activities ?? []), ...data.alerts, ...data.encounters, ...(data.preventionPlans ?? []), ...(data.hydrationRecords ?? [])].map(r => r.id))
         if (records.some(r => nonMeasurementIds.has(r.id))) throw new Error('Acquisition ID conflicts with an existing assessment/activity/case.')
-        const measurements = appendAcquisition(data.measurements, batch.measurements), environment = appendAcquisition(data.environment ?? [], batch.environment), examinations = appendAcquisition(data.examinations ?? [], batch.examinations)
+        const measurements = appendWorkspaceRecords(state, data.measurements, batch.measurements), environment = appendWorkspaceRecords(state, data.environment ?? [], batch.environment), examinations = appendWorkspaceRecords(state, data.examinations ?? [], batch.examinations)
         if (new Set([...measurements, ...environment, ...examinations].map(r => r.id)).size !== measurements.length + environment.length + examinations.length) throw new Error('Acquisition ID crosses record categories.')
         return reevaluate(updateClinical({ ...state, notice: 'Acquisition batch saved atomically. No real hardware connection is claimed.' }, { ...data, measurements, environment, examinations }))
       }

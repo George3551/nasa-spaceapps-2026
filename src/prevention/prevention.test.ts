@@ -1,3 +1,5 @@
+/** AEGIS - team-directed, AI-assisted implementation (Google Gemini); integration fixes/tests assisted by OpenAI Codex.
+ * Local research prototype, not clinical validation. See docs/V4_2_INTEGRATION_REPORT.md and AI_DISCLOSURE.md. */
 import { beforeEach, describe, expect, it } from 'vitest'
 import { appReducer, createAppState, selectWorkspace } from '../app/state/reducer'
 import { LEGACY_STORAGE_KEY, persistState, PREVIOUS_STORAGE_KEY, restoreState, STORAGE_KEY } from '../app/state/persistence'

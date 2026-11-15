@@ -1,5 +1,7 @@
 # AEGIS — AI Usage and Source Attribution
 
+**Integration-preview addendum:** this test branch integrates the Claude assistant and Gemini prevention/resource modules. The stable production disclosure below remains a historical account of b8e26c9. See [the v4.2 integration report](docs/V4_2_INTEGRATION_REPORT.md) for the preview-only scope, compatibility changes and verification; no v4.2 production publication is implied.
+
 This disclosure describes the implementation at **b8e26c9dded392b0fb612f8ec034b7da2201d4e0** on `develop`, inspected on 2026-11-15. It is an attribution addendum to that release, not a claim that later development was included in the submitted or deployed application. The production website is not redeployed by this update. Its frozen source remains [b8e26c9](https://github.com/George3551/nasa-spaceapps-2026/tree/b8e26c9dded392b0fb612f8ec034b7da2201d4e0).
 
 The [machine-readable manifest](AI_DISCLOSURE_MANIFEST.json) records file scope, evidence, uncertainties and preserved assets. This document and the disclosure metadata were prepared with OpenAI Codex from repository evidence and the project owner's reports. Neither document certifies eligibility or represents approval by NASA.
