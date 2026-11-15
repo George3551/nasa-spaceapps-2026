@@ -40,7 +40,7 @@ throughout. Local UI clarifications prepared after verification are not yet depl
 
 **Steps**
 
-1. Open **Astronaut Mode → Observed records → Visual Assessment** using a real
+1. Open **Astronaut Mode → Observed records → Eye Observation** using a real
    webcam; no virtual-camera/test-stream override. Before Start, confirm no app
    camera session is active. Confirm the fictional-profile association.
 2. Select **Start Assessment**, deny browser permission. Confirm the error and
@@ -56,10 +56,10 @@ throughout. Local UI clarifications prepared after verification are not yet depl
    unavailable session) → **My Health → Assessment history**. Refresh and review.
 6. Repeat short trials: navigate away during startup/running, hide the tab and
    refresh while running. The application's capture must stop promptly.
-7. **Physical Performance**: confirm association, Start, clearly frame right
+7. **Movement Check**: confirm association, Start, clearly frame right
    shoulder/elbow/wrist. If comfortable, do three full extended (>150°) → flexed
    (<65°) → extended cycles with brief holds. Also try a static arm/incomplete cycle
-   and brief tracking loss. Stop/save → My Health → Anatomy → Musculoskeletal.
+   and brief tracking loss. Stop/save → My Health → Body Systems → Musculoskeletal.
    This is voluntary software testing, not an exercise prescription.
 
 **Expected:** explicit camera activation, no audio; overlay follows observations;
@@ -84,7 +84,7 @@ do not claim a physical-camera pass. Another app's camera use can keep its LED o
 2. **Record an observation → Sleep duration → 7.8 h**; add note `Fictional test`;
    Save. Change Indicator to Fatigue, enter **3 / 10**, Save. Review values, units,
    timestamps, source/origin and trend. Blank/malformed entries must not save as zero.
-3. **Daily Assessments → Start typing test**. Type in the response field, use
+3. **Cognitive Tests → Start typing test**. Type in the response field, use
    Backspace once and finish 30 s. Completion saves automatically; review metrics.
 4. **Start reaction test** in demo mode. Click WAIT once deliberately, then respond
    to RESPOND NOW. Finish 30 s. Review valid responses and premature count.
@@ -104,15 +104,15 @@ data loss/duplicate completion, incorrect units, blank saved as zero, blocked co
 features when camera is denied, or task scores presented as diagnosis. Do not
 expect records to sync to another device or hostname.
 
-## 3 — Mission Simulation and clinical decision support (member C, 10–15 min)
+## 3 — Simulator and clinical decision support (member C, 10–15 min)
 
 **Steps**
 
 1. First save a **7.8 h** sleep entry with note `Fictional test` in Astronaut Mode /
    Observed records, so separation can be checked independently.
-2. **Mission Overview → Mission Simulation → Sleep disruption → Random seed 42 →
-   Load scenario**; confirm the synthetic reset. **Advance 3 virtual minutes**.
-3. **Events & Alerts**: inspect **Recovery indicators changed**, explanation,
+2. **Mission Overview → Simulator → Sleep disruption → Random seed 42 →
+   Load scenario**; confirm with **Reset and load**. **Advance 3 virtual minutes**.
+3. **Alerts & Cases**: inspect **Recovery indicators changed**, explanation,
    evidence IDs/values/time, demonstration-rule label and safe next check.
 4. **Acknowledge → Begin review**. Add a Follow-up note describing a fictional
    verification, optionally link an observation; check **I completed the described
@@ -122,8 +122,8 @@ expect records to sync to another device or hostname.
    context and confirm the case/note remain. Acknowledgement alone must not resolve.
 6. **Mission Overview → Spacecraft → Life support**: review CO₂, temperature,
    pressure and radiation context. Select Mira Chen to open her synthetic profile.
-7. **Mission Simulation → Cabin environment incident → seed 42 → Load scenario →
-   Advance 3 virtual minutes → Events & Alerts**. Review compartment/occupant
+7. **Simulator → Cabin environment incident → seed 42 → Load scenario → Reset and load →
+   Advance 3 virtual minutes → Alerts & Cases**. Review compartment/occupant
    evidence. Try Resume/Pause. Return to Astronaut Mode and verify the 7.8 h entry.
 
 **Expected:** GATHER synthetic observations → EVALUATE explicit demo rule → EXPLAIN
@@ -143,19 +143,19 @@ missing environment panel, or observed/synthetic records mixed.
 1. **Research & Sources**: open NASA HRR 720/1170/1316, NASA AMO, HRP and CDSS
    references. Distinguish reviewed metadata/abstracts from full text; record broken
    links or claims unsupported by the cited page. AMO is historical project context.
-2. Read the Rule register and Events & Alerts labels in a synthetic sleep scenario
-   (Mission Overview → Mission Simulation → Sleep disruption → seed 42 → Load →
+2. Read the Rule register and Alerts & Cases labels in a synthetic sleep scenario
+   (Mission Overview → Simulator → Sleep disruption → seed 42 → Load →
    Advance 3 virtual minutes). Verify rule numbers are labelled unvalidated demo
    choices, not NASA medical limits or treatment instructions.
 3. Return to **Astronaut Mode → Observed records**; save a fictional **7.8 h** sleep
-   entry. **Anatomy → Nervous / Cognitive** must show that entry with provenance.
+   entry. **Body Systems → Nervous / Cognitive** must show that entry with provenance.
    Select all five systems; absent supporting records must remain unknown/missing.
-4. Read Visual Assessment / Physical Performance privacy and limitation text without
+4. Read Eye Observation / Movement Check privacy and limitation text without
    starting a camera. Check for any identity/emotion classifier, diagnosis, validated
    PERCLOS claim, bone/muscle inference or microgravity-validation implication.
 5. Review terminology, readable units/timestamps and navigation at desktop and phone/
    tablet widths. The astronaut's own dashboard should be direct; mission simulation
-   should be clearly separate. Anatomy must read as a schematic, not diagnostic imaging.
+   should be clearly separate. Body Systems must read as a schematic, not diagnostic imaging.
 
 **Expected:** research context, implemented measurements and experimental assumptions
 remain distinct; no imported NASA dataset/clinical validation is invented. No organ

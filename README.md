@@ -1,7 +1,7 @@
 # AEGIS — Astronaut Health Monitoring & Mission Digital Twin
 
 **Current local implementation on develop: Core v4.1.**
-Sensor Integration and Human Performance Assessment extend the existing v3 shell.
+Sensors & Exams and Integrated Review extend the existing v3 shell. UI structure and design system: docs/UI_UX_AUDIT.md and docs/UI_DESIGN_SYSTEM.md.
 See [docs/CORE_V4_1.md](docs/CORE_V4_1.md) for architecture, local demonstration,
 validation and limitations. Public RC1 stays frozen at 034fcdb; local v4.1 is not
 pushed or deployed.
