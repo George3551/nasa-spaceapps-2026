@@ -14,6 +14,7 @@ export function AppProvider({ children }: { children: ReactNode }) {
   const [storageError, setStorageError] = useState<string | null>(restored.error)
   const [blocked, setBlocked] = useState(Boolean(restored.error))
   const [revision, setRevision] = useState(0)
+  const [confirmReplace, setConfirmReplace] = useState(false)
   useEffect(() => {
     if (state.mission.paused) return
     let last = performance.now()
@@ -32,8 +33,13 @@ export function AppProvider({ children }: { children: ReactNode }) {
     const url = URL.createObjectURL(new Blob([raw ?? '{}'], { type: 'application/json' }))
     const a = document.createElement('a'); a.href = url; a.download = 'aegis-local-backup.json'; a.click(); URL.revokeObjectURL(url)
   }
+  function resume() { setConfirmReplace(false); setBlocked(false); setStorageError(null); setRevision(r => r + 1) }
   return <AppContext.Provider value={value}>
-    {storageError && <div className="storage-warning" role="alert"><p>{storageError}</p>{blocked && state.mode !== 'medical' && <p>Raw recovery export is available in the Medical Officer demo context only; unvalidated records cannot be safely filtered by subject.</p>}<button className="button" disabled={blocked && state.mode !== 'medical'} onClick={downloadBackup}>{state.mode === 'medical' ? 'Download all saved sandbox data' : 'Download my workspace records'}</button><button className="button" onClick={() => { if (!blocked || window.confirm('Replace incompatible saved data with the current workspace? Download a backup first.')) { setBlocked(false); setStorageError(null); setRevision(r => r + 1) } }}>{blocked ? 'Replace saved data' : 'Retry saving'}</button></div>}
+    {storageError && <div className="storage-warning" role="alert"><div className="storage-warning-text"><p className="callout-title">Storage problem</p><p>{storageError}</p>{blocked && state.mode !== 'medical' && <p>Raw recovery export is available in the Medical Officer demo context only; unvalidated records cannot be safely filtered by subject.</p>}</div>
+      {confirmReplace
+        ? <div className="storage-warning-actions"><p>Replace incompatible saved data with the current workspace? Download a backup first.</p><button className="button primary" onClick={resume}>Replace saved data now</button><button className="button ghost" onClick={() => setConfirmReplace(false)}>Cancel</button></div>
+        : <div className="storage-warning-actions"><button className="button" disabled={blocked && state.mode !== 'medical'} onClick={downloadBackup}>{state.mode === 'medical' ? 'Download all saved sandbox data' : 'Download my workspace records'}</button><button className="button" onClick={() => { if (blocked) setConfirmReplace(true); else resume() }}>{blocked ? 'Replace saved data' : 'Retry saving'}</button></div>}
+    </div>}
     {children}
   </AppContext.Provider>
 }
