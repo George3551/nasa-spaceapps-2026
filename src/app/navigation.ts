@@ -29,6 +29,7 @@ const groups = (mode: UserMode): NavGroup[] => [
     { id: 'health', label: healthLabel(mode), icon: 'health', description: 'Latest readings, trends and the observation log.' },
     { id: 'events', label: 'Alerts & Cases', icon: 'alert', description: 'Explained detections, acknowledgement and medical follow-up.' },
     { id: 'performance', label: 'Integrated Review', icon: 'review', description: 'Latest results against individual compatible baselines.' },
+    { id: 'prevention', label: 'Preventive Health', icon: 'move', description: 'Personal activity schedules, recovery evidence and hydration records.' },
     { id: 'anatomy', label: 'Body Systems', icon: 'body', description: 'Browse records grouped by body system.' },
   ] },
   { id: 'record', label: 'Record data', items: [
@@ -38,6 +39,7 @@ const groups = (mode: UserMode): NavGroup[] => [
     { id: 'sensors', label: 'Sensors & Exams', icon: 'sensor', description: 'Examination reports and demonstration sensor packets.' },
   ] },
   { id: 'mission', label: 'Mission', items: [
+    { id: 'resources', label: 'Mission Medical Resources', icon: 'sensor', description: 'Synthetic equipment availability, operability and qualification constraints.' },
     { id: 'spacecraft', label: 'Spacecraft', icon: 'ship', description: 'Conceptual compartments, crew locations and cabin readings.' },
     { id: 'simulation', label: 'Simulator', icon: 'sim', description: 'Scenario, seed, clock speed and playback.' },
   ] },

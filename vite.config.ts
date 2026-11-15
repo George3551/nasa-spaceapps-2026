@@ -7,13 +7,15 @@
  */
 import react from '@vitejs/plugin-react'
 import tailwindcss from '@tailwindcss/vite'
-import { defineConfig } from 'vitest/config'
+import { configDefaults, defineConfig } from 'vitest/config'
 
 export default defineConfig({
   // Pages hosts the app at the origin root; SPA fallback paths must use root assets.
   base: '/',
   plugins: [react(), tailwindcss()],
   test: {
+    // Integration worktrees and temporary tools are not part of this app's suite.
+    exclude: [...configDefaults.exclude, '**/.aegis-scaffold/**'],
     environment: 'jsdom',
     setupFiles: ['./src/app/test/setup.ts'],
     clearMocks: true,

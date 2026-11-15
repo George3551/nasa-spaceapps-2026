@@ -25,7 +25,10 @@ import { CameraAssessment } from '../vision/CameraAssessment'
 import { Anatomy } from '../anatomy/Anatomy'
 import { HumanPerformance } from '../health/HumanPerformance'
 import { SensorIntegration } from '../sensors/SensorIntegration'
+import { PreventiveHealth } from '../prevention/PreventiveHealth'
+import { MissionResources } from '../resources/MissionResources'
 import { ReleaseIntro } from './components/ReleaseIntro'
+import { AssistantDock } from '../assistant/AssistantDock'
 
 function Sidebar({ open, onNavigate }: { open: boolean; onNavigate(): void }) {
   const { state, dispatch } = useAppState()
@@ -45,6 +48,7 @@ function Sidebar({ open, onNavigate }: { open: boolean; onNavigate(): void }) {
       </li>)}</ul>
     </div>)}</nav>
     {state.mode !== 'mission' && <p className="nav-hint">Spacecraft and Simulator are available in the Mission Overview context.</p>}
+    <AssistantDock onOpen={onNavigate} />
     <div className="sidebar-bottom"><p><Icon name="lock" size={12} /> Research prototype · not a medical device</p><p>Camera is opt-in · no video stored</p><a href="https://www.spaceappschallenge.org/2026/challenges/health-monitoring-software/" target="_blank" rel="noreferrer">Challenge reference ↗</a></div>
   </aside>
 }
@@ -126,6 +130,8 @@ export function App({ modules = {} }: { modules?: ModuleViews }) {
         {state.section === 'anatomy' && <Anatomy />}
         {state.section === 'performance' && <HumanPerformance />}
         {state.section === 'sensors' && <SensorIntegration />}
+        {state.section === 'prevention' && <PreventiveHealth />}
+        {state.section === 'resources' && <MissionResources />}
       </main>
       <footer className="footer"><span>AEGIS · research prototype · {state.scope} workspace</span><span>No clinical diagnosis · no external runtime API</span></footer>
     </div>

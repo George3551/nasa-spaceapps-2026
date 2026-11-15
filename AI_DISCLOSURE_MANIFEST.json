@@ -2002,5 +2002,189 @@
     "AI_DISCLOSURE.md",
     "AI_DISCLOSURE_MANIFEST.json",
     "docs/ATTRIBUTION_VALIDATION.md"
-  ]
+  ],
+  "integrationPreview": {
+    "branch": "test/v4.2-integration",
+    "baseCommit": "5576e5ed599367b644ac55cd90971563bdf17d15",
+    "upstream": {
+      "claude": "3ce281fb90c46d8e2597c00d1ba59e62e75f2fa0",
+      "gemini": "3720ed800ede5765d20324076ae2e674079ffbb1"
+    },
+    "productionRemains": "b8e26c9dded392b0fb612f8ec034b7da2201d4e0",
+    "note": "Earlier file tables/notIntegrated describe the frozen implementation only. These modules are integrated solely on this preview branch; exact per-line authorship remains unverified.",
+    "moduleFiles": [
+      {
+        "path": "src/assistant/integration.test.tsx",
+        "upstreamTool": "Anthropic Claude Code",
+        "integrationTool": "OpenAI Codex",
+        "classification": "team_directed_ai_assisted_mixed_origin"
+      },
+      {
+        "path": "src/assistant/Assistant.test.tsx",
+        "upstreamTool": "Anthropic Claude Code",
+        "integrationTool": "OpenAI Codex",
+        "classification": "team_directed_ai_assisted_mixed_origin"
+      },
+      {
+        "path": "src/assistant/AssistantDock.tsx",
+        "upstreamTool": "Anthropic Claude Code",
+        "integrationTool": "OpenAI Codex",
+        "classification": "team_directed_ai_assisted_mixed_origin"
+      },
+      {
+        "path": "src/assistant/AssistantPanel.tsx",
+        "upstreamTool": "Anthropic Claude Code",
+        "integrationTool": "OpenAI Codex",
+        "classification": "team_directed_ai_assisted_mixed_origin"
+      },
+      {
+        "path": "src/assistant/assistant.css",
+        "upstreamTool": "Anthropic Claude Code",
+        "integrationTool": "OpenAI Codex",
+        "classification": "team_directed_ai_assisted_mixed_origin"
+      },
+      {
+        "path": "src/assistant/intents.test.ts",
+        "upstreamTool": "Anthropic Claude Code",
+        "integrationTool": "OpenAI Codex",
+        "classification": "team_directed_ai_assisted_mixed_origin"
+      },
+      {
+        "path": "src/assistant/intents.ts",
+        "upstreamTool": "Anthropic Claude Code",
+        "integrationTool": "OpenAI Codex",
+        "classification": "team_directed_ai_assisted_mixed_origin"
+      },
+      {
+        "path": "src/assistant/provider.ts",
+        "upstreamTool": "Anthropic Claude Code",
+        "integrationTool": "OpenAI Codex",
+        "classification": "team_directed_ai_assisted_mixed_origin"
+      },
+      {
+        "path": "src/assistant/respond.test.ts",
+        "upstreamTool": "Anthropic Claude Code",
+        "integrationTool": "OpenAI Codex",
+        "classification": "team_directed_ai_assisted_mixed_origin"
+      },
+      {
+        "path": "src/assistant/respond.ts",
+        "upstreamTool": "Anthropic Claude Code",
+        "integrationTool": "OpenAI Codex",
+        "classification": "team_directed_ai_assisted_mixed_origin"
+      },
+      {
+        "path": "src/assistant/safety.test.ts",
+        "upstreamTool": "Anthropic Claude Code",
+        "integrationTool": "OpenAI Codex",
+        "classification": "team_directed_ai_assisted_mixed_origin"
+      },
+      {
+        "path": "src/assistant/safety.ts",
+        "upstreamTool": "Anthropic Claude Code",
+        "integrationTool": "OpenAI Codex",
+        "classification": "team_directed_ai_assisted_mixed_origin"
+      },
+      {
+        "path": "src/assistant/scope.ts",
+        "upstreamTool": "Anthropic Claude Code",
+        "integrationTool": "OpenAI Codex",
+        "classification": "team_directed_ai_assisted_mixed_origin"
+      },
+      {
+        "path": "src/assistant/test-helpers.ts",
+        "upstreamTool": "Anthropic Claude Code",
+        "integrationTool": "OpenAI Codex",
+        "classification": "team_directed_ai_assisted_mixed_origin"
+      },
+      {
+        "path": "src/assistant/types.ts",
+        "upstreamTool": "Anthropic Claude Code",
+        "integrationTool": "OpenAI Codex",
+        "classification": "team_directed_ai_assisted_mixed_origin"
+      },
+      {
+        "path": "src/prevention/PreventiveHealth.test.tsx",
+        "upstreamTool": "Google Gemini",
+        "integrationTool": "OpenAI Codex",
+        "classification": "team_directed_ai_assisted_mixed_origin"
+      },
+      {
+        "path": "src/prevention/PreventiveHealth.tsx",
+        "upstreamTool": "Google Gemini",
+        "integrationTool": "OpenAI Codex",
+        "classification": "team_directed_ai_assisted_mixed_origin"
+      },
+      {
+        "path": "src/prevention/fixtures.ts",
+        "upstreamTool": "Google Gemini",
+        "integrationTool": "OpenAI Codex",
+        "classification": "team_directed_ai_assisted_mixed_origin"
+      },
+      {
+        "path": "src/prevention/index.ts",
+        "upstreamTool": "Google Gemini",
+        "integrationTool": "OpenAI Codex",
+        "classification": "team_directed_ai_assisted_mixed_origin"
+      },
+      {
+        "path": "src/prevention/prevention.css",
+        "upstreamTool": "Google Gemini",
+        "integrationTool": "OpenAI Codex",
+        "classification": "team_directed_ai_assisted_mixed_origin"
+      },
+      {
+        "path": "src/prevention/prevention.test.ts",
+        "upstreamTool": "Google Gemini",
+        "integrationTool": "OpenAI Codex",
+        "classification": "team_directed_ai_assisted_mixed_origin"
+      },
+      {
+        "path": "src/prevention/selectors.ts",
+        "upstreamTool": "Google Gemini",
+        "integrationTool": "OpenAI Codex",
+        "classification": "team_directed_ai_assisted_mixed_origin"
+      },
+      {
+        "path": "src/resources/MissionResources.tsx",
+        "upstreamTool": "Google Gemini",
+        "integrationTool": "OpenAI Codex",
+        "classification": "team_directed_ai_assisted_mixed_origin"
+      },
+      {
+        "path": "src/resources/index.ts",
+        "upstreamTool": "Google Gemini",
+        "integrationTool": "OpenAI Codex",
+        "classification": "team_directed_ai_assisted_mixed_origin"
+      },
+      {
+        "path": "src/resources/inventory.ts",
+        "upstreamTool": "Google Gemini",
+        "integrationTool": "OpenAI Codex",
+        "classification": "team_directed_ai_assisted_mixed_origin"
+      },
+      {
+        "path": "src/resources/resources.css",
+        "upstreamTool": "Google Gemini",
+        "integrationTool": "OpenAI Codex",
+        "classification": "team_directed_ai_assisted_mixed_origin"
+      },
+      {
+        "path": "src/resources/resources.test.ts",
+        "upstreamTool": "Google Gemini",
+        "integrationTool": "OpenAI Codex",
+        "classification": "team_directed_ai_assisted_mixed_origin"
+      },
+      {
+        "path": "src/resources/selectors.ts",
+        "upstreamTool": "Google Gemini",
+        "integrationTool": "OpenAI Codex",
+        "classification": "team_directed_ai_assisted_mixed_origin"
+      }
+    ],
+    "integrationRegressionFiles": [
+      "src/app/state/v42-integration.test.ts",
+      "src/assistant/integration.test.tsx"
+    ]
+  }
 }
