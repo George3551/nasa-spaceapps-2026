@@ -10,11 +10,15 @@ export type ScenarioId = 'normal-day' | 'sleep-disruption' | 'co2-excursion' | '
 
 /** Separates provenance, which is not the same thing as acquisition method. */
 export type DataOrigin = 'synthetic' | 'observed' | 'research_dataset';
-export type AcquisitionMethod = 'simulator' | 'manual' | 'wearable' | 'environment_sensor' | 'camera_pose' | 'camera_face' | 'dataset_import' | 'assessment';
+export type AcquisitionMethod = 'simulator' | 'manual' | 'wearable' | 'medical_device' | 'environment_sensor' | 'camera_pose' | 'camera_face' | 'dataset_import' | 'assessment';
 export type ObservationQuality = 'valid' | 'estimated' | 'missing' | 'invalid';
 
 export type MetricKey =
   | 'heart_rate'                // bpm
+  | 'body_temperature'          // °C
+  | 'oxygen_saturation'         // %
+  | 'heart_rate_variability'    // ms; protocol must identify the statistic
+  | 'laboratory'               // analyte + unit required; no implicit conversion
   | 'resting_heart_rate'        // bpm
   | 'blood_pressure_systolic'  // mmHg
   | 'blood_pressure_diastolic' // mmHg
@@ -60,6 +64,8 @@ export interface HealthMeasurement {
   demonstrationOnly?: boolean;
   /** Additional context, never a diagnosis. Symptom name or examination site. */
   note?: string;
+  acquisition?: AcquisitionContext;
+  analyte?: string;
 }
 
 export interface EnvironmentalMeasurement {
@@ -74,6 +80,9 @@ export interface EnvironmentalMeasurement {
   quality: ObservationQuality;
   sourceRefId?: string;
   demonstrationOnly?: boolean;
+  /** Explicit association required when importing into personal observed records. */
+  astronautId?: AstronautId;
+  acquisition?: AcquisitionContext;
 }
 
 export interface CrewMember {
@@ -102,6 +111,7 @@ export interface ActivityRecord {
   origin: DataOrigin;
   quality: ObservationQuality;
   details?: Record<string, number | string | boolean | null>;
+  acquisition?: AcquisitionContext;
 }
 
 export interface AlertEvidence {
@@ -156,6 +166,7 @@ export interface MissionState {
   encounters?: MedicalEncounter[];
   sources?: SourceReference[];
   resources?: MedicalResource[];
+  examinations?: ExaminationRecord[];
 }
 
 export interface SimulationPort {
@@ -187,6 +198,7 @@ export interface RecordMetadata {
   unit: string;
   sourceRefIds: string[];
   demonstrationOnly: boolean;
+  acquisition?: AcquisitionContext;
 }
 
 export interface TypingMetrics {
@@ -266,6 +278,8 @@ export interface ClinicalWorkspace {
   alerts: HealthAlert[];
   encounters: MedicalEncounter[];
   activities?: ActivityRecord[];
+  environment?: EnvironmentalMeasurement[];
+  examinations?: ExaminationRecord[];
 }
 
 export interface MissionSnapshot extends MissionState {
@@ -319,4 +333,78 @@ export interface PhysicalAssessmentMetrics {
   invalidIntervals: InvalidTrackingInterval[];
   sufficient: boolean;
   algorithm: 'elbow-cycle-v1';
+}
+
+/** Acquisition labels are supplied, not proof of calibrated hardware identity. */
+export interface AcquisitionContext {
+  deviceId: string;
+  protocolId: string;
+  condition: string;
+  sessionId: string;
+}
+export interface ExaminationRecord extends RecordMetadata {
+  kind: 'ecg' | 'ultrasound';
+  summary: string | null;
+}
+export interface SensorBatch {
+  measurements: HealthMeasurement[];
+  environment: EnvironmentalMeasurement[];
+  examinations: ExaminationRecord[];
+}
+export interface SensorRequest {
+  astronautId: AstronautId;
+  compartmentId: CompartmentId;
+  timestamp: ISODateTime;
+  seed: number;
+}
+/** Acquisition transport only; the existing reducer remains the sole record store. */
+export interface SensorAdapter {
+  id: string;
+  label: string;
+  category: 'physiological' | 'medical' | 'environmental';
+  cadence: 'continuous' | 'periodic';
+  origin: DataOrigin;
+  read(request: SensorRequest): Promise<SensorBatch>;
+}
+export type PerformanceSignal = MetricKey | 'reaction_mean' | 'typing_wpm' | 'visual_blink_rate' | 'visual_closure_proportion' | 'physical_repetitions';
+export interface PerformanceObservation {
+  id: string;
+  astronautId: AstronautId;
+  signal: PerformanceSignal;
+  value: number | null;
+  unit: string;
+  timestamp: ISODateTime;
+  source: AcquisitionMethod;
+  origin: DataOrigin;
+  quality: ObservationQuality;
+  acquisition?: AcquisitionContext;
+  analyte?: string;
+}
+export interface BaselineComparison {
+  signal: PerformanceSignal;
+  current: PerformanceObservation | null;
+  latestEntry: PerformanceObservation | null;
+  baseline: number | null;
+  baselineRecords: PerformanceObservation[];
+  history: PerformanceObservation[];
+  delta: number | null;
+  percentChange: number | null;
+  status: 'ready' | 'missing' | 'invalid' | 'stale' | 'incompatible' | 'insufficient_baseline';
+  warnings: string[];
+}
+export interface MultimodalFinding {
+  ruleId: string;
+  title: string;
+  explanation: string;
+  evidence: AlertEvidence[];
+  nextStep: string;
+  demonstrationOnly: true;
+}
+export interface PerformanceAssessment {
+  astronautId: AstronautId;
+  origin: DataOrigin;
+  asOf: ISODateTime;
+  comparisons: BaselineComparison[];
+  findings: MultimodalFinding[];
+  limitations: string[];
 }
