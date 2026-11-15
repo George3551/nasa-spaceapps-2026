@@ -1,3 +1,10 @@
+/**
+ * AEGIS - NASA Space Apps Challenge 2026
+ * Component: Role-scoped navigation definitions.
+ * Implementation: team-directed, AI-assisted (Anthropic Claude Code).
+ * Team concept and requirements; exact line-level authorship remains unverified.
+ * See AI_DISCLOSURE.md and AI_DISCLOSURE_MANIFEST.json for evidence and attribution limits.
+ */
 import type { AppState, Section, UserMode } from './state/reducer'
 
 /** Single source of truth for navigation labels, grouping and page titles.

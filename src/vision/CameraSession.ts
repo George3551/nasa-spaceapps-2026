@@ -1,3 +1,10 @@
+/**
+ * AEGIS - NASA Space Apps Challenge 2026
+ * Component: Local camera lifecycle and MediaPipe Face/Pose inference.
+ * Implementation: team-directed, AI-assisted (OpenAI Codex).
+ * Google MediaPipe supplies pretrained landmarks; AEGIS measurements are experimental, not clinically validated.
+ * See AI_DISCLOSURE.md and AI_DISCLOSURE_MANIFEST.json for evidence and attribution limits.
+ */
 import type { FaceLandmarker, PoseLandmarker } from '@mediapipe/tasks-vision'
 import type { PhysicalAssessmentMetrics, TrackingIssue, VisualAssessmentMetrics } from '../../contracts/types'
 import { PhysicalMetrics, VisualMetrics } from './metrics'

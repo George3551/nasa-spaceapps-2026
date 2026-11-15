@@ -1,3 +1,10 @@
+/**
+ * AEGIS - NASA Space Apps Challenge 2026
+ * Component: Mission-demo navigation regression test.
+ * Implementation: team-directed, substantially AI-generated with possible mixed edits (OpenAI Codex).
+ * AI-assisted software tests use fixtures/mocks; passing tests do not establish clinical or physical-camera validity.
+ * See AI_DISCLOSURE.md and AI_DISCLOSURE_MANIFEST.json for evidence and attribution limits.
+ */
 import { render, screen } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
 import { beforeEach, expect, it, vi } from 'vitest'

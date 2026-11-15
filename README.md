@@ -43,3 +43,19 @@ See [release fixes](docs/STABILIZATION_REPORT.md),
 [branch inventory](docs/INTEGRATION_READINESS.md),
 [radiation capability](docs/RADIATION_CAPABILITY.md),
 [v4.1 architecture](docs/CORE_V4_1.md) and [team tests](docs/TEAM_TESTING.md).
+
+## AI Usage and Attribution
+
+The AEGIS team originated the concept and scientific direction, defined the
+requirements, selected technologies, and directed research and testing.
+Generative AI tools (ChatGPT, Codex, Claude Code and Gemini) assisted planning,
+research, substantial code generation, debugging and testing. Separate v4.2
+branches are distinguished from the actual released application.
+Google MediaPipe supplies third-party pretrained face/pose landmark models;
+the team did not train those models. AEGIS measurement rules are experimental.
+
+See [AI_DISCLOSURE.md](AI_DISCLOSURE.md) for detailed contributions, source limits
+and the complete file table, and [AI_DISCLOSURE_MANIFEST.json](AI_DISCLOSURE_MANIFEST.json)
+for machine-readable metadata. This attribution addendum preserves the published
+implementation at [b8e26c9](https://github.com/George3551/nasa-spaceapps-2026/tree/b8e26c9dded392b0fb612f8ec034b7da2201d4e0)
+and does not redeploy the website.

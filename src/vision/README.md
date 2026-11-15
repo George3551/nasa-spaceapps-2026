@@ -1,3 +1,4 @@
+<!-- Development disclosure: team-directed, AI-assisted code/documentation. See ../../AI_DISCLOSURE.md for tool scope, third-party sources and attribution uncertainty. -->
 # Vision — Core v3
 
 CameraAssessment is the optional user interface; CameraSession owns the local

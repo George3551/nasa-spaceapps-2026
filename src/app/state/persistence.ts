@@ -1,3 +1,10 @@
+/**
+ * AEGIS - NASA Space Apps Challenge 2026
+ * Component: Validated local storage and migration.
+ * Implementation: team-directed, AI-assisted (OpenAI Codex).
+ * Team concept and requirements; exact line-level authorship remains unverified.
+ * See AI_DISCLOSURE.md and AI_DISCLOSURE_MANIFEST.json for evidence and attribution limits.
+ */
 import { z } from 'zod'
 import { clinicalSchema, missionSchema } from '../../shared/validation'
 import type { AppState } from './reducer'

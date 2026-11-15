@@ -1,3 +1,10 @@
+/**
+ * AEGIS - NASA Space Apps Challenge 2026
+ * Component: Guided mission-demo entry.
+ * Implementation: team-directed, substantially AI-generated with possible mixed edits (OpenAI Codex).
+ * Team concept and requirements; exact line-level authorship remains unverified.
+ * See AI_DISCLOSURE.md and AI_DISCLOSURE_MANIFEST.json for evidence and attribution limits.
+ */
 import { useAppState } from '../state/context'
 import { Panel } from './Panel'
 

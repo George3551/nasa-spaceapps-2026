@@ -1,3 +1,10 @@
+/**
+ * AEGIS - NASA Space Apps Challenge 2026
+ * Component: Navigation and role-interface regression tests.
+ * Implementation: team-directed, AI-assisted (Anthropic Claude Code).
+ * AI-assisted software tests use fixtures/mocks; passing tests do not establish clinical or physical-camera validity.
+ * See AI_DISCLOSURE.md and AI_DISCLOSURE_MANIFEST.json for evidence and attribution limits.
+ */
 import { render, screen, within } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
 import { beforeEach, describe, expect, it } from 'vitest'

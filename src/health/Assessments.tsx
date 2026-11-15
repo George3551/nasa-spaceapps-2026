@@ -1,3 +1,10 @@
+/**
+ * AEGIS - NASA Space Apps Challenge 2026
+ * Component: Typing, reaction-time and procedure assessments.
+ * Implementation: team-directed, AI-assisted (OpenAI Codex; Anthropic Claude Code).
+ * Research prototype; deterministic application logic is not a trained clinical diagnostic model.
+ * See AI_DISCLOSURE.md and AI_DISCLOSURE_MANIFEST.json for evidence and attribution limits.
+ */
 import { useCallback, useEffect, useRef, useState } from 'react'
 import type { AcquisitionContext, AssessmentResult, ProcedureAttempt, ReactionTrial, RecordMetadata } from '../../contracts/types'
 import { Panel } from '../app/components/Panel'

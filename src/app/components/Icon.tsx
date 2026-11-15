@@ -1,3 +1,10 @@
+/**
+ * AEGIS - NASA Space Apps Challenge 2026
+ * Component: Shared inline SVG icons.
+ * Implementation: team-directed, AI-assisted (Anthropic Claude Code).
+ * Team concept and requirements; exact line-level authorship remains unverified.
+ * See AI_DISCLOSURE.md and AI_DISCLOSURE_MANIFEST.json for evidence and attribution limits.
+ */
 import type { IconName } from '../navigation'
 
 type Name = IconName | 'menu' | 'close' | 'check' | 'info' | 'warning' | 'arrow' | 'clock' | 'lock'

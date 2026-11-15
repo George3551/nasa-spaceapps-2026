@@ -1,3 +1,10 @@
+/**
+ * AEGIS - NASA Space Apps Challenge 2026
+ * Component: Fictional spacecraft SVG and environmental context.
+ * Implementation: team-directed, AI-assisted (OpenAI Codex; Anthropic Claude Code).
+ * Team concept and requirements; exact line-level authorship remains unverified.
+ * See AI_DISCLOSURE.md and AI_DISCLOSURE_MANIFEST.json for evidence and attribution limits.
+ */
 import type { MissionViewProps } from '../app/integration/interfaces'
 import { Panel } from '../app/components/Panel'
 import { Badge, EmptyState, Time } from '../app/components/ui'

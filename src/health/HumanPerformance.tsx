@@ -1,3 +1,10 @@
+/**
+ * AEGIS - NASA Space Apps Challenge 2026
+ * Component: Explainable multimodal assessment view.
+ * Implementation: team-directed, substantially AI-generated with possible mixed edits (OpenAI Codex; Anthropic Claude Code).
+ * Research prototype; deterministic application logic is not a trained clinical diagnostic model.
+ * See AI_DISCLOSURE.md and AI_DISCLOSURE_MANIFEST.json for evidence and attribution limits.
+ */
 import type { BaselineComparison } from '../../contracts/types'
 import { Panel } from '../app/components/Panel'
 import { Badge, DemoBadge, Disclosure, EmptyState, PageHeader, Provenance, Time } from '../app/components/ui'

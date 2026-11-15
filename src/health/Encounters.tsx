@@ -1,3 +1,10 @@
+/**
+ * AEGIS - NASA Space Apps Challenge 2026
+ * Component: Human-controlled clinical review and follow-up UI.
+ * Implementation: team-directed, AI-assisted (OpenAI Codex; Anthropic Claude Code).
+ * Research prototype; deterministic application logic is not a trained clinical diagnostic model.
+ * See AI_DISCLOSURE.md and AI_DISCLOSURE_MANIFEST.json for evidence and attribution limits.
+ */
 import { useState } from 'react'
 import type { MedicalEncounter } from '../../contracts/types'
 import { useAppState } from '../app/state/context'

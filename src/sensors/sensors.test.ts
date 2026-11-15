@@ -1,3 +1,10 @@
+/**
+ * AEGIS - NASA Space Apps Challenge 2026
+ * Component: Sensor provenance, units and persistence regression tests.
+ * Implementation: team-directed, substantially AI-generated with possible mixed edits (OpenAI Codex).
+ * AI-assisted software tests use fixtures/mocks; passing tests do not establish clinical or physical-camera validity.
+ * See AI_DISCLOSURE.md and AI_DISCLOSURE_MANIFEST.json for evidence and attribution limits.
+ */
 import { beforeEach, describe, expect, it } from 'vitest'
 import { syntheticAdapters, syntheticSample } from './adapters'
 import { acquire, validateSensorBatch } from './ingestion'

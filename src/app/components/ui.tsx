@@ -1,3 +1,10 @@
+/**
+ * AEGIS - NASA Space Apps Challenge 2026
+ * Component: Shared badges, disclosures and UI primitives.
+ * Implementation: team-directed, AI-assisted (Anthropic Claude Code).
+ * Team concept and requirements; exact line-level authorship remains unverified.
+ * See AI_DISCLOSURE.md and AI_DISCLOSURE_MANIFEST.json for evidence and attribution limits.
+ */
 import type { ReactNode } from 'react'
 import type { DataOrigin, HealthAlert, ObservationQuality } from '../../../contracts/types'
 import { formatShortTimestamp, formatTimestamp, originLabel, qualityLabel } from '../format'

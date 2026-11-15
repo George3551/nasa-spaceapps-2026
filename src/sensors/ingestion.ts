@@ -1,3 +1,10 @@
+/**
+ * AEGIS - NASA Space Apps Challenge 2026
+ * Component: Canonical sensor packet validation and conflict rejection.
+ * Implementation: team-directed, substantially AI-generated with possible mixed edits (OpenAI Codex).
+ * Synthetic demonstration data; no connected medical hardware or validated physiology model.
+ * See AI_DISCLOSURE.md and AI_DISCLOSURE_MANIFEST.json for evidence and attribution limits.
+ */
 import type { DataOrigin, SensorAdapter, SensorBatch, SensorRequest } from '../../contracts/types'
 import { sensorBatchSchema } from '../shared/validation'
 

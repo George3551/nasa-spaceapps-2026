@@ -1,5 +1,12 @@
 // @vitest-environment node
 /// <reference types="node" />
+/**
+ * AEGIS - NASA Space Apps Challenge 2026
+ * Component: Pinned third-party model/runtime hash tests.
+ * Implementation: team-directed, AI-assisted (OpenAI Codex).
+ * AI-assisted software tests use fixtures/mocks; passing tests do not establish clinical or physical-camera validity.
+ * See AI_DISCLOSURE.md and AI_DISCLOSURE_MANIFEST.json for evidence and attribution limits.
+ */
 import { readFileSync } from 'node:fs'
 import { createHash } from 'node:crypto'
 import { expect, it } from 'vitest'

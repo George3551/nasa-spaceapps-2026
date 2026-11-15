@@ -1,3 +1,10 @@
+/**
+ * AEGIS - NASA Space Apps Challenge 2026
+ * Component: Cognitive scoring and clinical-workflow tests.
+ * Implementation: team-directed, AI-assisted (OpenAI Codex).
+ * AI-assisted software tests use fixtures/mocks; passing tests do not establish clinical or physical-camera validity.
+ * See AI_DISCLOSURE.md and AI_DISCLOSURE_MANIFEST.json for evidence and attribution limits.
+ */
 import { describe, expect, it } from 'vitest'
 import type { MedicalEncounter } from '../../contracts/types'
 import { validateMeasurement } from '../shared/validation'

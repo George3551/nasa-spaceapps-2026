@@ -1,3 +1,10 @@
+/**
+ * AEGIS - NASA Space Apps Challenge 2026
+ * Component: Retention of baselines and alert evidence.
+ * Implementation: team-directed, substantially AI-generated with possible mixed edits (OpenAI Codex).
+ * Synthetic demonstration data; no connected medical hardware or validated physiology model.
+ * See AI_DISCLOSURE.md and AI_DISCLOSURE_MANIFEST.json for evidence and attribution limits.
+ */
 import type { MissionSnapshot, PerformanceObservation } from '../../contracts/types'
 import { baselineRecordIds, performanceObservations } from '../health/intelligence'
 

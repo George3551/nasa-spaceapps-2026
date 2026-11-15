@@ -1,3 +1,10 @@
+/**
+ * AEGIS - NASA Space Apps Challenge 2026
+ * Component: Geometry and elapsed-time metric regression tests.
+ * Implementation: team-directed, AI-assisted (OpenAI Codex).
+ * AI-assisted software tests use fixtures/mocks; passing tests do not establish clinical or physical-camera validity.
+ * See AI_DISCLOSURE.md and AI_DISCLOSURE_MANIFEST.json for evidence and attribution limits.
+ */
 import { describe, expect, it } from 'vitest'
 import { faceFixture, poseFixture } from './fixtures'
 import { faceSignal, poseSignal } from './signals'

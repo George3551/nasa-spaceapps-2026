@@ -1,3 +1,10 @@
+/**
+ * AEGIS - NASA Space Apps Challenge 2026
+ * Component: Record-driven anatomical systems view.
+ * Implementation: team-directed, AI-assisted (OpenAI Codex; Anthropic Claude Code).
+ * Team concept and requirements; exact line-level authorship remains unverified.
+ * See AI_DISCLOSURE.md and AI_DISCLOSURE_MANIFEST.json for evidence and attribution limits.
+ */
 import { useState } from 'react'
 import type { MetricKey } from '../../contracts/types'
 import { Panel } from '../app/components/Panel'

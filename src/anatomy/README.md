@@ -1,3 +1,4 @@
+<!-- Development disclosure: team-directed, AI-assisted code/documentation. See ../../AI_DISCLOSURE.md for tool scope, third-party sources and attribution uncertainty. -->
 # Anatomy — Core v3
 
 Anatomy.tsx reads the existing scoped workspace and selected astronaut. Accessible

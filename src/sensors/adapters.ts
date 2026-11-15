@@ -1,3 +1,10 @@
+/**
+ * AEGIS - NASA Space Apps Challenge 2026
+ * Component: Replaceable synthetic sensor adapters.
+ * Implementation: team-directed, substantially AI-generated with possible mixed edits (OpenAI Codex).
+ * Synthetic demonstration data; no connected medical hardware or validated physiology model.
+ * See AI_DISCLOSURE.md and AI_DISCLOSURE_MANIFEST.json for evidence and attribution limits.
+ */
 import type { HealthMeasurement, SensorAdapter, SensorBatch, SensorRequest } from '../../contracts/types'
 
 // Reproducible engineering fixtures. Values do not simulate human physiology.

@@ -1,3 +1,10 @@
+/**
+ * AEGIS - NASA Space Apps Challenge 2026
+ * Component: Projected elbow-angle history chart.
+ * Implementation: team-directed, AI-assisted (OpenAI Codex; Anthropic Claude Code).
+ * Google MediaPipe supplies pretrained landmarks; AEGIS measurements are experimental, not clinically validated.
+ * See AI_DISCLOSURE.md and AI_DISCLOSURE_MANIFEST.json for evidence and attribution limits.
+ */
 import type { PhysicalAssessmentMetrics } from '../../contracts/types'
 export function MovementHistory({ result }: { result: PhysicalAssessmentMetrics }) {
   const path = result.angleHistory.map((p, index) => {

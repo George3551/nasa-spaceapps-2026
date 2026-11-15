@@ -1,3 +1,10 @@
+/**
+ * AEGIS - NASA Space Apps Challenge 2026
+ * Component: Authored synthetic landmark test fixtures.
+ * Implementation: team-directed, AI-assisted (OpenAI Codex).
+ * Google MediaPipe supplies pretrained landmarks; AEGIS measurements are experimental, not clinically validated.
+ * See AI_DISCLOSURE.md and AI_DISCLOSURE_MANIFEST.json for evidence and attribution limits.
+ */
 import type { Point } from './signals'
 // Deterministic, authored landmark fixtures; not recordings of a person or medical data.
 export function faceFixture(ear = .3): Point[] {

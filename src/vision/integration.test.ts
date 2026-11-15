@@ -1,3 +1,10 @@
+/**
+ * AEGIS - NASA Space Apps Challenge 2026
+ * Component: Camera-record validation and persistence tests.
+ * Implementation: team-directed, AI-assisted (OpenAI Codex).
+ * AI-assisted software tests use fixtures/mocks; passing tests do not establish clinical or physical-camera validity.
+ * See AI_DISCLOSURE.md and AI_DISCLOSURE_MANIFEST.json for evidence and attribution limits.
+ */
 import { beforeEach, describe, expect, it } from 'vitest'
 import { appReducer, createAppState, selectWorkspace } from '../app/state/reducer'
 import { LEGACY_STORAGE_KEY, persistState, restoreState, STORAGE_KEY } from '../app/state/persistence'

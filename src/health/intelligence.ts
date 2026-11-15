@@ -1,3 +1,10 @@
+/**
+ * AEGIS - NASA Space Apps Challenge 2026
+ * Component: Compatible personal baselines and multimodal demonstration rules.
+ * Implementation: team-directed, substantially AI-generated with possible mixed edits (OpenAI Codex).
+ * Research prototype; deterministic application logic is not a trained clinical diagnostic model.
+ * See AI_DISCLOSURE.md and AI_DISCLOSURE_MANIFEST.json for evidence and attribution limits.
+ */
 import type { BaselineComparison, DataOrigin, MissionState, MultimodalFinding, PerformanceAssessment, PerformanceObservation, PerformanceSignal } from '../../contracts/types'
 
 const usable = (r: PerformanceObservation) => r.value !== null && Number.isFinite(r.value) && ['valid', 'estimated'].includes(r.quality)

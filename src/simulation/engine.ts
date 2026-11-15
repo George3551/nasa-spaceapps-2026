@@ -1,3 +1,10 @@
+/**
+ * AEGIS - NASA Space Apps Challenge 2026
+ * Component: Seeded synthetic mission scenarios.
+ * Implementation: team-directed, AI-assisted (OpenAI Codex).
+ * Synthetic demonstration data; no connected medical hardware or validated physiology model.
+ * See AI_DISCLOSURE.md and AI_DISCLOSURE_MANIFEST.json for evidence and attribution limits.
+ */
 import type { HealthMeasurement, MissionSnapshot, MissionState, ScenarioId, SimulationPort } from '../../contracts/types'
 import { syntheticSample } from '../sensors/adapters'
 import { retainMissionRecords } from './retention'

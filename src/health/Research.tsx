@@ -1,3 +1,10 @@
+/**
+ * AEGIS - NASA Space Apps Challenge 2026
+ * Component: Research source registry presentation.
+ * Implementation: team-directed, AI-assisted (OpenAI Codex; Anthropic Claude Code).
+ * Research prototype; deterministic application logic is not a trained clinical diagnostic model.
+ * See AI_DISCLOSURE.md and AI_DISCLOSURE_MANIFEST.json for evidence and attribution limits.
+ */
 import { Panel } from '../app/components/Panel'
 import { Badge, Callout, PageHeader } from '../app/components/ui'
 import { researchSources } from './sources'

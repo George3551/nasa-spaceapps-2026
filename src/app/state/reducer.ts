@@ -1,3 +1,10 @@
+/**
+ * AEGIS - NASA Space Apps Challenge 2026
+ * Component: Canonical record ingestion and role/workspace separation.
+ * Implementation: team-directed, AI-assisted (OpenAI Codex).
+ * Team concept and requirements; exact line-level authorship remains unverified.
+ * See AI_DISCLOSURE.md and AI_DISCLOSURE_MANIFEST.json for evidence and attribution limits.
+ */
 import type { AssessmentResult, ClinicalAction, ClinicalWorkspace, HealthAlert, HealthMeasurement, MetricKey, MissionSnapshot, MissionState, ScenarioId, SensorBatch } from '../../../contracts/types'
 import { initialState, runScenario, step } from '../../simulation/engine'
 import { synchronizeClinical } from '../../health/engine'

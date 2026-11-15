@@ -1,3 +1,10 @@
+/**
+ * AEGIS - NASA Space Apps Challenge 2026
+ * Component: Opt-in camera assessment and summary-saving UI.
+ * Implementation: team-directed, AI-assisted (OpenAI Codex; Anthropic Claude Code).
+ * Google MediaPipe supplies pretrained landmarks; AEGIS measurements are experimental, not clinically validated.
+ * See AI_DISCLOSURE.md and AI_DISCLOSURE_MANIFEST.json for evidence and attribution limits.
+ */
 import { useEffect, useRef, useState } from 'react'
 import type { AcquisitionContext, DemoAssociation } from '../../contracts/types'
 import { Panel } from '../app/components/Panel'

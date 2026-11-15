@@ -1,3 +1,10 @@
+/**
+ * AEGIS - NASA Space Apps Challenge 2026
+ * Component: Selected SDK-output coordinates from public MediaPipe example images.
+ * Implementation: team-directed, AI-assisted (OpenAI Codex).
+ * Recorded SDK estimates from public example images; fixture assembly assisted by Codex. Not clinical data.
+ * See AI_DISCLOSURE.md and AI_DISCLOSURE_MANIFEST.json for evidence and attribution limits.
+ */
 // Small recorded SDK-output fixture, 2026-11-14, @mediapipe/tasks-vision 0.10.32.
 // Public MediaPipe portrait.jpg / pose.jpg, fitted into 640×640 canvas video.
 // Only the coordinates needed by the algorithms are retained, no input pixels.

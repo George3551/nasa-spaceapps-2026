@@ -1,3 +1,4 @@
+<!-- Development disclosure: team-directed, AI-assisted code/documentation. See ../../AI_DISCLOSURE.md for tool scope, third-party sources and attribution uncertainty. -->
 # Mission view — owned by feat/mission-ui
 
 Core v2 now implements MissionView.tsx with the existing props adapter.

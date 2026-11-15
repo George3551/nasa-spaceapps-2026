@@ -1,3 +1,10 @@
+/**
+ * AEGIS - NASA Space Apps Challenge 2026
+ * Component: Synthetic acquisition and manual examination UI.
+ * Implementation: team-directed, substantially AI-generated with possible mixed edits (OpenAI Codex; Anthropic Claude Code).
+ * Synthetic demonstration data; no connected medical hardware or validated physiology model.
+ * See AI_DISCLOSURE.md and AI_DISCLOSURE_MANIFEST.json for evidence and attribution limits.
+ */
 import { useState } from 'react'
 import type { ExaminationRecord, SensorBatch } from '../../contracts/types'
 import { Panel } from '../app/components/Panel'

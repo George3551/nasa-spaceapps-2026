@@ -1,3 +1,10 @@
+/**
+ * AEGIS - NASA Space Apps Challenge 2026
+ * Component: Mocked stream/model lifecycle and permission tests.
+ * Implementation: team-directed, AI-assisted (OpenAI Codex).
+ * AI-assisted software tests use fixtures/mocks; passing tests do not establish clinical or physical-camera validity.
+ * See AI_DISCLOSURE.md and AI_DISCLOSURE_MANIFEST.json for evidence and attribution limits.
+ */
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
 import { CameraSession } from './CameraSession'
 const model = vi.hoisted(() => ({ close: vi.fn(), create: vi.fn() }))
