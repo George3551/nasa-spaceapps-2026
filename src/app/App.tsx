@@ -14,6 +14,8 @@ import { CameraAssessment } from '../vision/CameraAssessment'
 import { Anatomy } from '../anatomy/Anatomy'
 import { HumanPerformance } from '../health/HumanPerformance'
 import { SensorIntegration } from '../sensors/SensorIntegration'
+import { PreventiveHealth } from '../prevention/PreventiveHealth'
+import { MissionResources } from '../resources/MissionResources'
 
 const navigation: { id: Section; label: string; mark: string }[] = [
   { id: 'dashboard', label: 'Mission Dashboard', mark: '01' },
@@ -28,6 +30,8 @@ const navigation: { id: Section; label: string; mark: string }[] = [
   { id: 'anatomy', label: 'Anatomy', mark: '10' },
   { id: 'performance', label: 'Human Performance Assessment', mark: '11' },
   { id: 'sensors', label: 'Sensor Integration', mark: '12' },
+  { id: 'prevention', label: 'Preventive Health', mark: '13' },
+  { id: 'resources', label: 'Mission Medical Resources', mark: '14' },
 ]
 
 export function App({ modules = {} }: { modules?: ModuleViews }) {
@@ -57,6 +61,8 @@ export function App({ modules = {} }: { modules?: ModuleViews }) {
         {state.section === 'anatomy' && <Anatomy />}
         {state.section === 'performance' && <HumanPerformance />}
         {state.section === 'sensors' && <SensorIntegration />}
+        {state.section === 'prevention' && <PreventiveHealth />}
+        {state.section === 'resources' && <MissionResources />}
       </main>
       <footer className="footer"><span>AEGIS · Research prototype · {state.scope} workspace</span><span>No clinical diagnosis · No external runtime API</span></footer>
     </div>

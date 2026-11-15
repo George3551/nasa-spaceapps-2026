@@ -1,0 +1,85 @@
+.prevention-summary-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+  gap: 14px;
+  margin-bottom: 24px;
+}
+
+.prevention-card {
+  padding: 18px 0;
+  border-bottom: 1px solid #30414c;
+  display: grid;
+  gap: 10px;
+}
+
+.prevention-card:last-child {
+  border-bottom: 0;
+}
+
+.prevention-badge-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  align-items: center;
+}
+
+.badge.pstatus-completed {
+  background: #223d37;
+  color: #c5eee3;
+  border: 1px solid #3c685e;
+}
+
+.badge.pstatus-due {
+  background: #3d3422;
+  color: #f0dfb8;
+  border: 1px solid #6b5a3a;
+}
+
+.badge.pstatus-not_yet_due {
+  background: #23313d;
+  color: #c5d9e8;
+  border: 1px solid #3c5469;
+}
+
+.badge.pstatus-insufficient_evidence {
+  background: #422528;
+  color: #f2c6c9;
+  border: 1px solid #734045;
+}
+
+.badge.pstatus-unknown {
+  background: #2b353e;
+  color: #cbd5dc;
+  border: 1px dashed #566775;
+}
+
+.evidence-box {
+  padding: 12px 14px;
+  background: #111c24;
+  border: 1px solid #2b3b45;
+  border-radius: 6px;
+  font-size: 0.78rem;
+  display: grid;
+  gap: 6px;
+}
+
+.evidence-box.insufficient {
+  border-color: #6b4347;
+  background: #1c1619;
+}
+
+.inline-complete-form {
+  padding: 12px 14px;
+  background: #131f27;
+  border: 1px solid #30414c;
+  border-radius: 6px;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+  align-items: flex-end;
+}
+
+.inline-complete-form .field {
+  margin-bottom: 0;
+  flex: 1 1 140px;
+}
